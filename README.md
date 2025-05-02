@@ -13,12 +13,39 @@ The service consists of X components:
 
 - **Client**: A frontend client written in Next.js.
 - **Frontend Cluster**: 
-- **Transformer API**:
-- **Redis Cluster**:
+- **Transformer**:
+- **Redis**:
 - **Status API**: 
 - **OCR Core**:
 
 ## Flow
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Transformer
+    participant Redis
+    participant Status API
+    participant OCR Core
+    participant Janitor
+
+    Client->>Transformer: Upload image via API
+    Transformer->>Redis: Insert job (status=WAITING)
+    Transformer->>Client: Return job ID (or error)
+    Client->>Status API: Open WebSocket
+    Status API->>Redis: Watch job status
+    Note over Client, Status API: Stream job status updates via WebSocket
+    Redis->>OCR Core: Consume job
+    OCR Core->>Redis: Update job status (status=PROCESSING)
+    OCR Core->>Redis: Push job result (status=DONE)
+    Client->>Status API: Close WebSocket
+    Janitor->>Redis: Remove job (status=DONE for > TTL)
+    Janitor->>Redis: Remove unprocessed job (status=WAITING for > TTL)
+    Janitor->>Redis: Remove job (status=ABORT_TIMEOUT for > TTL)
+    Janitor->>Redis: Remove job (status=ABORT_OVERLOAD for > TTL)
+    Janitor->>Redis: Remove hung job (status=PROCESSING for > TTL)
+    Redis->>OCR Core: Abort hung job
+```
+
 1. The receipt OCR service is exposed via a frontend Client with an image uploader function.
 2. Upon file upload, the Client performs client-side file validation (restricting format and max file size).
 3. The image is posted against a Transformer API.

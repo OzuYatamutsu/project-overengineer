@@ -30,7 +30,7 @@ The service consists of X components:
 9. The Client opens a WebSocket against a Status API.
 10. The Client passes the job ID to the Status API.
 11. The Status API watches the job state within the Redis cluster and sends updates to the Client so it can update the UI accordingly.
-12. The Redis cluster publishes an event (containing just the job ID and the timestamp) to a stream for each new job waiting to be processed.
+12. The Redis cluster publishes an event (containing the job ID, the job state, and the timestamp) to a stream for each new job waiting to be processed.
 13. An idle worker within the OCR Core consumes a job from the event stream and updates the timestamp and job state (PROCESSING) within the Redis cluster.
 14. The worker downloads the file blob associated with the job.
 15. The worker processes the image for text.
@@ -39,7 +39,12 @@ The service consists of X components:
 18. The Status API returns the result of the processing to the Client.
 19. The Client closes the WebSocket against the Status API.
 20. The Client displays the result.
-
+21. A Janitor service watches jobs within the Redis cluster to clean up jobs which breach a predefined job TTL.
+22. The Janitor service removes any jobs in a state of DONE for more than the job TTL.
+23. The Janitor service looks for any jobs in a state of PROCESSING for more than the job TTL. These jobs are set to an ABORT_TIMEOUT state (and the timestamp is updated), which updates the Client via the Status API, closes the WebSocket, and updates all workers via the event stream. If the canceled job was actively being processed by a worker within the OCR Core, the job is aborted and the worker becomes idle again. The Client displays a message saying the service timed out while processing the image and to attempt to resubmit the image.
+24. The Janitor service looks for any jobs in a state of WAITING for more than the job TTL. These jobs are set to an ABORT_OVERLOAD state (and the timestamp is updated), which updates the Client via the Status API and closes the WebSocket. The Client displays a message saying the service is overloaded and to try again at a later time.
+25. The Janitor service removes any jobs in a state of ABORT_TIMEOUT for more than the job TTL.
+26. The Janitor service removes any jobs in a state of ABORT_OVERLOAD for more than the job TTL.
 
 ## Reliability plane architecture
 

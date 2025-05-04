@@ -9,6 +9,57 @@ Infrastructure provisioning is fully managed via Terraform.
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
 
 ## Base architecture
+```mermaid
+graph LR
+    Client["Client"]
+
+    subgraph Frontend Cluster
+        N1["nginx node 1"]
+        NX["..."]:::plainText
+        N2["nginx node N"]
+    end
+
+    Client --> N1
+
+    subgraph Transformer
+        T1["API worker 1"]
+        TX["..."]:::plainText
+        T2["API worker N"]
+    end
+
+    subgraph Redis
+        R1["Redis node 1"]
+        RX["..."]:::plainText
+        R2["Redis node N"]
+
+        R1 <--> RX
+        RX <--> R2
+    end
+
+    N1 --> T2
+    T2 --> R1
+
+    subgraph Status API
+        S1["API worker 1"]
+        SX["..."]:::plainText
+        S2["API worker N"]
+    end
+
+    S1 --> R1
+    Client --> S1
+
+    subgraph OCR Core
+        O1["OCR worker 1"]
+        OX["..."]:::plainText
+        O2["OCR worker N"]
+    end
+
+    O1 <--> R1
+    O2 <--> R2
+
+classDef plainText fill:none,stroke:none;
+```
+
 The service consists of 6 components:
 
 - **Client**: The Next.js frontend to the OCR service.

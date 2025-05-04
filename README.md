@@ -9,14 +9,14 @@ Infrastructure provisioning is fully managed via Terraform.
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
 
 ## Base architecture
-The service consists of X components:
+The service consists of 6 components:
 
-- **Client**: A frontend client written in Next.js.
-- **Frontend Cluster**: 
-- **Transformer**:
-- **Redis**:
-- **Status API**: 
-- **OCR Core**:
+- **Client**: The Next.js frontend to the OCR service.
+- **Frontend Cluster**: The nginx cluster serving the client.
+- **Transformer**: An API which accepts raw receipt image data, transforms to a standard format, creates a job associated with the transformed image, and inserts the job into Redis. 
+- **Redis**: A Redis cluster used to manage job data and state.
+- **Status API**: An API which returns the status of a job (within Redis) both live and on-demand.
+- **OCR Core**: A service which processes images within Redis and returns formatted text.
 
 ## Flow
 ```mermaid

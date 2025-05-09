@@ -136,9 +136,13 @@ sequenceDiagram
 25. The Janitor service removes any jobs in a state of ABORT_TIMEOUT for more than the job TTL.
 26. The Janitor service removes any jobs in a state of ABORT_OVERLOAD for more than the job TTL.
 
+## SLOs
+
+TODO
+
 ## Observability
 
-All components within the system are expected to emit at least the following telemetry:
+To enforce the SLOs, all components within the system are expected to emit at least the following telemetry:
 
 ### Client
 

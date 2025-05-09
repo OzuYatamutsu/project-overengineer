@@ -1,4 +1,5 @@
 # Project Overengineer
+
 An AI-powered service that converts receipt images into structured, itemized text. 
 
 Built for scalability and deployed to both Kubernetes and Docker Swarm, this service includes comprehensive observability, telemetry, monitoring, and alerting infrastructure (standard as of 2025).
@@ -6,9 +7,11 @@ Built for scalability and deployed to both Kubernetes and Docker Swarm, this ser
 Infrastructure provisioning is fully managed via Terraform.
 
 ## Why?
+
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
 
 ## Base architecture
+
 ```mermaid
 graph LR
     Client["Client"]
@@ -70,6 +73,7 @@ The service consists of 6 components:
 - **OCR Core**: A service which processes images within Redis and returns formatted text.
 
 ## Flow
+
 ```mermaid
 sequenceDiagram
     participant Client
@@ -98,6 +102,7 @@ sequenceDiagram
 ```
 
 ### Image upload
+
 1. The receipt OCR service is exposed via a frontend Client with an image uploader function.
 2. Upon file upload, the Client performs client-side file validation (restricting format and max file size).
 3. The image is posted against a Transformer API.
@@ -111,6 +116,7 @@ sequenceDiagram
 11. The Status API watches the job state within the Redis cluster and sends updates to the Client so it can update the UI accordingly.
 
 ### Job processing
+
 12. The Redis cluster publishes an event (containing the job ID, the job state, and the timestamp) to a stream for each new job waiting to be processed.
 13. An idle worker within the OCR Core consumes a job from the event stream and updates the timestamp and job state (PROCESSING) within the Redis cluster.
 14. The worker downloads the file blob associated with the job.
@@ -122,6 +128,7 @@ sequenceDiagram
 20. The Client displays the result.
 
 ### Job cleanup
+
 21. A Janitor service watches jobs within the Redis cluster to clean up jobs which breach a predefined job TTL.
 22. The Janitor service removes any jobs in a state of DONE for more than the job TTL.
 23. The Janitor service looks for any jobs in a state of PROCESSING for more than the job TTL. These jobs are set to an ABORT_TIMEOUT state (and the timestamp is updated), which updates the Client via the Status API, closes the WebSocket, and updates all workers via the event stream. If the canceled job was actively being processed by a worker within the OCR Core, the job is aborted and the worker becomes idle again. The Client displays a message saying the service timed out while processing the image and to attempt to resubmit the image.
@@ -129,5 +136,83 @@ sequenceDiagram
 25. The Janitor service removes any jobs in a state of ABORT_TIMEOUT for more than the job TTL.
 26. The Janitor service removes any jobs in a state of ABORT_OVERLOAD for more than the job TTL.
 
-## Reliability plane architecture
+## Observability
 
+All components within the system are expected to emit at least the following telemetry:
+
+### Client
+
+- JavaScript client error rate
+- JavaScript client call stack
+
+### Frontend Cluster
+
+- 2xx response rate
+- 4xx response rate
+- 5xx response rate
+- Response time
+- Connection count
+- CPU%
+- Memory usage
+- Network bytes in
+- Network bytes out
+- Heartbeat
+
+### Transformer
+
+- Transformer job count
+- Transformer job duration (milliseconds)
+- Transformer job success count
+- Transfomer job error count
+- CPU%
+- Memory usage
+- Network bytes in
+- Network bytes out
+- Heartbeat
+
+### Redis
+
+- Active job count
+- Waiting job queue size (excludes active jobs)
+- Aborted job count
+- Job table size
+- Published event count
+- Event stream queue size
+- CPU%
+- Memory usage
+- Network bytes in
+- Network bytes out
+- Heartbeat
+
+### Status API
+
+- Active WebSocket connection count
+- Aborted WebSocket connection count
+- Closed WebSocket connection count (excludes aborted connections)
+- 2xx response rate
+- 4xx response rate
+- 5xx response rate
+- Response time
+- Connection count
+- CPU%
+- Memory usage
+- Network bytes in
+- Network bytes out
+- Heartbeat
+
+### OCR Core
+
+- Active workers
+- Idle workers
+- Error count
+- Error traces
+- CPU%
+- Memory usage
+- Network bytes in
+- Network bytes out
+- Heartbeat
+
+## Observability plane architecture
+Project Overengineer uses the ELK stack for observability, with an included Grafana instance for visualization.
+
+TODO

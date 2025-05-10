@@ -138,7 +138,8 @@ sequenceDiagram
 
 ## SLOs
 
-TODO
+- An image should be processed successfully within **300 seconds** (5 minutes) of being uploaded.
+- The service should be available 99.0% of the time (maximum yearly downtime of **315,570 seconds**).
 
 ## Observability
 

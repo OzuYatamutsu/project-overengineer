@@ -4,7 +4,7 @@ An AI-powered service that converts receipt images into structured, itemized tex
 
 Built for scalability and deployed to both Kubernetes and Docker Swarm, this service includes comprehensive observability, telemetry, monitoring, and alerting infrastructure (standard as of 2025).
 
-Infrastructure provisioning is fully managed via Terraform.
+Infrastructure provisioning will fully managed via Terraform in Phase 2.
 
 ## Why?
 
@@ -226,3 +226,36 @@ To enforce the SLOs, all components within the system are expected to emit at le
 Project Overengineer uses the ELK stack for observability, with an included Grafana instance for visualization.
 
 TODO
+
+## Deployment
+
+A full standardized deployment process will be implemented in Phase 2.
+
+## Roadmap
+
+Development of Project Overengineer is intended to be iterative, with a proof of concept established in the initial phases, followed by supporting infrastructure in subsequent phases. A general outline of goals in scope for each phase is below:
+
+### Phase 1
+
+**Not yet started.**
+
+- Implementation of the service plane
+- Unit testing
+- CI pipeline setup with enforced linting rules
+- End-to-end integration via Docker Swarm
+
+### Phase 2
+
+**Not yet started.**
+
+- Infrastructure management via Terraform
+- CD pipeline setup
+- End-to-end integration via Kubernetes
+
+### Phase 3
+
+**Not yet started.**
+
+- Implementation of the observability plane
+- Active monitoring
+- Live deployment

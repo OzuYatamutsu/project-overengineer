@@ -225,7 +225,49 @@ To enforce the SLOs, all components within the system are expected to emit at le
 ## Observability plane architecture
 Project Overengineer uses the ELK stack for observability, with an included Grafana instance for visualization.
 
-TODO
+TODO (verify the below for best practice, then complete the Mermaid diagram below)
+
+- All logs are forwarded via a logbeat sidecar to logstash service
+- All metrics are forwarded from each service to mimir
+- All traces are forwarded to ???
+
+```mermaid
+graph LR
+    Client["Client"]
+    Grafana["Grafana"]
+
+    subgraph Frontend Cluster
+        N1["nginx node 1"]
+        NX["..."]:::plainText
+        N2["nginx node N"]
+    end
+
+    subgraph Transformer
+        T1["API worker 1"]
+        TX["..."]:::plainText
+        T2["API worker N"]
+    end
+
+    subgraph Redis
+        R1["Redis node 1"]
+        RX["..."]:::plainText
+        R2["Redis node N"]
+    end
+
+    subgraph Status API
+        S1["API worker 1"]
+        SX["..."]:::plainText
+        S2["API worker N"]
+    end
+
+    subgraph OCR Core
+        O1["OCR worker 1"]
+        OX["..."]:::plainText
+        O2["OCR worker N"]
+    end
+
+classDef plainText fill:none,stroke:none;
+```
 
 ## Deployment
 

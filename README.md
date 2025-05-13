@@ -152,6 +152,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 
 ### Frontend Cluster
 
+- nginx logs
 - 2xx response rate
 - 4xx response rate
 - 5xx response rate
@@ -165,6 +166,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 
 ### Transformer
 
+- Application logs
 - Transformer job count
 - Transformer job duration (milliseconds)
 - Transformer job success count
@@ -177,6 +179,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 
 ### Redis
 
+- Redis logs
 - Active job count
 - Waiting job queue size (excludes active jobs)
 - Aborted job count
@@ -191,6 +194,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 
 ### Status API
 
+- Application logs
 - Active WebSocket connection count
 - Aborted WebSocket connection count
 - Closed WebSocket connection count (excludes aborted connections)
@@ -207,6 +211,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 
 ### OCR Core
 
+- Application logs
 - Active workers
 - Idle workers
 - Error count

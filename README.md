@@ -299,6 +299,13 @@ A full standardized deployment process will be implemented in Phase 2.
 
 Development of Project Overengineer is intended to be iterative, with a proof of concept established in the initial phases, followed by supporting infrastructure in subsequent phases. A general outline of goals in scope for each phase is below:
 
+### Phase 0
+
+**Started 2025-04-22, in progress**
+
+- Project planning
+- Design doc
+
 ### Phase 1
 
 **Not yet started.**

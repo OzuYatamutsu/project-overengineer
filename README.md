@@ -147,6 +147,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 
 ### Client
 
+- JavaScript logs
 - JavaScript client error rate
 - JavaScript client call stack
 
@@ -225,7 +226,8 @@ To enforce the SLOs, all components within the system are expected to emit at le
 ## Observability plane architecture
 Project Overengineer uses the Grafana stack for observability. All components are deployed locally (Grafana Cloud is not used).
 
-- A telemetry sidecar is attached to each node in the service plane, which runs an instance of [Grafana Alloy](https://grafana.com/docs/alloy/latest/introduction/) (a Grafana-specific distribution of the OpenTelemetry Collector) to ingest logs, metrics, and traces.
+- A telemetry sidecar is attached to each node in the service plane, which runs an instance of [Grafana Alloy](https://grafana.com/docs/alloy/latest/introduction/) (a Grafana-specific distribution of the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)) to ingest logs, metrics, and traces.
+- A standalone instance of Grafana Alloy is deployed to ingest client-side logs, metrics, and traces.
 - Logs are shipped to Grafana Loki via OTLP.
 - Metrics are shipped to Grafana Mimir via OTLP.
 - Traces are shipped to Grafana Tempo via OTLP.
@@ -234,40 +236,46 @@ Project Overengineer uses the Grafana stack for observability. All components ar
 ```mermaid
 graph LR
     Client["Client"]
+    ClientTelemetry["Client Telemetry Service"]
+    TelemetrySplitter[" "]:::split
+    TelemetrySplitter2[" "]:::split
     Grafana["Grafana"]
 
-    subgraph Frontend Cluster
+    subgraph Service Plane
         N1["nginx node 1"]
-        NX["..."]:::plainText
-        N2["nginx node N"]
-    end
-
-    subgraph Transformer
         T1["API worker 1"]
-        TX["..."]:::plainText
-        T2["API worker N"]
-    end
-
-    subgraph Redis
         R1["Redis node 1"]
-        RX["..."]:::plainText
-        R2["Redis node N"]
-    end
-
-    subgraph Status API
         S1["API worker 1"]
-        SX["..."]:::plainText
-        S2["API worker N"]
+        O1["OCR worker 1"]
+        XX["..."]:::plainText
     end
 
-    subgraph OCR Core
-        O1["OCR worker 1"]
-        OX["..."]:::plainText
-        O2["OCR worker N"]
+    subgraph Observability Plane
+        Loki["Loki"]
+        Mimir["Mimir"]
+        Tempo["Tempo"]
     end
+
+    Client --> ClientTelemetry
+    ClientTelemetry --- TelemetrySplitter
+    N1 --- TelemetrySplitter
+    T1 --- TelemetrySplitter
+    R1 --- TelemetrySplitter
+    S1 --- TelemetrySplitter
+    O1 --- TelemetrySplitter
+    TelemetrySplitter -->|Logs| Loki
+    TelemetrySplitter -->|Metrics| Mimir
+    TelemetrySplitter -->|Traces| Tempo
+
+    Loki --> Grafana
+    Mimir --> Grafana
+    Tempo --> Grafana
 
 classDef plainText fill:none,stroke:none;
+classDef split fill:none,stroke:none,width:0,height:0;
 ```
+
+In Phase 4, telemetry will be used to feed alerting and automated deployment decisions (such as canary).
 
 ## Deployment
 
@@ -299,5 +307,15 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 **Not yet started.**
 
 - Implementation of the observability plane
-- Active monitoring
+- Staging deployment
 - Live deployment
+
+### Phase 4
+
+**Not yet started.**
+
+- Active monitoring and alerting
+- Canary in staging
+- Incremental production rollout based on telemetry data
+- Automated rollback based on telemetry data
+- Autoremediation based on telemetry data

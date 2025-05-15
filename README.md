@@ -223,13 +223,13 @@ To enforce the SLOs, all components within the system are expected to emit at le
 - Heartbeat
 
 ## Observability plane architecture
-Project Overengineer uses the ELK stack for observability, with an included Grafana instance for visualization.
+Project Overengineer uses the Grafana stack for observability. All components are deployed locally (Grafana Cloud is not used).
 
-TODO (verify the below for best practice, then complete the Mermaid diagram below)
-
-- All logs are forwarded via a logbeat sidecar to logstash service
-- All metrics are forwarded from each service to mimir
-- All traces are forwarded to ???
+- A telemetry sidecar is attached to each node in the service plane, which runs an instance of [Grafana Alloy](https://grafana.com/docs/alloy/latest/introduction/) (a Grafana-specific distribution of the OpenTelemetry Collector) to ingest logs, metrics, and traces.
+- Logs are shipped to Grafana Loki via OTLP.
+- Metrics are shipped to Grafana Mimir via OTLP.
+- Traces are shipped to Grafana Tempo via OTLP.
+- A Grafana instance is configured to access these data sources for querying and visualization.
 
 ```mermaid
 graph LR

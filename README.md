@@ -277,6 +277,20 @@ classDef split fill:none,stroke:none,width:0,height:0;
 
 In Phase 4, telemetry will be used to feed alerting and automated deployment decisions (such as canary).
 
+### Data Retention and Resolution
+
+In lieu of log sampling, decisions on telemetry data resolution are configured within the observability plane.
+
+| **Type**   | **Time Period** | **Resolution**    |
+|------------|-----------------|-------------------|
+| Logs       | 1 week          | full              |
+| Logs       | >1 week         | _discarded_       |
+| Metrics    | 1 week          | full              |
+| Metrics    | >1 week         | 1 hour avg        |
+| Metrics    | >1 month        | _discarded_       |
+| Traces     | 1 week          | full              |
+| Traces     | >1 week         | _discarded_       |
+
 ## Deployment
 
 A full standardized deployment process will be implemented in Phase 2.

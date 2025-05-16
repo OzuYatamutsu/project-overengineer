@@ -85,7 +85,7 @@ sequenceDiagram
 
     Client->>Transformer: Upload image via API
     Transformer->>Redis: Insert job (status=WAITING)
-    Transformer->>Client: Return job ID (or error)
+    Transformer->>Client: Return job ID and JWT (or error)
     Client->>Status API: Open WebSocket
     Status API->>Redis: Watch job status
     Note over Client, Status API: Stream job status updates via WebSocket
@@ -109,9 +109,9 @@ sequenceDiagram
 4. The Transformer API performs server-side file validation.
 5. The Transformer API transforms the image into a standard size and format.
 6. The Transformer API generates a job ID.
-7. The Transformer API writes the job ID, an initial job state of WAITING, a blob representation of the transformed image, a null field to store the future result, and the current timestamp to a Redis cluster.
-8. The Transformer API returns the job ID to the Client.
-9. The Client opens a WebSocket against a Status API.
+7. The Transformer API writes the job ID, an initial job state of WAITING, a blob representation of the transformed image, a null field to store the future result, the current timestamp, and a generated JSON Web Token (JWT) to a Redis cluster.
+8. The Transformer API returns the job ID and JWT to the Client.
+9. The Client opens a WebSocket against a Status API, using the JWT as a bearer token.
 10. The Client passes the job ID to the Status API.
 11. The Status API watches the job state within the Redis cluster and sends updates to the Client so it can update the UI accordingly.
 
@@ -135,6 +135,17 @@ sequenceDiagram
 24. The Janitor service looks for any jobs in a state of WAITING for more than the job TTL. These jobs are set to an ABORT_OVERLOAD state (and the timestamp is updated), which updates the Client via the Status API and closes the WebSocket. The Client displays a message saying the service is overloaded and to try again at a later time.
 25. The Janitor service removes any jobs in a state of ABORT_TIMEOUT for more than the job TTL.
 26. The Janitor service removes any jobs in a state of ABORT_OVERLOAD for more than the job TTL.
+
+## Authentication
+
+Components are protected by overlapping layers of access control based on whether they are exposed to the user or internal only.
+
+- When a job is initially created, a JSON Web Token (JWT) is issued scoped to the individual job, stored in Redis, with a 5 minute expiry time. This token serves as a bearer token for all future requests against the Status API while the job and token are active.
+- The Transformer API and Status API are the only two public-facing components; all other components accept internal traffic only, enforced by a separate private overlay network.
+- Internal encrypted traffic is protected via mTLS for service-to-service authentication, with a [Caddy](https://caddyserver.com/) sidecar forwarding terminated traffic to the service worker process.
+- Caddy's certificates are managed via the PKI functionality within an instance of [HashiCorp Vault](https://www.hashicorp.com/en/products/vault), allowing for automated rotation of mTLS certificates.
+
+Authentication will be implemented in Phase 2.
 
 ## SLOs
 
@@ -301,7 +312,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 0
 
-**Started 2025-04-22, in progress**
+**Started 2025-04-22, in progress.**
 
 - Project planning
 - Design doc
@@ -322,6 +333,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 - Infrastructure management via Terraform
 - CD pipeline setup
 - End-to-end integration via Kubernetes
+- Authentication
 
 ### Phase 3
 

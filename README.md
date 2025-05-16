@@ -147,6 +147,15 @@ Components are protected by overlapping layers of access control based on whethe
 
 Authentication will be implemented in Phase 2.
 
+## Rate limits
+
+Public-facing API endpoints are protected by IP-based rate limiting. Exceeding rate limits results in the client being served a `429 Too Many Requests` response.
+
+| Component       | Limit               |
+|-----------------|---------------------|
+| Transformer API | 1 request/second    |
+| Status API      | 1 request/second    |
+
 ## SLOs
 
 - An image should be processed successfully within **300 seconds** (5 minutes) of being uploaded.
@@ -325,6 +334,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 - Unit testing
 - CI pipeline setup with enforced linting rules
 - End-to-end integration via Docker Swarm
+- Rate limits
 
 ### Phase 2
 

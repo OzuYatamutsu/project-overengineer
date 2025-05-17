@@ -147,9 +147,19 @@ Authentication will be implemented in Phase 2.
 
 ## Encryption
 
-Image data within Redis is encrypted at rest (AES-256-GCM), with a unique, short-lived encryption key generated for each job. Keys are managed and rotated in Vault, ensuring image data is never stored in plaintext. Only the encrypted ciphertext, initialization vector (IV), and GCM tag are stored in Redis.
+Data is encrypted both in transit and at rest.
 
 Encryption will be implemented in Phase 2.
+
+### In transit
+
+All service-to-service communication within the overlay network is encrypted using mTLS to ensure both confidentiality and authentication.
+
+Public-facing APIs are secured with TLS, providing end-to-end encryption and server authentication for external clients.
+
+### At rest
+
+Image data within Redis is encrypted at rest (AES-256-GCM), with a unique, short-lived encryption key generated for each job. Keys are managed and rotated in Vault, ensuring image data is never stored in plaintext. Only the encrypted ciphertext, initialization vector (IV), and GCM tag are stored in Redis.
 
 ## Rate limits
 

@@ -4,8 +4,6 @@ An AI-powered service that converts receipt images into structured, itemized tex
 
 Built for scalability and deployed to both Kubernetes and Docker Swarm, this service includes comprehensive observability, telemetry, monitoring, and alerting infrastructure (standard as of 2025).
 
-Infrastructure provisioning will fully managed via Terraform in Phase 2.
-
 ## Why?
 
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
@@ -146,6 +144,12 @@ Components are protected by overlapping layers of access control based on whethe
 - Caddy's certificates are managed via the PKI functionality within an instance of [HashiCorp Vault](https://www.hashicorp.com/en/products/vault), allowing for automated rotation of mTLS certificates.
 
 Authentication will be implemented in Phase 2.
+
+## Encryption
+
+Image data within Redis is encrypted at rest (AES-256-GCM), with a unique, short-lived encryption key generated for each job. Keys are managed and rotated in Vault, ensuring image data is never stored in plaintext. Only the encrypted ciphertext, initialization vector (IV), and GCM tag are stored in Redis.
+
+Encryption will be implemented in Phase 2.
 
 ## Rate limits
 
@@ -344,6 +348,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 - CD pipeline setup
 - End-to-end integration via Kubernetes
 - Authentication
+- Encryption at rest
 
 ### Phase 3
 

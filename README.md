@@ -369,7 +369,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 0
 
-**Started 2025-04-22, in progress.**
+**Started 2025-04-22, completed 2025-05-18.**
 
 - Project planning
 - Design doc

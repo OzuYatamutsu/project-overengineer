@@ -136,6 +136,19 @@ sequenceDiagram
 
 ## Authentication
 
+```mermaid
+graph LR
+    Client["Client"]
+    Transformer["Transformer"]
+    Redis["Redis"]
+    StatusAPI["Status API"]
+
+    Client -->|"Upload image"| Transformer
+    Transformer -->|"Create job + new JWT"| Redis
+    Transformer -->|"Job ID + JWT"| Client
+    Client -->|"Job ID + JWT"| StatusAPI
+```
+
 Components are protected by overlapping layers of access control based on whether they are exposed to the user or internal only.
 
 - When a job is initially created, a JSON Web Token (JWT) is issued scoped to the individual job, stored in Redis, with a 5 minute expiry time. This token serves as a bearer token for all future requests against the Status API while the job and token are active.
@@ -146,6 +159,27 @@ Components are protected by overlapping layers of access control based on whethe
 Authentication will be implemented in Phase 2.
 
 ## Encryption
+
+```mermaid
+graph LR
+    Client["Client"]
+    Transformer["Transformer"]
+    StatusAPI["Status API"]
+    
+    subgraph "Overlay (encrypted)"
+        Redis["Redis"]
+        OCRCore["OCR Core"]
+        Vault["Vault"]
+    end
+
+    Vault -->|TLS certs| Transformer
+    Vault -->|TLS certs| StatusAPI
+    Vault -->|TLS certs, decryption keys| OCRCore
+    Vault -->|TLS certs| Redis
+
+    Client -->|HTTPS| Transformer
+    Client -->|HTTPS| StatusAPI
+```
 
 Data is encrypted both in transit and at rest.
 

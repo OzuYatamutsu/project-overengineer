@@ -1,8 +1,8 @@
 {
-  "name": "vercel-blob",
-  "repository": "https://github.com/vercel/examples.git",
+  "name": "project-overengineer",
+  "repository": "https://github.com/OzuYatamutsu/project-overengineer",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "engines": {
     "pnpm": "9.13.0"

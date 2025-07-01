@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
-import { upload } from '@vercel/blob/client'
 import ProgressBar from './progress-bar'
 
 export default function Uploader() {
@@ -24,48 +23,7 @@ export default function Uploader() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsUploading(true)
-
-    if (file) {
-      try {
-        const blob = await upload(file.name, file, {
-          access: 'public',
-          handleUploadUrl: '/api/upload',
-          onUploadProgress: (progressEvent) => {
-            setProgress(progressEvent.percentage)
-          },
-        })
-
-        toast(
-          (t: { id: string }) => (
-            <div className="relative">
-              <div className="p-2">
-                <p className="font-semibold text-gray-900">File uploaded!</p>
-                <p className="mt-1 text-sm text-gray-500">
-                  Your file has been uploaded to{' '}
-                  <a
-                    className="font-medium text-gray-900 underline"
-                    href={blob.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {blob.url}
-                  </a>
-                </p>
-              </div>
-            </div>
-          ),
-          { duration: Number.POSITIVE_INFINITY }
-        )
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message)
-        } else {
-          throw error
-        }
-      }
-
-      reset()
-    }
+    toast.error("Not implemented")
   }
 
   function handleFileChange(file: File) {

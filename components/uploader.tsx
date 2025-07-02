@@ -30,7 +30,7 @@ export default function Uploader() {
     toast.dismiss()
 
     if (file.type.split('/')[0] !== 'image') {
-      toast.error('We only accept image files')
+      toast.error('Only images are allowed')
       return
     }
 

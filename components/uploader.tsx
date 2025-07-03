@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
+import styles from './loading-dots.module.css'
 
 export default function Uploader() {
   const [preview, setPreview] = useState<string | null>(null)
@@ -23,7 +24,20 @@ export default function Uploader() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsUploading(true)
-    toast.error("Not implemented")
+
+    // Dummy upload
+    let dummyProgress = 0
+    const interval = setInterval(() => {
+      dummyProgress += 20
+      setProgress(dummyProgress)
+    }, 500)
+
+    setTimeout(() => {
+      clearInterval(interval)
+      setProgress(0)
+      toast.error("Not implemented")
+      setIsUploading(false)
+    }, 2000)
   }
 
   function handleFileChange(file: File) {
@@ -122,7 +136,7 @@ export default function Uploader() {
             <img
               src={preview}
               alt="Preview"
-              className="h-full w-full rounded-md object-cover"
+              className={`h-full w-full rounded-md object-cover ${isUploading ? styles.loading : ""}`}
             />
           )}
         </label>

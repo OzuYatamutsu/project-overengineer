@@ -5,16 +5,25 @@ import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './loading-dots.module.css'
 
+const DUMMY_RESULT = `
+Apples $2.99
+Bread $1.50
+
+Total $7.74
+`;
+
 export default function Uploader() {
   const [preview, setPreview] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [resultText, setResultText] = useState<string | null>(null)
 
   function reset() {
     setIsUploading(false)
     setFile(null)
+    setResultText(null)
     if (preview) {
       URL.revokeObjectURL(preview)
     }
@@ -35,7 +44,8 @@ export default function Uploader() {
     setTimeout(() => {
       clearInterval(interval)
       setProgress(0)
-      toast.error("Not implemented")
+      toast.error("Not implemented; displaying dummy result")
+      setResultText(DUMMY_RESULT)
       setIsUploading(false)
     }, 2000)
   }
@@ -55,6 +65,40 @@ export default function Uploader() {
 
     setFile(file)
     setPreview(URL.createObjectURL(file))
+  }
+
+  if (resultText) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Display previously image on left */}
+          <div className="flex-1 border border-gray-300 rounded-md overflow-hidden shadow-sm">
+            <img
+              src={preview ?? ''}
+              alt="Uploaded"
+              className="w-full h-auto object-contain"
+            />
+          </div>
+
+          {/* Display OCR result on right */}
+          <div className="flex-1 bg-white border border-gray-300 rounded-md p-4 shadow-sm font-mono text-sm text-gray-800 whitespace-pre-wrap leading-6 max-h-[600px] overflow-auto">
+            <div className="border-y border-dashed py-2">
+              <pre>{resultText.trim()}</pre>
+            </div>
+          </div>
+        </div>
+
+        {/* Reset button */}
+        <div className="flex justify-center">
+          <button
+            onClick={reset}
+            className="mt-2 border border-gray-300 bg-gray-100 px-4 py-2 rounded hover:bg-white transition disabled:opacity-50"
+          >
+            Upload another
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

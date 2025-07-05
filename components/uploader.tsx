@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
-import styles from './loading-dots.module.css'
+import styles from './uploader.module.css'
 
 const DUMMY_RESULT = `
 Apples $2.99
@@ -12,7 +12,12 @@ Bread $1.50
 Total $7.74
 `;
 
-export default function Uploader() {
+type UploaderProps = {
+  onResultAction: (hasResult: boolean) => void
+  onResetAction: () => void
+}
+
+export default function Uploader({ onResultAction, onResetAction }: UploaderProps) {
   const [preview, setPreview] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [dragActive, setDragActive] = useState(false)
@@ -28,6 +33,7 @@ export default function Uploader() {
       URL.revokeObjectURL(preview)
     }
     setPreview(null)
+    onResetAction()
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -46,6 +52,7 @@ export default function Uploader() {
       setProgress(0)
       toast.error("Not implemented; displaying dummy result")
       setResultText(DUMMY_RESULT)
+      onResultAction(true)
       setIsUploading(false)
     }, 2000)
   }

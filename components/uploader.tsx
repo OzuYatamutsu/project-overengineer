@@ -6,10 +6,14 @@ import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
 
 const DUMMY_RESULT = `
-Apples $2.99
-Bread $1.50
+DUMMY STATIC RESULT
 
-Total $7.74
+2xLatte Macchiato 9.00
+1xGloki 5.00
+1xSchweinschnitzel 22.00
+1xChässpätzli 18.50
+
+Total 54.50
 `;
 
 type UploaderProps = {

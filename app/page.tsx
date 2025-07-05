@@ -1,11 +1,7 @@
 'use client'
 
-import Image from 'next/image'
-import Link from 'next/link'
-import ExpandingArrow from '@/components/expanding-arrow'
 import Uploader from '@/components/uploader'
 import { Toaster } from '@/components/toaster'
-import UploaderStyles from '@/components/uploader.module.css'
 import { useState } from 'react'
 
 export default function Home() {

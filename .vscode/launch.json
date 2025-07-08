@@ -5,6 +5,7 @@
       "name": "Next.js: debug server",
       "type": "node",
       "request": "launch",
+      "cwd": "${workspaceFolder}/project-overengineer-fe",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
@@ -17,7 +18,7 @@
       "type": "firefox",
       "request": "launch",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}",
+      "webRoot": "${workspaceFolder}/project-overengineer-fe",
       "reAttach": true,
       "pathMappings": [
         {

@@ -75,12 +75,12 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       reset()
     }
 
-    // Dummy upload
-    let dummyProgress = 0
-    const interval = setInterval(() => {
-      dummyProgress += 20
-      setProgress(dummyProgress)
-    }, 500)
+    // Dummy progress bar; no way to track progress on fetch()
+    // instead, track progress this way:
+    // File upload: 30%
+    // OCR in queue: 60%
+    // OCR ready: 100%
+    setProgress(100)  // TODO
   }
 
   function handleFileChange(file: File) {

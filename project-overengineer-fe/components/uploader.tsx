@@ -59,6 +59,11 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       if (!response.ok) {
         throw new Error(`Upload failed: ${response.status}`)
       }
+
+      toast.success("Upload complete, but OCR not implemented; displaying dummy result")
+      setResultText(DUMMY_RESULT)
+      onResultAction(true)
+      setIsUploading(false)
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message)
@@ -66,7 +71,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
         console.error(error)
         toast.error(String(error))
       }
-    } finally {
+  
       reset()
     }
 
@@ -76,15 +81,6 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       dummyProgress += 20
       setProgress(dummyProgress)
     }, 500)
-
-    setTimeout(() => {
-      clearInterval(interval)
-      
-      toast.error("Not implemented; displaying dummy result")
-      setResultText(DUMMY_RESULT)
-      onResultAction(true)
-      setIsUploading(false)
-    }, 2000)
   }
 
   function handleFileChange(file: File) {

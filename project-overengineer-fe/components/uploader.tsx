@@ -33,6 +33,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     setIsUploading(false)
     setFile(null)
     setResultText(null)
+    setProgress(0)
     if (preview) {
       URL.revokeObjectURL(preview)
     }
@@ -44,6 +45,31 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     e.preventDefault()
     setIsUploading(true)
 
+    if (!file) {
+      reset()
+      return
+    }
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: file
+      })
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        console.error(error)
+        toast.error(String(error))
+      }
+    } finally {
+      reset()
+    }
+
     // Dummy upload
     let dummyProgress = 0
     const interval = setInterval(() => {
@@ -53,7 +79,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
     setTimeout(() => {
       clearInterval(interval)
-      setProgress(0)
+      
       toast.error("Not implemented; displaying dummy result")
       setResultText(DUMMY_RESULT)
       onResultAction(true)

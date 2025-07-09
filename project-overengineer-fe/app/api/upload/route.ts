@@ -10,9 +10,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   const buffer = Buffer.from(await request.arrayBuffer())
 
   return NextResponse.json({
-    message: "Got your image data!",
+    message: "Job created",
     size: buffer.length,
-    type: contentType,
-    status: 201,
+    jobId: 0,  // TODO
+    status: "WAITING"  // TODO
+  }, {
+    status: 201
   })
 }

@@ -5,17 +5,6 @@ import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
 
-const DUMMY_RESULT = `
-DUMMY STATIC RESULT
-
-2xLatte Macchiato 9.00
-1xGloki 5.00
-1xSchweinschnitzel 22.00
-1xChässpätzli 18.50
-
-Total 54.50
-`;
-
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
   onResetAction: () => void
@@ -60,8 +49,14 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
         throw new Error(`Upload failed: ${response.status}`)
       }
 
-      toast.success("Upload complete, but OCR not implemented; displaying dummy result")
-      setResultText(DUMMY_RESULT)
+      const responseData = await response.json()
+
+      if (!responseData.result) {
+        throw new Error(`Unexpected empty response!`)
+      }
+
+      toast.success("Upload complete")
+      setResultText(responseData.result)
       onResultAction(true)
       setIsUploading(false)
     } catch (error) {

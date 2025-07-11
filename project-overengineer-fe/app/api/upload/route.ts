@@ -18,14 +18,14 @@ export async function POST(request: Request): Promise<NextResponse> {
     return new NextResponse('Unsupported content type', { status: 400 })
   }
 
-  const buffer = Buffer.from(await request.arrayBuffer())
+  const imageData = Buffer.from(await request.arrayBuffer())
+
+  // TODO: write imageData to db
+  // TODO: create job
 
   return NextResponse.json({
-    message: "Not implemented; dummy response",
-    result: DUMMY_RESULT,
-    size: buffer.length,
-    jobId: 0,  // TODO
-    status: "WAITING"  // TODO
+    message: "Job created (dummy response)",
+    jobId: 0  // TODO
   }, {
     status: 201
   })

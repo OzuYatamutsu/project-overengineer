@@ -49,16 +49,16 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
         throw new Error(`Upload failed: ${response.status}`)
       }
 
+      // Expect a job ID to query status API
       const responseData = await response.json()
 
-      if (!responseData.result) {
+      if (!responseData.jobId) {
         throw new Error(`Unexpected empty response!`)
       }
 
-      toast.success("Upload complete")
+      console.log(`Uploaded new job with ID: ${responseData.jobId}`)
+      toast.success(`Upload complete, waiting for job to complete...`)
       setResultText(responseData.result)
-      onResultAction(true)
-      setIsUploading(false)
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message)
@@ -75,7 +75,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     // File upload: 30%
     // OCR in queue: 60%
     // OCR ready: 100%
-    setProgress(100)  // TODO
+    setProgress(30)
   }
 
   function handleFileChange(file: File) {

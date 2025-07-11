@@ -14,7 +14,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   return NextResponse.json({
     message: "Job created (dummy response)",
-    jobId: 0  // TODO
+    jobId: 1  // TODO
   }, {
     status: 201
   })

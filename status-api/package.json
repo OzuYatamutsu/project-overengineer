@@ -1,15 +1,13 @@
 {
   "name": "status-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "A WebSocket job status API server for project-overengineer",
+  "main": "server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "express": "^5.1.0",
     "uuid": "^11.1.0",

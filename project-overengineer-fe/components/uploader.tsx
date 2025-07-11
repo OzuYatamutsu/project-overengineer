@@ -74,6 +74,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
           toast.success("Processing complete")
           setResultText(eventData.result)
           setIsUploading(false)
+          onResultAction(true)
         }
       }
 

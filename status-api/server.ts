@@ -3,7 +3,7 @@ import { WebSocketServer } from "ws";
 import http from 'http';
 
 const app = express();
-const port = 3000;
+const port = 3001;  // TODO
 
 const DUMMY_RESULT = `
 DUMMY STATIC RESULT

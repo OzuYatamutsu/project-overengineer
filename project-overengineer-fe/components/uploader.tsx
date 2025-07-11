@@ -57,8 +57,27 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       }
 
       console.log(`Uploaded new job with ID: ${responseData.jobId}`)
+
+      // Open websocket to status API
+      let ws = new WebSocket("ws://localhost:3001")  // TODO
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          jobId: responseData.jobId
+        }))
+      }
+      ws.onmessage = (event) => {
+        setProgress(60)
+        const eventData = JSON.parse(event.data)
+
+        if (eventData.status == "DONE") {
+          setProgress(100)
+          toast.success("Processing complete")
+          setResultText(eventData.result)
+          setIsUploading(false)
+        }
+      }
+
       toast.success(`Upload complete, waiting for job to complete...`)
-      setResultText(responseData.result)
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message)

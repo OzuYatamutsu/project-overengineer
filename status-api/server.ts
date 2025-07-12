@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
+import { JobStatus, JobUpdate } from './job-status';
 
 const app = express();
 const port = 3001;  // TODO
@@ -27,17 +28,14 @@ wss.on('connection', (ws) => {
         const jobId = message.jobId
 
         // TODO stubbed function
-        ws.send(JSON.stringify({
-            job: jobId,
-            status: "PROCESSING"
-        }))
+        ws.send(new JobUpdate(
+            jobId, JobStatus.PROCESSING, ""
+        ).serialize())
 
         setTimeout(() => {
-            ws.send(JSON.stringify({
-                job: jobId,
-                status: "DONE",
-                result: DUMMY_RESULT
-            }))
+            ws.send(new JobUpdate(
+                jobId, JobStatus.DONE, DUMMY_RESULT
+            ).serialize())
             ws.close()
         }, 2000)
     })

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
 import { JobStatus, JobUpdate } from '../../lib/job-status';
+import assert from 'assert'
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
@@ -18,6 +19,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
   const [isUploading, setIsUploading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [resultText, setResultText] = useState<string | null>(null)
+  const [ws, setWs] = useState<WebSocket | null>(null)
 
   function reset() {
     setIsUploading(false)
@@ -41,46 +43,10 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     }
 
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: file
-      })
+      const jobId = await uploadToTransformer(file)
+      console.log(`Uploaded new job with ID: ${jobId}`)
 
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`)
-      }
-
-      // Expect a job ID to query status API
-      const responseData = await response.json()
-
-      if (!responseData.jobId) {
-        throw new Error(`Unexpected empty response!`)
-      }
-
-      console.log(`Uploaded new job with ID: ${responseData.jobId}`)
-
-      // Open websocket to status API
-      let ws = new WebSocket("ws://localhost:3001")  // TODO
-
-      ws.onopen = () => {
-        ws.send(new JobUpdate(
-          responseData.jobId, JobStatus.NEW, ""
-        ).serialize())
-      }
-
-      ws.onmessage = (event) => {
-        setProgress(60)
-        const eventData = JobUpdate.fromJsonString(event.data)
-
-        if (eventData.status == JobStatus.DONE) {
-          setProgress(100)
-          toast.success("Processing complete")
-          setResultText(eventData.result)
-          setIsUploading(false)
-          onResultAction(true)
-        }
-      }
-
+      monitorProgress(jobId)
       toast.success(`Upload complete, waiting for job to complete...`)
     } catch (error) {
       if (error instanceof Error) {
@@ -116,6 +82,51 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
     setFile(file)
     setPreview(URL.createObjectURL(file))
+  }
+
+  async function uploadToTransformer(imageData: File): Promise<string> {
+    const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: imageData
+      })
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`)
+      }
+
+      // Expect a job ID to query status API
+      const responseData = await response.json()
+
+      if (!responseData.jobId) {
+        throw new Error(`Unexpected empty response!`)
+      }
+
+      return responseData.jobId
+  }
+
+  function monitorProgress(jobId: string): void {
+    // Open websocket to status API
+    setWs(new WebSocket("ws://localhost:3001"))  // TODO use service name, dynamic port selection
+    assert(ws != null)
+
+    ws.onopen = () => {
+      ws.send(new JobUpdate(
+        jobId, JobStatus.NEW, ""
+      ).serialize())
+    }
+
+    ws.onmessage = (event) => {
+      setProgress(60)
+      const eventData = JobUpdate.fromJsonString(event.data)
+
+      if (eventData.status == JobStatus.DONE) {
+        setProgress(100)
+        toast.success("Processing complete")
+        setResultText(eventData.result)
+        setIsUploading(false)
+        onResultAction(true)
+      }
+    }
   }
 
   if (resultText) {

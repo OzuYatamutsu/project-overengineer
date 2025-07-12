@@ -4,7 +4,7 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
-import { JobStatus, JobUpdate } from '../../lib/job-status';
+import { JobStatus, JobUpdate } from '@/lib/job-status';
 import assert from 'assert'
 
 type UploaderProps = {
@@ -106,8 +106,8 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
   function monitorProgress(jobId: string): void {
     // Open websocket to status API
-    setWs(new WebSocket("ws://localhost:3001"))  // TODO use service name, dynamic port selection
-    assert(ws != null)
+    const ws = new WebSocket("ws://localhost:3001")  // TODO use service name, dynamic port selection
+    setWs(ws)
 
     ws.onopen = () => {
       ws.send(new JobUpdate(

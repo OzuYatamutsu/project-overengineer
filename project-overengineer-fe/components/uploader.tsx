@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
+import { JobStatus, JobUpdate } from '../../lib/job-status';
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
@@ -60,16 +61,18 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
       // Open websocket to status API
       let ws = new WebSocket("ws://localhost:3001")  // TODO
+
       ws.onopen = () => {
-        ws.send(JSON.stringify({
-          jobId: responseData.jobId
-        }))
+        ws.send(new JobUpdate(
+          responseData.jobId, JobStatus.NEW, ""
+        ).serialize())
       }
+
       ws.onmessage = (event) => {
         setProgress(60)
-        const eventData = JSON.parse(event.data)
+        const eventData = JobUpdate.fromJsonString(event.data)
 
-        if (eventData.status == "DONE") {
+        if (eventData.status == JobStatus.DONE) {
           setProgress(100)
           toast.success("Processing complete")
           setResultText(eventData.result)

@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
-import { JobStatus, JobUpdate } from './job-status';
+import { JobStatus, JobUpdate } from '../lib/job-status';
 
 const app = express();
 const port = 3001;  // TODO

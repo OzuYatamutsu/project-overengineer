@@ -85,7 +85,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
   }
 
   async function uploadToTransformer(imageData: File): Promise<string> {
-    const response = await fetch('/api/upload', {
+    const response = await fetch('/api/v1/upload', {
         method: 'POST',
         body: imageData
       })

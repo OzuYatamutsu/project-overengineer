@@ -26,6 +26,19 @@
       }
     },
     {
+      "name": "Playwright: Transformer API",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/project-overengineer-fe/node_modules/@playwright/test/cli.js",
+      "args": ["test"],
+      "cwd": "${workspaceFolder}/project-overengineer-fe",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "DEBUG": "pw:api"
+      }
+    },
+    {
       "name": "Next.js: Debug in Firefox",
       "type": "firefox",
       "request": "launch",

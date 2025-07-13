@@ -5,7 +5,12 @@ export async function POST(request: Request): Promise<NextResponse> {
   const contentType = request.headers.get('content-type')
 
   if (!contentType?.startsWith('image/')) {
-    return new NextResponse('Unsupported content type', { status: 400 })
+    return NextResponse.json({
+      message: 'Unsupported content type',
+      jobId: "",
+    }, {
+      status: 400
+    })
   }
 
   const imageData = Buffer.from(await request.arrayBuffer())

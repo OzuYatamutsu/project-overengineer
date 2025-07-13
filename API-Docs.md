@@ -8,7 +8,8 @@ API endpoints for each component are documented here.
 Submits raw image data against the transformer.
 The transformer should return a job ID corresponding to the job to be processed.
 
-Returns `201` if the job was created successfully.
+- Returns `201` if the job was created successfully.
+- Returns `400` if the data was in an incorrect format.
 
 #### Sample request
 (Raw binary image data)

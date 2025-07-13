@@ -14,7 +14,7 @@ test.describe('Upload API', () => {
       data: buffer,
     })
 
-    expect(response.ok()).toBeTruthy()
+    expect(response.status()).toBe(201)
 
     const data = await response.json()
     expect(data).toHaveProperty('jobId')
@@ -28,12 +28,12 @@ test('should reject something which is not an image', async ({ baseURL }) => {
 
     const response = await reqContext.post(`${baseURL}/api/v1/upload`, {
       headers: {
-        'Content-Type': 'image/png',
+        'Content-Type': 'application/octet-stream',
       },
       data: buffer,
     })
 
-    expect(response.ok()).toBeFalsy()
+    expect(response.status()).toBe(400)
 
     const data = await response.json()
     expect(data).toHaveProperty('message')

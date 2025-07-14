@@ -72,6 +72,8 @@ The service consists of 6 components:
 - **Status API**: An API which returns the status of a job (within Redis) both live and on-demand.
 - **OCR Core**: A service which processes images within Redis and returns formatted text.
 
+The API documentation is [here](./API-Docs.md).
+
 ## Flow
 
 ```mermaid

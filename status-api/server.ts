@@ -22,10 +22,14 @@ app.use(express.json());
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
+    console.log(`${req.socket.remoteAddress}: New connection`)
+
     ws.on('message', (data) => {
         const message = JSON.parse(data.toString())
         const jobId = message.jobId
+
+        console.log(`${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
 
         // TODO stubbed function
         ws.send(new JobUpdate(
@@ -40,7 +44,9 @@ wss.on('connection', (ws) => {
         }, 2000)
     })
 
-    // ws.on('close', () => {})
+    ws.on('close', () => {
+        console.log(`${req.socket.remoteAddress}: Stop monitoring status (closed)`)
+    })
 })
 
 server.listen(port, () => {

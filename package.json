@@ -1,0 +1,14 @@
+{
+  "name": "project-overengineer",
+  "version": "1.0.0",
+  "description": "An AI-powered service that converts receipt images into structured, itemized text.",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
 import { JobStatus, JobUpdate } from '@/lib/job-status';
-import assert from 'assert'
+import { MAX_FILE_SIZE_MB } from '@/lib/constants'
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
@@ -75,8 +75,8 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       return
     }
 
-    if (file.size / 1024 / 1024 > 50) {
-      toast.error('File size too big (max 50MB)')
+    if (file.size / 1024 / 1024 > MAX_FILE_SIZE_MB) {
+      toast.error(`File size too big (max ${MAX_FILE_SIZE_MB} MB)`)
       return
     }
 

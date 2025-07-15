@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { v4 as uuidv4 } from 'uuid'
+import { Job } from '@/lib/job'
+import { standarizeImage } from './handler'
 
 export async function POST(request: Request): Promise<NextResponse> {
   const contentType = request.headers.get('content-type')
@@ -13,15 +14,17 @@ export async function POST(request: Request): Promise<NextResponse> {
     })
   }
 
-  const imageData = Buffer.from(await request.arrayBuffer())
-  const jobId = uuidv4()
+  // Convert and standardize image format
+  const imageData = await standarizeImage(
+    Buffer.from(await request.arrayBuffer())
+  )
 
-  // TODO: write imageData to db
-  // TODO: create job
+  // Create job
+  const job = new Job(imageData)
 
   return NextResponse.json({
     message: "Job created (dummy response)",
-    jobId: jobId
+    jobId: job.id
   }, {
     status: 201
   })

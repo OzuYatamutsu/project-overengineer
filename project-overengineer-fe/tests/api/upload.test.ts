@@ -39,4 +39,23 @@ test('should reject something which is not an image', async ({ baseURL }) => {
     expect(data).toHaveProperty('message')
     expect(typeof data.message).toBe('string')
   })
+
+  test('should reject something which is pretending to be an image but is not', async ({ baseURL }) => {
+    const notAnImage = 'bm90LWFuLWltYWdl'
+    const buffer = Buffer.from(notAnImage, 'base64')
+    const reqContext = await request.newContext()
+
+    const response = await reqContext.post(`${baseURL}/api/v1/upload`, {
+      headers: {
+        'Content-Type': 'image/jpeg',
+      },
+      data: buffer,
+    })
+
+    expect(response.status()).toBe(400)
+
+    const data = await response.json()
+    expect(data).toHaveProperty('message')
+    expect(typeof data.message).toBe('string')
+  })
 })

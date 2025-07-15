@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Job } from '@/lib/job'
-import { standarizeImage } from './handler'
+import { standarizeImage, validateImage } from './handler'
 
 export async function POST(request: Request): Promise<NextResponse> {
   const contentType = request.headers.get('content-type')
@@ -14,9 +14,21 @@ export async function POST(request: Request): Promise<NextResponse> {
     })
   }
 
+  const rawImageData = await request.arrayBuffer()
+
+  // Validate length and type
+  if (!(await validateImage(rawImageData))) {
+    return NextResponse.json({
+      message: "Image failed validation (size or file format)",
+      jobId: ""
+    }, {
+      status: 400
+    })
+  }
+
   // Convert and standardize image format
   const imageData = await standarizeImage(
-    Buffer.from(await request.arrayBuffer())
+    Buffer.from(rawImageData)
   )
 
   // Create job

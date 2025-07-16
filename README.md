@@ -10,6 +10,15 @@ Built for scalability and deployed to both Kubernetes and Docker Swarm, this ser
 
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
 
+## Running
+There are a few ways to launch the service.
+
+### Via `docker-compose`
+From the project root, run `docker-compose up`, then access the frontend at `http://localhost:3000`.
+
+### Via VS Code (debug)
+Launch configurations are included in `.vscode/launch.json`. Start `Next.js: Debug server` and `Status API: Debug server`, then access the frontend at `http://localhost:3000`.
+
 ## Base architecture
 
 ```mermaid

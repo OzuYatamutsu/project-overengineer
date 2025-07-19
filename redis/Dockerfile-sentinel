@@ -1,0 +1,4 @@
+FROM redis:7
+
+COPY ./sentinel.conf /etc/sentinel.conf
+ENTRYPOINT ["redis-sentinel", "/etc/sentinel.conf"]

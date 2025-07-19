@@ -7,6 +7,8 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+    depends_on:
+      - backend
 
   backend:
     build:
@@ -16,3 +18,41 @@ services:
       - "3001:3001"
     environment:
       - NODE_ENV=development
+    depends_on:
+      - redis
+
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile-master
+    ports:
+      - "6379:6379"
+
+  redis-replica:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile-replica
+    deploy:
+      replicas: 2
+    depends_on:
+      - redis
+
+  redis-sentinel:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile-sentinel
+    ports:
+      - "26379:26379"
+    depends_on:
+      - redis
+      - redis-replica
+
+  redis-sentinel-replica:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile-sentinel
+    deploy:
+      replicas: 2
+    depends_on:
+      - redis
+      - redis-replica

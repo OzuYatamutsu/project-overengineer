@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Job } from '@/lib/job'
-import { standarizeImage, validateImage } from './handler'
+import { standarizeImage, validateImage, saveJob } from './handler'
 
 export async function POST(request: Request): Promise<NextResponse> {
   console.log(`Processing new request...`)
@@ -38,8 +38,20 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Create job
   const job = new Job(imageData)
-
   console.log(`Request was upgraded to a job with ID: ${job.id}`)
+
+  // Commit job
+  try {
+    await saveJob(job)
+  } catch (error) {
+    console.error(`Error saving job to Redis: ${error}`)
+    return NextResponse.json({
+      message: `Failed to create job due to error: ${error}`,
+      jobId: job.id
+    }, {
+      status: 500
+    })
+  }
 
   return NextResponse.json({
     message: "Job created (dummy response)",

@@ -11,4 +11,12 @@ export class Job {
         this.status = JobStatus.NEW
         this.imageDataBase64 = imageDataBase64
     }
+
+    serialize(): Record<string, string> {
+        return {
+            id: this.id,
+            status: this.status.toString(),
+            imageDataBase64: this.imageDataBase64
+        }
+    }
 }

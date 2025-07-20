@@ -46,7 +46,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     console.error(`Error saving job to Redis: ${error}`)
     return NextResponse.json({
-      message: `Failed to create job due to error: ${error}`,
+      message: `Failed to create job. Error: ${error}`,
       jobId: job.id
     }, {
       status: 500
@@ -54,7 +54,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   return NextResponse.json({
-    message: "Job created (dummy response)",
+    message: "Job created",
     jobId: job.id
   }, {
     status: 201

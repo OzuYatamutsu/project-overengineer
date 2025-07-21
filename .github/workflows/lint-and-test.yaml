@@ -1,0 +1,51 @@
+name: Lint and Test
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-fe-and-transformer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: project-overengineer-fe
+        run: pnpm install
+
+      - name: Lint
+        working-directory: project-overengineer-fe
+        run: pnpm run lint
+
+  lint-status-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: status-api
+        run: pnpm install
+
+      - name: Lint
+        working-directory: status-api
+        run: pnpm run lint

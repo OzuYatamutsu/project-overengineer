@@ -1,5 +1,5 @@
 # Project Overengineer
-[![CI](https://github.com/OzuYatamutsu/project-overengineer/actions/workflows/lint-and-test.yaml/badge.svg)](https://github.com/OzuYatamutsu/project-overengineer/actions/workflows/lint-and-test.yaml)
+[![CI](https://github.com/OzuYatamutsu/project-overengineer/actions/workflows/ci.yaml/badge.svg)](https://github.com/OzuYatamutsu/project-overengineer/actions/workflows/ci.yaml)
 
 ![Screenshot of the service frontend](./fe-screenshot.jpg)
 

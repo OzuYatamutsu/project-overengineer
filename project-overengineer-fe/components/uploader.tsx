@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
+import Image from 'next/image'
 import { JobStatus, JobUpdate } from '@/lib/job-status';
 import { MAX_FILE_SIZE_MB } from '@/lib/constants'
 
@@ -19,7 +20,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
   const [isUploading, setIsUploading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [resultText, setResultText] = useState<string | null>(null)
-  const [ws, setWs] = useState<WebSocket | null>(null)
+  const [, setWs] = useState<WebSocket | null>(null)
 
   function reset() {
     setIsUploading(false)
@@ -135,7 +136,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Display previously image on left */}
           <div className="flex-1 border border-gray-300 rounded-md overflow-hidden shadow-sm">
-            <img
+            <Image
               src={preview ?? ''}
               alt="Uploaded"
               className="w-full h-auto object-contain"

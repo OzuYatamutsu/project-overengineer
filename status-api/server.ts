@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
 import { JobStatus, JobUpdate } from './lib/job-status';

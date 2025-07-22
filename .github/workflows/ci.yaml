@@ -58,7 +58,6 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
-          - 26379:26379
   
     steps:
       - name: Checkout code

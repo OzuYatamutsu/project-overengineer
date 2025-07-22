@@ -49,3 +49,36 @@ jobs:
       - name: Lint
         working-directory: status-api
         run: pnpm run lint
+  
+  unit-test-fe-and-transformer:
+    runs-on: ubuntu-latest
+    needs: lint-fe-and-transformer
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: project-overengineer-fe
+        run: pnpm install
+      
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright Tests
+        run: npx playwright test
+      
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/

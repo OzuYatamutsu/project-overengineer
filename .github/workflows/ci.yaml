@@ -71,9 +71,11 @@ jobs:
         run: pnpm install
       
       - name: Install Playwright Browsers
+        working-directory: project-overengineer-fe
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
+        working-directory: project-overengineer-fe
         run: npx playwright test
       
       - name: Upload test report

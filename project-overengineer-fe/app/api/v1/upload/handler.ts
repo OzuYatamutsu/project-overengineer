@@ -31,14 +31,14 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
 
 export async function saveJob(job: Job): Promise<void> {
     // Connect to Redis
-    // TODO replace this with config management (and rotate dev password)
     const redis = new Redis({
         sentinels: [{
-            host: 'redis-sentinel', port: 26379
+            host: process.env.REDIS_HOST ?? 'localhost',
+            port: Number(process.env.REDIS_PORT ?? '6379')
         }],
         name: 'redis-master',
-        password: 'b4yscx92yksfyv9c',
-        sentinelPassword: 'b4yscx92yksfyv9c',
+        password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
+        sentinelPassword: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
         db: 0
     })
 

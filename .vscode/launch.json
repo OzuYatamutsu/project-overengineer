@@ -56,5 +56,13 @@
         }
       ]
     }
-  ]
+  ],
+  "compounds": [{
+    "name": "Start all",
+    "configurations": [
+      "Status API: debug server",
+      "Next.js: debug server"
+    ],
+    "stopAll": true
+  }]
 }

@@ -80,14 +80,7 @@ jobs:
 
       - name: Start Redis Sentinel
         run: |
-          docker run -d \
-            --name redis-sentinel \
-            --network host \
-            -v ${{ github.workspace }}/redis/sentinel.conf:/etc/sentinel.conf \
-            redis:7 redis-sentinel /etc/sentinel.conf
-
-      - name: Add redis-sentinel to /etc/hosts
-        run: echo "127.0.0.1 redis-sentinel" | sudo tee -a /etc/hosts
+          REDIS_MASTER_HOST=localhost REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c docker compose up redis redis-replica redis-sentinel redis-sentinel-replica -d
 
       - name: Wait for Redis Sentinel to start
         run: |

@@ -11,7 +11,9 @@
       "console": "integratedTerminal",
       "env": {
         "NODE_OPTIONS": "--inspect"
-      }
+      },
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
     },
     {
       "name": "Next.js: debug server",
@@ -23,7 +25,9 @@
       "console": "integratedTerminal",
       "env": {
         "NODE_OPTIONS": "--inspect"
-      }
+      },
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
     },
     {
       "name": "Playwright: Transformer API",

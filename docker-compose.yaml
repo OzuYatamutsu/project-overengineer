@@ -25,6 +25,9 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile-master
+    environment:
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
       - "6379:6379"
 
@@ -32,6 +35,11 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile-replica
+    environment:
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_MASTER_HOST: ${REDIS_MASTER_HOST}
+      REDIS_MASTER_PORT: ${REDIS_MASTER_PORT}
+      REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
     deploy:
       replicas: 2
     depends_on:

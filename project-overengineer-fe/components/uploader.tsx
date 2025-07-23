@@ -107,7 +107,9 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
   function monitorProgress(jobId: string): void {
     // Open websocket to status API
-    const ws = new WebSocket("ws://localhost:3001")  // TODO use service name, dynamic port selection
+    const ws = new WebSocket(
+      process.env.STATUS_API_URL ?? 'ws://localhost:3001'
+    )
     setWs(ws)
 
     ws.onopen = () => {

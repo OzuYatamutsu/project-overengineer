@@ -86,6 +86,9 @@ jobs:
             -v ${{ github.workspace }}/redis/sentinel.conf:/etc/sentinel.conf \
             redis:7 redis-sentinel /etc/sentinel.conf
 
+      - name: Add redis-sentinel to /etc/hosts
+        run: echo "127.0.0.1 redis-sentinel" | sudo tee -a /etc/hosts
+
       - name: Wait for Redis Sentinel to start
         run: |
           echo "Waiting for Redis Sentinel on port 26379..."

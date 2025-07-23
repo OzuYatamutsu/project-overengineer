@@ -1,4 +1,18 @@
 FROM redis:7
 
-COPY ./sentinel.conf /etc/sentinel.conf
-ENTRYPOINT ["redis-sentinel", "/etc/sentinel.conf"]
+ENV SENTINEL_PORT="${SENTINEL_PORT:-26379}"
+ENV REDIS_MASTER_HOST="${REDIS_MASTER_HOST:-localhost}"
+ENV REDIS_MASTER_PORT="${REDIS_MASTER_PORT:-6379}"
+ENV REDIS_MASTER_PASSWORD="${REDIS_MASTER_PASSWORD:-b4yscx92yksfyv9c}"
+
+# Generate config file
+RUN echo "port ${SENTINEL_PORT}
+sentinel monitor redis-master ${REDIS_MASTER_HOST} ${REDIS_MASTER_PORT} 2
+sentinel auth-pass redis-master ${REDIS_MASTER_PASSWORD}
+sentinel down-after-milliseconds redis-master 5000
+sentinel parallel-syncs redis-master 1
+sentinel failover-timeout redis-master 10000
+sentinel resolve-hostnames yes
+" > /etc/sentinel.conf
+
+CMD sh -c "redis-server --sentinel /etc/sentinel.conf"

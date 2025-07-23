@@ -1,0 +1,37 @@
+import { port } from '../server'
+import { JobStatus, JobUpdate } from '../lib/job-status'
+import { test, expect } from '@playwright/test'
+import WebSocket from 'ws'
+
+test('WebSocket API should respond to queries for job status', async () => {
+  const jobId = '2cfdbca8-245d-4fe1-a3f5-b4dffe0a8a6b'
+  const messages: JobUpdate[] = []
+  const ws = new WebSocket(`ws://localhost:${port}`)
+
+  // Send dummy job to ws server
+  await new Promise<void>((resolve, reject) => {
+    ws.on('open', () => {
+      ws.send(JSON.stringify({ jobId }))
+    })
+
+    ws.on('message', (data) => {
+      const msg = JobUpdate.fromJsonString(data.toString())
+      messages.push(msg)
+
+      if (msg.status === JobStatus.DONE) {
+        ws.close()
+      }
+    })
+
+    ws.on('close', () => resolve())
+    ws.on('error', (err) => reject(err))
+  })
+
+  // We should receive at least one message, which should
+  // have all required fields filled in.
+  expect(messages.length).toBeGreaterThan(0)
+  for (let message of messages) {
+    expect(message.jobId).toEqual(jobId)
+    expect(message.status).toBeTruthy()
+  }
+})

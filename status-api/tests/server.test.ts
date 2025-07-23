@@ -1,7 +1,11 @@
-import { port } from '../server'
 import { JobStatus, JobUpdate } from '../lib/job-status'
 import { test, expect } from '@playwright/test'
 import WebSocket from 'ws'
+
+// TODO: can't import this from server code,
+// TODO: because server code is at top-level
+// TODO: and will cause a port conflict
+const port = 3001;
 
 test('WebSocket API should respond to queries for job status', async () => {
   const jobId = '2cfdbca8-245d-4fe1-a3f5-b4dffe0a8a6b'

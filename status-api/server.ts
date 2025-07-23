@@ -4,7 +4,7 @@ import http from 'http';
 import { JobStatus, JobUpdate } from './lib/job-status';
 
 const app = express();
-export const port = 3001;  // TODO
+export const port = 30001;  // TODO
 
 const DUMMY_RESULT = `
 DUMMY STATIC RESULT

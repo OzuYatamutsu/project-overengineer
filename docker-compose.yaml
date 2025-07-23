@@ -15,7 +15,7 @@ services:
       context: ./status-api
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - "30001:30001"
     environment:
       - NODE_ENV=development
     depends_on:

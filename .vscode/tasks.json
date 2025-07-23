@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start infra dependencies",
+      "type": "shell",
+      "command": "docker compose up redis redis-replica redis-sentinel redis-sentinel-replica -d",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Stop infra dependencies",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
+}

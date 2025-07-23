@@ -89,7 +89,7 @@ jobs:
       - name: Wait for Redis Sentinel to start
         run: |
           echo "Waiting for Redis Sentinel on port 26379..."
-          until nc -z localhost 26379; do sleep 1; done
+          until nc -z redis-sentinel 26379; do sleep 1; done
 
       - name: Install dependencies
         working-directory: project-overengineer-fe

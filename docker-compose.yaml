@@ -49,6 +49,11 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile-sentinel
+    environment:
+      SENTINEL_PORT: ${SENTINEL_PORT}
+      REDIS_MASTER_HOST: ${REDIS_MASTER_HOST}
+      REDIS_MASTER_PORT: ${REDIS_MASTER_PORT}
+      REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
     ports:
       - "26379:26379"
     depends_on:

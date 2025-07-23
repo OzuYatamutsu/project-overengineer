@@ -58,6 +58,12 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
+        options: >-
+          --name redis
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
   
     steps:
       - name: Checkout code
@@ -74,9 +80,16 @@ jobs:
 
       - name: Start Redis Sentinel
         run: |
-          docker run -p 26379:26379 -d \
+          docker run -d \
+            --name redis-sentinel \
+            --network host \
             -v ${{ github.workspace }}/redis/sentinel.conf:/etc/sentinel.conf \
             redis:7 redis-sentinel /etc/sentinel.conf
+
+      - name: Wait for Redis Sentinel to start
+        run: |
+          echo "Waiting for Redis Sentinel on port 26379..."
+          until nc -z localhost 26379; do sleep 1; done
 
       - name: Install dependencies
         working-directory: project-overengineer-fe

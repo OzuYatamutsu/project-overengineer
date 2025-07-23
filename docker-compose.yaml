@@ -7,6 +7,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
+      TRANSFORMER_PORT: ${TRANSFORMER_PORT}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -22,6 +23,7 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: development
+      STATUS_API_PORT: ${STATUS_API_PORT}
     depends_on:
       - redis
 

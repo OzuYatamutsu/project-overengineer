@@ -1,4 +1,11 @@
 FROM redis:7
 
-COPY redis-master.conf /usr/local/etc/redis/redis.conf
-CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]
+# For dev; 
+ENV REDIS_PORT="${REDIS_PORT:-6379}"
+ENV REDIS_PASSWORD="${REDIS_PASSWORD:-b4yscx92yksfyv9c}"
+
+CMD sh -c \
+    "redis-server " \
+    "--bind 0.0.0.0 " \
+    "--port ${REDIS_PORT} " \
+    "--requirepass ${REDIS_PASSWORD}"

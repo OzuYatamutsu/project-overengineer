@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   webServer: {
-    command: 'npx ts-node server.ts',
+    command: 'node dist/server.js',
     port: 3001,
     reuseExistingServer: !process.env.CI,
   },

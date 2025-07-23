@@ -132,6 +132,10 @@ jobs:
       - name: Install dependencies
         working-directory: status-api
         run: pnpm install
+      
+      - name: Build
+        working-directory: status-api
+        run: pnpm build
 
       - name: Install Playwright Browsers
         working-directory: status-api

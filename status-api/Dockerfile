@@ -23,6 +23,6 @@ USER nodejs
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 
-EXPOSE 30001
-ENV PORT=30001
+EXPOSE 3001
+ENV PORT=3001
 CMD ["node", "dist/server.js"]

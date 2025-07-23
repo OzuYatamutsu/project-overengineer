@@ -6,7 +6,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
+      NODE_ENV: development
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - backend
 
@@ -17,7 +20,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=development
+      NODE_ENV: development
     depends_on:
       - redis
 
@@ -64,6 +67,11 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile-sentinel
+    environment:
+      SENTINEL_PORT: ${SENTINEL_PORT}
+      REDIS_MASTER_HOST: ${REDIS_MASTER_HOST}
+      REDIS_MASTER_PORT: ${REDIS_MASTER_PORT}
+      REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
     deploy:
       replicas: 2
     depends_on:

@@ -31,11 +31,11 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile-master
+    ports:
+      - "6379:6379"
     environment:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-    ports:
-      - "6379:6379"
 
   redis-replica:
     build:
@@ -55,13 +55,13 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile-sentinel
+    ports:
+      - "26379:26379"
     environment:
       SENTINEL_PORT: ${SENTINEL_PORT}
       REDIS_MASTER_HOST: ${REDIS_MASTER_HOST}
       REDIS_MASTER_PORT: ${REDIS_MASTER_PORT}
       REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
-    ports:
-      - "26379:26379"
     depends_on:
       - redis
       - redis-replica

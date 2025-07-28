@@ -80,7 +80,7 @@ jobs:
 
       - name: Start Redis Sentinel
         run: |
-          REDIS_MASTER_HOST=localhost REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c docker compose up redis redis-replica redis-sentinel redis-sentinel-replica -d
+          REDIS_MASTER_HOST=localhost REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c docker compose up redis redis-sentinel -d
 
       - name: Wait for Redis Sentinel to start
         run: |

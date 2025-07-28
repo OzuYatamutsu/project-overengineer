@@ -64,7 +64,6 @@ services:
       REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
     depends_on:
       - redis
-      - redis-replica
 
   redis-sentinel-replica:
     build:

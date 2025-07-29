@@ -40,7 +40,9 @@
       "internalConsoleOptions": "neverOpen",
       "env": {
         "DEBUG": "pw:api"
-      }
+      },
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
     },
     {
       "name": "Next.js: Debug in Firefox",

@@ -34,7 +34,7 @@ export async function saveJob(job: Job): Promise<void> {
     const redis = new Redis({
         sentinels: [{
             host: process.env.REDIS_HOST ?? 'localhost',
-            port: Number(process.env.REDIS_PORT ?? '6379')
+            port: Number(process.env.REDIS_PORT ?? '26379')
         }],
         name: 'redis-master',
         password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',

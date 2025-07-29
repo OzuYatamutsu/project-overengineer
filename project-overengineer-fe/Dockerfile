@@ -22,6 +22,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV STATUS_API_URL="${STATUS_API_URL:-ws://localhost:3001}"
 
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -32,6 +33,8 @@ USER nextjs
 
 EXPOSE 3000
 
+ENV SENTINEL_HOST="${SENTINEL_HOST:-localhost}"
+ENV SENTINEL_PORT="${SENTINEL_PORT:-26379}"
 ENV TRANSFORMER_PORT="${TRANSFORMER_PORT:-3000}"
 
 # server.js is created by next build from the standalone output

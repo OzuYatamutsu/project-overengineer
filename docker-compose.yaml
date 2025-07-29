@@ -8,6 +8,8 @@ services:
     environment:
       NODE_ENV: development
       TRANSFORMER_PORT: ${TRANSFORMER_PORT}
+      SENTINEL_HOST: ${SENTINEL_HOST}
+      SENTINEL_PORT: ${SENTINEL_PORT}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}

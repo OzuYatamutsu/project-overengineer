@@ -5,6 +5,7 @@ import { JobStatus, JobUpdate } from './lib/job-status';
 
 const app = express();
 const port = Number(process.env.STATUS_API_PORT ?? '3001')
+const POLLING_PERIOD_MSECS = 2000
 
 const DUMMY_RESULT = `
 DUMMY STATIC RESULT
@@ -22,6 +23,12 @@ app.use(express.json());
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
+function getJobState(jobId: string): JobUpdate {
+    return new JobUpdate(
+        jobId, JobStatus.DONE, DUMMY_RESULT
+    )  // TODO
+}
+
 wss.on('connection', (ws, req) => {
     console.log(`${req.socket.remoteAddress}: New connection`)
 
@@ -37,11 +44,12 @@ wss.on('connection', (ws, req) => {
         ).serialize())
 
         setTimeout(() => {
-            ws.send(new JobUpdate(
-                jobId, JobStatus.DONE, DUMMY_RESULT
-            ).serialize())
-            ws.close()
-        }, 2000)
+            const jobState = getJobState(jobId)
+            ws.send(jobState.serialize())
+            if (jobState.status == JobStatus.DONE) {
+                ws.close()
+            }
+        }, POLLING_PERIOD_MSECS)
     })
 
     ws.on('close', () => {

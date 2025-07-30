@@ -2,7 +2,6 @@ import express from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
 import { JobStatus, JobUpdate } from './lib/job-status';
-import { Job } from './lib/job';
 import { Redis } from 'ioredis'
 
 const app = express();
@@ -36,11 +35,11 @@ const redis = new Redis({
 })
 
 async function getJobState(jobId: string): Promise<JobUpdate> {
-    const jobStatus = new JobUpdate(
-        jobId,
-        await redis.hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
-        await redis.hget(`job:${jobId}`, 'result') ?? ""
-    )
+    // const jobStatus = new JobUpdate(
+    //     jobId,
+    //     await redis.hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
+    //     await redis.hget(`job:${jobId}`, 'result') ?? ""
+    // )
     return new JobUpdate(
         jobId, JobStatus.DONE, DUMMY_RESULT
     )  // TODO

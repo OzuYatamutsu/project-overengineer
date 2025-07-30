@@ -2,6 +2,8 @@ import express from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
 import { JobStatus, JobUpdate } from './lib/job-status';
+import { Job } from './lib/job';
+import { Redis } from 'ioredis'
 
 const app = express();
 const port = Number(process.env.STATUS_API_PORT ?? '3001')
@@ -22,8 +24,23 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+const redis = new Redis({
+    sentinels: [{
+        host: process.env.REDIS_HOST ?? 'localhost',
+        port: Number(process.env.REDIS_PORT ?? '26379')
+    }],
+    name: 'redis-master',
+    password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
+    sentinelPassword: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
+    db: 0
+})
 
-function getJobState(jobId: string): JobUpdate {
+async function getJobState(jobId: string): Promise<JobUpdate> {
+    const jobStatus = new JobUpdate(
+        jobId,
+        await redis.hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
+        await redis.hget(`job:${jobId}`, 'result') ?? ""
+    )
     return new JobUpdate(
         jobId, JobStatus.DONE, DUMMY_RESULT
     )  // TODO
@@ -43,8 +60,8 @@ wss.on('connection', (ws, req) => {
             jobId, JobStatus.PROCESSING, ""
         ).serialize())
 
-        setTimeout(() => {
-            const jobState = getJobState(jobId)
+        setTimeout(async () => {
+            const jobState = await getJobState(jobId)
             ws.send(jobState.serialize())
             if (jobState.status == JobStatus.DONE) {
                 ws.close()

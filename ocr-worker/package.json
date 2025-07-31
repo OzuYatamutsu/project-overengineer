@@ -1,0 +1,28 @@
+{
+  "name": "ocr-core",
+  "version": "1.0.0",
+  "description": "An OCR service worker that parses images into structured text",
+  "main": "worker.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only worker.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint *.ts"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "uuid": "^11.1.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/express": "^5.0.3",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^8.57.1",
+    "ioredis": "^5.6.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}

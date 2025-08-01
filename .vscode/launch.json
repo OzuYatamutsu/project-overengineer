@@ -2,6 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "OCR Core: debug server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ocr-worker",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      },
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
+    },
+    {
       "name": "Status API: debug server",
       "type": "node",
       "request": "launch",
@@ -63,7 +77,8 @@
     "name": "Start all",
     "configurations": [
       "Status API: debug server",
-      "Next.js: debug server"
+      "Next.js: debug server",
+      "OCR Core: debug server"
     ],
     "stopAll": true
   }]

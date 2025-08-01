@@ -22,9 +22,9 @@ USER nodejs
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 
-ENV SENTINEL_HOST="${SENTINEL_HOST:-localhost}"
+ENV SENTINEL_HOST="${SENTINEL_HOST:-redis-sentinel}"
 ENV SENTINEL_PORT="${SENTINEL_PORT:-26379}"
-ENV REDIS_HOST="${REDIS_HOST:-localhost}"
+ENV REDIS_HOST="${REDIS_HOST:-redis}"
 ENV REDIS_PORT="${REDIS_PORT:-6379}"
 ENV REDIS_PASSWORD="${REDIS_PASSWORD:-b4yscx92yksfyv9c}"
 CMD ["node", "dist/worker.js"]

@@ -14,7 +14,6 @@ RUN corepack enable pnpm && pnpm run build
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 USER nodejs
@@ -25,4 +24,7 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3001
 ENV STATUS_API_PORT="${STATUS_API_PORT:-3001}"
+ENV REDIS_HOST="${REDIS_HOST:-localhost}"
+ENV REDIS_PORT="${REDIS_PORT:-6379}"
+ENV REDIS_PASSWORD="${REDIS_PASSWORD:-b4yscx92yksfyv9c}"
 CMD ["node", "dist/server.js"]

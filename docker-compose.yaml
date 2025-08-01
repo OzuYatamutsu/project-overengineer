@@ -32,6 +32,23 @@ services:
     depends_on:
       - redis
 
+  ocr-core:
+    build:
+      context: ./ocr-worker
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      SENTINEL_HOST: ${SENTINEL_HOST}
+      SENTINEL_PORT: ${SENTINEL_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    deploy:
+      replicas: 2
+    depends_on:
+      - redis
+
   redis:
     build:
       context: ./redis

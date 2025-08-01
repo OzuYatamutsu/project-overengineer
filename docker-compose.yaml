@@ -36,8 +36,6 @@ services:
     build:
       context: ./ocr-worker
       dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}

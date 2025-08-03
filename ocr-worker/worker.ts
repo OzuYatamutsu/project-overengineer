@@ -65,4 +65,4 @@ setInterval(async () => {
             workerState = WorkerState.IDLE
         }
     }
-})
+}, POLLING_PERIOD_MSECS)

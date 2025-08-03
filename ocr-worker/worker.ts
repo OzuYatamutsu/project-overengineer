@@ -1,4 +1,5 @@
 import { Redis } from 'ioredis'
+import { Job } from './lib/job'
 
 const DUMMY_RESULT = `
 DUMMY STATIC RESULT
@@ -10,6 +11,7 @@ DUMMY STATIC RESULT
 
 Total 54.50
 `;
+const POLLING_PERIOD_MSECS = 1000
 
 const redis = new Redis({
     sentinels: [{
@@ -22,4 +24,45 @@ const redis = new Redis({
     db: 0
 })
 
-// TODO implement
+let workerState: WorkerState = WorkerState.IDLE
+
+async function pullJobDetails(jobId: string): Promise<Job> {
+    return Job.fromRedisObject(
+        await redis.hgetall(`job:${jobId}`)
+    )
+}
+
+async function processJob(job: Job): Promise<Job> {
+    job.result = DUMMY_RESULT  // TODO
+    return job
+}
+
+async function commitJobResult(job: Job): Promise<void> {
+    await redis.hset(`job:${job.id}`, job.serialize())
+}
+
+// TODO initial implementation is via polling, but switch to event-based
+setInterval(async () => {
+    if (workerState == WorkerState.PROCESSING) {
+        return
+    }
+
+    // TODO horrible. use event-based processing instead
+    // TODO this is just to test the OCR functionality works
+    let keys = await redis.get(`job:*`)
+    if (keys == null) {
+        return
+    }
+    for (const key of keys) {
+        const status = await redis.hget(key, "status")
+        if (status === "WAITING") {
+            workerState = WorkerState.PROCESSING
+
+            let job: Job = await pullJobDetails(key)
+            job = await processJob(job)
+            await commitJobResult(job)
+
+            workerState = WorkerState.IDLE
+        }
+    }
+})

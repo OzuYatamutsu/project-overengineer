@@ -60,16 +60,17 @@ setInterval(async () => {
         if (status !== "WAITING") {
             continue
         }
-
-        console.log(`Processing job with ID ${key}`)
+        
         workerState = WorkerState.PROCESSING
 
         let job: Job = await pullJobDetails(key)
         job.status = JobStatus.PROCESSING
+        console.log(`Processing job with ID ${key}`)
         await commit(job)
 
         job = await processJob(job)
         job.status = JobStatus.DONE
+        console.log(`Job with ID ${key} completed, committing`)
         await commit(job)
 
         workerState = WorkerState.IDLE

@@ -8,17 +8,6 @@ const app = express();
 const port = Number(process.env.STATUS_API_PORT ?? '3001')
 const POLLING_PERIOD_MSECS = 2000
 
-const DUMMY_RESULT = `
-DUMMY STATIC RESULT
-
-2xLatte Macchiato 9.00
-1xGloki 5.00
-1xSchweinschnitzel 22.00
-1xChässpätzli 18.50
-
-Total 54.50
-`;
-
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -35,14 +24,11 @@ const redis = new Redis({
 })
 
 async function getJobState(jobId: string): Promise<JobUpdate> {
-    const jobStatus = new JobUpdate(
+    return new JobUpdate(
         jobId,
         await redis.hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
         await redis.hget(`job:${jobId}`, 'result') ?? ""
     )
-    return new JobUpdate(
-        jobId, JobStatus.DONE, DUMMY_RESULT
-    )  // TODO
 }
 
 wss.on('connection', (ws, req) => {
@@ -53,11 +39,6 @@ wss.on('connection', (ws, req) => {
         const jobId = message.jobId
 
         console.log(`${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
-
-        // TODO stubbed function
-        ws.send(new JobUpdate(
-            jobId, JobStatus.PROCESSING, ""
-        ).serialize())
 
         setTimeout(async () => {
             const jobState = await getJobState(jobId)

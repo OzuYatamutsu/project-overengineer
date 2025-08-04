@@ -1,5 +1,6 @@
 import { Redis } from 'ioredis'
 import { Job } from './lib/job'
+import { JobStatus } from './lib/job-status'
 import { WorkerState } from './lib/worker-state'
 
 const DUMMY_RESULT = `
@@ -38,7 +39,7 @@ async function processJob(job: Job): Promise<Job> {
     return job
 }
 
-async function commitJobResult(job: Job): Promise<void> {
+async function commit(job: Job): Promise<void> {
     await redis.hset(`job:${job.id}`, job.serialize())
 }
 
@@ -56,14 +57,21 @@ setInterval(async () => {
     }
     for (const key of keys) {
         const status = await redis.hget(key, "status")
-        if (status === "WAITING") {
-            workerState = WorkerState.PROCESSING
-
-            let job: Job = await pullJobDetails(key)
-            job = await processJob(job)
-            await commitJobResult(job)
-
-            workerState = WorkerState.IDLE
+        if (status !== "WAITING") {
+            continue
         }
+
+        console.log(`Processing job with ID ${key}`)
+        workerState = WorkerState.PROCESSING
+
+        let job: Job = await pullJobDetails(key)
+        job.status = JobStatus.PROCESSING
+        await commit(job)
+
+        job = await processJob(job)
+        job.status = JobStatus.DONE
+        await commit(job)
+
+        workerState = WorkerState.IDLE
     }
 }, POLLING_PERIOD_MSECS)

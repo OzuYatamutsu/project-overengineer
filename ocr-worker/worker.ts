@@ -51,7 +51,7 @@ setInterval(async () => {
 
     // TODO horrible. use event-based processing instead
     // TODO this is just to test the OCR functionality works
-    let keys = await redis.get(`job:*`)
+    let keys = await redis.keys(`job:*`)
     if (keys == null) {
         return
     }
@@ -63,7 +63,7 @@ setInterval(async () => {
 
         workerState = WorkerState.PROCESSING
 
-        let job: Job = await pullJobDetails(key)
+        let job: Job = await pullJobDetails(key.replace("job:", ""))
         job.status = JobStatus.PROCESSING
         console.log(`Processing job with ID ${key}`)
         await commit(job)

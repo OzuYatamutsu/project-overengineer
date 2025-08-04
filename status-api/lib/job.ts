@@ -15,7 +15,7 @@ export class Job {
     }
 
     static fromRedisObject(redisObject: Record<string, string>): Job {
-        let job = new Job(redisObject.imageDataBase64)
+        const job = new Job(redisObject.imageDataBase64)
         job.id = redisObject.id
         job.status = redisObject.status as JobStatus
 

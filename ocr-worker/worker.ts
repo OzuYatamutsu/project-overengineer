@@ -1,5 +1,6 @@
 import { Redis } from 'ioredis'
 import { Job } from './lib/job'
+import { WorkerState } from './lib/worker-state'
 
 const DUMMY_RESULT = `
 DUMMY STATIC RESULT

@@ -60,7 +60,7 @@ setInterval(async () => {
         if (status !== "WAITING") {
             continue
         }
-        
+
         workerState = WorkerState.PROCESSING
 
         let job: Job = await pullJobDetails(key)

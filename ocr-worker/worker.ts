@@ -15,10 +15,15 @@ Total 54.50
 `;
 const POLLING_PERIOD_MSECS = 1000
 
+const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
+const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
+
+console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
+
 const redis = new Redis({
     sentinels: [{
-        host: process.env.REDIS_HOST ?? 'localhost',
-        port: Number(process.env.REDIS_PORT ?? '26379')
+        host: SENTINEL_HOST,
+        port: SENTINEL_PORT
     }],
     name: 'redis-master',
     password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',

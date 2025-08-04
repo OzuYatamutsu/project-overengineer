@@ -1,4 +1,4 @@
-enum WorkerState {
+export enum WorkerState {
     IDLE = "IDLE",
     PROCESSING = "PROCESSING"
 }

@@ -3,6 +3,7 @@ import { fileTypeFromBuffer } from 'file-type'
 import { MAX_FILE_SIZE_MB } from '@/lib/constants'
 import { Job } from '@/lib/job'
 import { Redis } from 'ioredis'
+import { JobStatus } from '@/lib/job-status'
 
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
@@ -42,5 +43,6 @@ export async function saveJob(job: Job): Promise<void> {
         db: 0
     })
 
+    job.status = JobStatus.WAITING
     await redis.hset(`job:${job.id}`, job.serialize())
 }

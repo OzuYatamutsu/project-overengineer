@@ -4,6 +4,7 @@
     "next/typescript"
   ],
   "rules": {
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "_" }]
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "_" }],
+    "@next/next/no-img-element": "off"
   }
 }

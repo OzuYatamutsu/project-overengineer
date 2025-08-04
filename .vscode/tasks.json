@@ -4,7 +4,7 @@
     {
       "label": "Start infra dependencies",
       "type": "shell",
-      "command": "REDIS_HOST=localhost REDIS_MASTER_HOST=localhost REDIS_PASSWORD=b4yscx92yksfyv9c REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c STATUS_API_URL=ws://localhost:3001 docker compose up redis redis-replica redis-sentinel redis-sentinel-replica -d",
+      "command": "REDIS_HOST=localhost REDIS_MASTER_HOST=localhost SENTINEL_HOST=localhost REDIS_PORT=6379 SENTINEL_PORT=26379 REDIS_PASSWORD=b4yscx92yksfyv9c REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c STATUS_API_URL=ws://localhost:3001 docker compose up redis redis-replica redis-sentinel redis-sentinel-replica -d",
       "problemMatcher": [],
       "group": "build"
     },

@@ -8,14 +8,19 @@ const app = express();
 const port = Number(process.env.STATUS_API_PORT ?? '3001')
 const POLLING_PERIOD_MSECS = 2000
 
+const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
+const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
+
+console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
+
 app.use(express.json());
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const redis = new Redis({
     sentinels: [{
-        host: process.env.REDIS_HOST ?? 'localhost',
-        port: Number(process.env.REDIS_PORT ?? '26379')
+        host: SENTINEL_HOST,
+        port: SENTINEL_PORT
     }],
     name: 'redis-master',
     password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',

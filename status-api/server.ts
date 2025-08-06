@@ -9,12 +9,6 @@ const app = express();
 const port = Number(process.env.STATUS_API_PORT)
 const POLLING_PERIOD_MSECS = 2000
 
-enforceConfig("SENTINEL_HOST", true)
-enforceConfig("SENTINEL_PORT", true)
-enforceConfig("REDIS_PASSWORD", true)
-enforceConfig("STATUS_API_PORT", true)
-enforceRedisReachable()
-
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -65,6 +59,7 @@ server.listen(port, () => {
   enforceConfig("SENTINEL_HOST", true)
   enforceConfig("SENTINEL_PORT", true)
   enforceConfig("REDIS_PASSWORD", true)
+  enforceConfig("STATUS_API_PORT", true)
   enforceRedisReachable()
 
   console.log(`Status WS API listening on port ${port}`);

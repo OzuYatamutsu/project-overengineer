@@ -35,7 +35,7 @@ export async function saveJob(job: Job): Promise<void> {
     const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
     const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
 
-    console.log(`Connecting to sentinel: ${SENTINEL_HOST}: ${SENTINEL_PORT}`)
+    console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
     const redis = new Redis({
         sentinels: [{
             host: SENTINEL_HOST,

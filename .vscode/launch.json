@@ -48,13 +48,10 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/project-overengineer-fe/node_modules/@playwright/test/cli.js",
-      "args": ["test"],
+      "args": ["test", "--debug"],
       "cwd": "${workspaceFolder}/project-overengineer-fe",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "env": {
-        "DEBUG": "pw:api"
-      },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
     },

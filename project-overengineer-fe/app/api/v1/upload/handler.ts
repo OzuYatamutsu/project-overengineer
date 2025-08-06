@@ -4,10 +4,16 @@ import { MAX_FILE_SIZE_MB } from '@/lib/constants'
 import { Job } from '@/lib/job'
 import { Redis } from 'ioredis'
 import { JobStatus } from '@/lib/job-status'
+import { enforceConfig, enforceRedisReachable } from '@/lib/verify'
 
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
 const IMAGE_QUALITY_PERCENT = 80
+
+enforceConfig("SENTINEL_HOST", true)
+enforceConfig("SENTINEL_PORT", true)
+enforceConfig("REDIS_PASSWORD", true)
+enforceRedisReachable()
 
 export async function validateImage(rawImageData: ArrayBuffer): Promise<boolean> {
     const fileType = await fileTypeFromBuffer(rawImageData)
@@ -32,18 +38,14 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
 
 export async function saveJob(job: Job): Promise<void> {
     // Connect to Redis
-    const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
-    const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
-
-    console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
     const redis = new Redis({
         sentinels: [{
-            host: SENTINEL_HOST,
-            port: SENTINEL_PORT
+            host: process.env.SENTINEL_HOST,
+            port: Number(process.env.SENTINEL_PORT)
         }],
         name: 'redis-master',
-        password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
-        sentinelPassword: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
+        password: process.env.REDIS_PASSWORD,
+        sentinelPassword: process.env.REDIS_PASSWORD,
         db: 0
     })
 

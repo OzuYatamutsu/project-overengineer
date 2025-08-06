@@ -10,11 +10,6 @@ const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
 const IMAGE_QUALITY_PERCENT = 80
 
-enforceConfig("SENTINEL_HOST", true)
-enforceConfig("SENTINEL_PORT", true)
-enforceConfig("REDIS_PASSWORD", true)
-enforceRedisReachable()
-
 export async function validateImage(rawImageData: ArrayBuffer): Promise<boolean> {
     const fileType = await fileTypeFromBuffer(rawImageData)
 
@@ -37,6 +32,11 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
 }
 
 export async function saveJob(job: Job): Promise<void> {
+    enforceConfig("SENTINEL_HOST", true)
+    enforceConfig("SENTINEL_PORT", true)
+    enforceConfig("REDIS_PASSWORD", true)
+    enforceRedisReachable()
+
     // Connect to Redis
     const redis = new Redis({
         sentinels: [{

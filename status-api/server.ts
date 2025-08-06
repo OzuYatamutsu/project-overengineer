@@ -62,5 +62,10 @@ wss.on('connection', (ws, req) => {
 })
 
 server.listen(port, () => {
+  enforceConfig("SENTINEL_HOST", true)
+  enforceConfig("SENTINEL_PORT", true)
+  enforceConfig("REDIS_PASSWORD", true)
+  enforceRedisReachable()
+
   console.log(`Status WS API listening on port ${port}`);
 });

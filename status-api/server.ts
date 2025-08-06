@@ -3,15 +3,17 @@ import { WebSocketServer } from "ws";
 import http from 'http';
 import { JobStatus, JobUpdate } from './lib/job-status';
 import { Redis } from 'ioredis'
+import { enforceConfig, enforceRedisReachable } from './lib/verify';
 
 const app = express();
-const port = Number(process.env.STATUS_API_PORT ?? '3001')
+const port = Number(process.env.STATUS_API_PORT)
 const POLLING_PERIOD_MSECS = 2000
 
-const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
-const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
-
-console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
+enforceConfig("SENTINEL_HOST", true)
+enforceConfig("SENTINEL_PORT", true)
+enforceConfig("REDIS_PASSWORD", true)
+enforceConfig("STATUS_API_PORT", true)
+enforceRedisReachable()
 
 app.use(express.json());
 
@@ -19,12 +21,12 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const redis = new Redis({
     sentinels: [{
-        host: SENTINEL_HOST,
-        port: SENTINEL_PORT
+        host: process.env.SENTINEL_HOST,
+        port: Number(process.env.SENTINEL_PORT)
     }],
     name: 'redis-master',
-    password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
-    sentinelPassword: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
+    password: process.env.REDIS_PASSWORD,
+    sentinelPassword: process.env.REDIS_PASSWORD,
     db: 0
 })
 

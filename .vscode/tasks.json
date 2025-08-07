@@ -2,9 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Build infra dependencies",
+      "type": "shell",
+      "command": "REDIS_HOST=localhost REDIS_MASTER_HOST=redis REDIS_MASTER_PORT=6379 REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c SENTINEL_HOST=localhost SENTINEL_PORT=26379 docker compose build redis redis-sentinel",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
       "label": "Start infra dependencies",
       "type": "shell",
-      "command": "REDIS_HOST=localhost REDIS_MASTER_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c SENTINEL_HOST=localhost SENTINEL_PORT=26379 STATUS_API_URL=ws://localhost:3001 docker compose up redis redis-replica redis-sentinel redis-sentinel-replica -d",
+      "dependsOn": "Build infra dependencies",
+      "command": "docker compose up redis redis-sentinel -d --remove-orphans",
       "problemMatcher": [],
       "group": "build"
     },

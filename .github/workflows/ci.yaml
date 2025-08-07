@@ -66,14 +66,13 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Start Redis, Redis Sentinel
-        run: |
-          REDIS_MASTER_HOST=localhost REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c docker compose up redis redis-sentinel -d
+      - name: Start Redis
+        run: docker compose up redis -d
 
-      - name: Wait for Redis Sentinel to start
+      - name: Wait for Redis to start
         run: |
-          echo "Waiting for Redis Sentinel on port 26379..."
-          until nc -z localhost 26379; do sleep 1; done
+          echo "Waiting for Redis on port 6379..."
+          until nc -z localhost 6379; do sleep 1; done
 
       - name: Install dependencies
         working-directory: project-overengineer-fe
@@ -110,14 +109,13 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Start Redis, Redis Sentinel
-        run: |
-          REDIS_MASTER_HOST=localhost REDIS_MASTER_PASSWORD=b4yscx92yksfyv9c docker compose up redis redis-sentinel -d
+      - name: Start Redis
+        run: docker compose up redis -d
 
-      - name: Wait for Redis Sentinel to start
+      - name: Wait for Redis to start
         run: |
-          echo "Waiting for Redis Sentinel on port 26379..."
-          until nc -z localhost 26379; do sleep 1; done
+          echo "Waiting for Redis on port 6379..."
+          until nc -z localhost 6379; do sleep 1; done
 
       - name: Install dependencies
         working-directory: status-api

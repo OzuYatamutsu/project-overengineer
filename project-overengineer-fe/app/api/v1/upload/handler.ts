@@ -2,9 +2,8 @@ import sharp from 'sharp'
 import { fileTypeFromBuffer } from 'file-type'
 import { MAX_FILE_SIZE_MB } from '@/lib/constants'
 import { Job } from '@/lib/job'
-import { Redis } from 'ioredis'
 import { JobStatus } from '@/lib/job-status'
-import { enforceConfig, enforceRedisReachable } from '@/lib/verify'
+import { getRedis } from '@/lib/redis'
 
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
@@ -32,23 +31,6 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
 }
 
 export async function saveJob(job: Job): Promise<void> {
-    enforceConfig("SENTINEL_HOST", true)
-    enforceConfig("SENTINEL_PORT", true)
-    enforceConfig("REDIS_PASSWORD", true)
-    enforceRedisReachable()
-
-    // Connect to Redis
-    const redis = new Redis({
-        sentinels: [{
-            host: process.env.SENTINEL_HOST,
-            port: Number(process.env.SENTINEL_PORT)
-        }],
-        name: 'redis-master',
-        password: process.env.REDIS_PASSWORD,
-        sentinelPassword: process.env.REDIS_PASSWORD,
-        db: 0
-    })
-
     job.status = JobStatus.WAITING
-    await redis.hset(`job:${job.id}`, job.serialize())
+    await getRedis().hset(`job:${job.id}`, job.serialize())
 }

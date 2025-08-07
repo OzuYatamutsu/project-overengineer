@@ -30,7 +30,7 @@ wss.on('connection', (ws, req) => {
 
         console.log(`${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
 
-        setTimeout(async () => {
+        setInterval(async () => {
             const jobState = await getJobState(jobId)
             ws.send(jobState.serialize())
             if (jobState.status == JobStatus.DONE) {
@@ -44,6 +44,8 @@ wss.on('connection', (ws, req) => {
     })
 })
 
-server.listen(port, async () => {
-  console.log(`Status WS API listening on port ${port}`);
-});
+if (!server.listening) {
+    server.listen(port, async () => {
+        console.log(`Status WS API listening on port ${port}`);
+    });
+}

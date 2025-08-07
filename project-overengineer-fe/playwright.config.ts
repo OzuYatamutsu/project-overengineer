@@ -6,8 +6,8 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: false,
     env: {
-      SENTINEL_HOST: 'localhost',
-      SENTINEL_PORT: '26379',
+      REDIS_HOST: 'localhost',
+      REDIS_PORT: '6379',
       REDIS_PASSWORD: 'b4yscx92yksfyv9c'
     },
     stdout: 'pipe',

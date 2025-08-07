@@ -5,8 +5,8 @@ export default defineConfig({
     command: 'node dist/server.js',
     reuseExistingServer: false,
     env: {
-      SENTINEL_HOST: 'localhost',
-      SENTINEL_PORT: '26379',
+      REDIS_HOST: 'localhost',
+      REDIS_PORT: '6379',
       REDIS_PASSWORD: 'b4yscx92yksfyv9c',
       STATUS_API_PORT: '3001'
     },

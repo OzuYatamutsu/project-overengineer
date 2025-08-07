@@ -4,8 +4,6 @@ import { enforceConfig } from "./verify";
 let redis: Redis
 
 export function getRedis(): Redis {
-    enforceConfig("SENTINEL_HOST")
-    enforceConfig("SENTINEL_PORT")
     enforceConfig("REDIS_HOST")
     enforceConfig("REDIS_PORT")
     enforceConfig("REDIS_PASSWORD")
@@ -14,10 +12,10 @@ export function getRedis(): Redis {
         console.log("Opening new Redis connection...")
 
         redis = new Redis({
-            sentinels: !process.env.SKIP_SENTINEL ? [{
+            sentinels: !!(process.env.SENTINEL_HOST) ? [{
                 host: process.env.SENTINEL_HOST,
                 port: Number(process.env.SENTINEL_PORT)
-            }] : [],
+            }] : undefined,
             host: process.env.REDIS_HOST,
             port: Number(process.env.REDIS_PORT),
             name: 'redis-master',

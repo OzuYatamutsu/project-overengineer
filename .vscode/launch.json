@@ -51,7 +51,9 @@
       "args": ["test", "--debug"],
       "cwd": "${workspaceFolder}/project-overengineer-fe",
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
     },
     {
       "name": "Playwright: Status API",

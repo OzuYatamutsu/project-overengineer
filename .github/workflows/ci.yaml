@@ -6,6 +6,8 @@ on:
 jobs:
   lint-fe-and-transformer:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,6 +31,8 @@ jobs:
 
   lint-status-api:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -52,6 +56,8 @@ jobs:
   
   unit-test-fe-and-transformer:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-noble
     needs: lint-fe-and-transformer
     steps:
       - name: Checkout code
@@ -95,6 +101,8 @@ jobs:
 
   unit-test-status-api:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-noble
     needs: lint-status-api
     steps:
       - name: Checkout code

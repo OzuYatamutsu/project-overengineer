@@ -34,12 +34,6 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
       - name: Install dependencies
         working-directory: status-api
         run: pnpm install
@@ -59,12 +53,9 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
+      
+      - name: Install docker
+        run: sudo apt install docker -y
 
       - name: Start Redis
         run: docker compose up redis -d
@@ -104,12 +95,9 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
+      
+      - name: Install docker
+        run: sudo apt install docker -y
 
       - name: Start Redis
         run: docker compose up redis -d

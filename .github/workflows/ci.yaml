@@ -58,7 +58,7 @@ jobs:
         run: curl -fsSL https://get.docker.com | sh
 
       - name: Start Redis
-        run: docker compose up -d redis
+        run: REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose up -d redis
 
       - name: Install dependencies
         working-directory: project-overengineer-fe
@@ -91,7 +91,7 @@ jobs:
         run: curl -fsSL https://get.docker.com | sh
 
       - name: Start Redis
-        run: docker compose up -d redis
+        run: REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose up -d redis
 
       - name: Install dependencies
         working-directory: status-api

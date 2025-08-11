@@ -9,7 +9,14 @@ export function getRedis(): Redis {
     enforceConfig("REDIS_PASSWORD")
 
     if (!redis) {
-        console.log(`Opening new Redis connection (primary: ${process.env.REDIS_HOST}:${process.env.REDIS_PORT})`)
+        console.log(
+            `Opening new Redis connection (primary=${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, `
+            + `Sentinel(s): `
+            + !!(process.env.SENTINEL_HOST) 
+                ? process.env.SENTINEL_HOST + ":" + process.env.SENTINEL_PORT
+                : "no"
+            + ")"
+        )
 
         redis = new Redis({
             sentinels: !!(process.env.SENTINEL_HOST) ? [{

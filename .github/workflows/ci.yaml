@@ -46,6 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
     needs: lint-fe-and-transformer
     steps:
       - name: Checkout code
@@ -56,9 +61,6 @@ jobs:
       
       - name: Install docker
         run: curl -fsSL https://get.docker.com | sh
-
-      - name: Start Redis
-        run: REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose up -d redis
 
       - name: Install dependencies
         working-directory: project-overengineer-fe
@@ -79,6 +81,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
     needs: lint-status-api
     steps:
       - name: Checkout code
@@ -89,9 +96,6 @@ jobs:
       
       - name: Install docker
         run: curl -fsSL https://get.docker.com | sh
-
-      - name: Start Redis
-        run: REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose up -d redis
 
       - name: Install dependencies
         working-directory: status-api

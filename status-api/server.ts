@@ -3,9 +3,10 @@ import { WebSocketServer } from "ws";
 import http from 'http';
 import { JobStatus, JobUpdate } from './lib/job-status';
 import { getRedis } from './lib/redis';
+import { enforceConfig } from './lib/verify';
 
 const app = express();
-const port = Number(process.env.STATUS_API_PORT)
+const port = Number(process.env.STATUS_API_PORT) ?? 3001
 const POLLING_PERIOD_MSECS = 2000
 
 app.use(express.json());

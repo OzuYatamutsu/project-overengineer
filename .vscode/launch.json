@@ -10,7 +10,10 @@
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
       "env": {
-        "NODE_OPTIONS": "--inspect"
+        "NODE_OPTIONS": "--inspect",
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -24,7 +27,10 @@
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
       "env": {
-        "NODE_OPTIONS": "--inspect"
+        "NODE_OPTIONS": "--inspect",
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -38,7 +44,11 @@
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
       "env": {
-        "NODE_OPTIONS": "--inspect"
+        "NODE_OPTIONS": "--inspect",
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"

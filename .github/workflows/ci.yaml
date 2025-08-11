@@ -60,11 +60,6 @@ jobs:
       - name: Start Redis
         run: docker compose up -d redis
 
-      - name: Wait for Redis to start
-        run: |
-          echo "Waiting for Redis on port 6379..."
-          until nc -z localhost 6379; do sleep 1; done
-
       - name: Install dependencies
         working-directory: project-overengineer-fe
         run: pnpm install
@@ -101,11 +96,6 @@ jobs:
 
       - name: Start Redis
         run: docker compose up -d redis
-
-      - name: Wait for Redis to start
-        run: |
-          echo "Waiting for Redis on port 6379..."
-          until nc -z localhost 6379; do sleep 1; done
 
       - name: Install dependencies
         working-directory: status-api

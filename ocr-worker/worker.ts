@@ -2,17 +2,8 @@ import { Redis } from 'ioredis'
 import { Job } from './lib/job'
 import { JobStatus } from './lib/job-status'
 import { WorkerState } from './lib/worker-state'
+import Tesseract from 'tesseract.js';
 
-const DUMMY_RESULT = `
-DUMMY STATIC RESULT
-
-2xLatte Macchiato 9.00
-1xGloki 5.00
-1xSchweinschnitzel 22.00
-1xChässpätzli 18.50
-
-Total 54.50
-`;
 const POLLING_PERIOD_MSECS = 1000
 
 const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
@@ -40,7 +31,8 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 }
 
 async function processJob(job: Job): Promise<Job> {
-    job.result = DUMMY_RESULT  // TODO
+    const jobResult = await Tesseract.recognize(job.imageDataBase64)
+    job.result = jobResult.data.text
     return job
 }
 

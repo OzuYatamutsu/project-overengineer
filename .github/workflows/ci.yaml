@@ -58,7 +58,7 @@ jobs:
         run: apt update && apt install docker.io -y
 
       - name: Start Redis
-        run: docker compose up redis -d
+        run: docker-compose up -d redis
 
       - name: Wait for Redis to start
         run: |
@@ -100,7 +100,7 @@ jobs:
         run: apt update && apt install docker.io -y
 
       - name: Start Redis
-        run: docker compose up redis -d
+        run: docker-compose up -d redis
 
       - name: Wait for Redis to start
         run: |

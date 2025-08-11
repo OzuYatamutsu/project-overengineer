@@ -58,9 +58,6 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
-      
-      - name: Install docker
-        run: curl -fsSL https://get.docker.com | sh
 
       - name: Install dependencies
         working-directory: project-overengineer-fe
@@ -93,9 +90,6 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
-      
-      - name: Install docker
-        run: curl -fsSL https://get.docker.com | sh
 
       - name: Install dependencies
         working-directory: status-api

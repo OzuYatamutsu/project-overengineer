@@ -55,7 +55,7 @@ jobs:
         run: npm install -g pnpm
       
       - name: Install docker
-        run: apt update && apt install -y docker.io docker-compose-plugin
+        run: curl -fsSL https://get.docker.com | sh
 
       - name: Start Redis
         run: docker compose up -d redis
@@ -97,7 +97,7 @@ jobs:
         run: npm install -g pnpm
       
       - name: Install docker
-        run: apt update && apt install -y docker.io docker-compose-plugin
+        run: curl -fsSL https://get.docker.com | sh
 
       - name: Start Redis
         run: docker compose up -d redis

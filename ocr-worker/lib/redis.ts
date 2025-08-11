@@ -10,11 +10,12 @@ export function getRedis(): Redis {
 
     if (!redis) {
         console.log(
-            `Opening new Redis connection (primary=${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, `
-            + `Sentinel(s): `
-            + !!(process.env.SENTINEL_HOST) 
-                ? process.env.SENTINEL_HOST + ":" + process.env.SENTINEL_PORT
+            `Opening new Redis connection (primary=${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, sentinel(s): `
+            + (
+                !!process.env.SENTINEL_HOST 
+                ? process.env.SENTINEL_HOST + ":" + process.env.SENTINEL_PORT 
                 : "no"
+                )
             + ")"
         )
 

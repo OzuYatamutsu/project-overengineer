@@ -68,7 +68,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: project-overengineer-fe
-        run: npx playwright test
+        run: REDIS_HOST=redis npx playwright test
       
       - name: Upload test report
         if: failure()
@@ -107,7 +107,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: status-api
-        run: npx playwright test
+        run: REDIS_HOST=redis npx playwright test
       
       - name: Upload test report
         if: failure()

@@ -55,7 +55,7 @@ jobs:
         run: npm install -g pnpm
       
       - name: Install docker
-        run: sudo apt install docker -y
+        run: apt install docker -y
 
       - name: Start Redis
         run: docker compose up redis -d

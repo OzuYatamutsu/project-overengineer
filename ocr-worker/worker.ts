@@ -1,7 +1,7 @@
-import { Redis } from 'ioredis'
 import { Job } from './lib/job'
 import { JobStatus } from './lib/job-status'
 import { WorkerState } from './lib/worker-state'
+import { getRedis } from './lib/redis';
 import Tesseract from 'tesseract.js';
 
 const POLLING_PERIOD_MSECS = 1000
@@ -11,22 +11,11 @@ const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
 
 console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
 
-const redis = new Redis({
-    sentinels: [{
-        host: SENTINEL_HOST,
-        port: SENTINEL_PORT
-    }],
-    name: 'redis-master',
-    password: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
-    sentinelPassword: process.env.REDIS_PASSWORD ?? 'b4yscx92yksfyv9c',
-    db: 0
-})
-
 let workerState: WorkerState = WorkerState.IDLE
 
 async function pullJobDetails(jobId: string): Promise<Job> {
     return Job.fromRedisObject(
-        await redis.hgetall(`job:${jobId}`)
+        await getRedis().hgetall(`job:${jobId}`)
     )
 }
 
@@ -37,7 +26,7 @@ async function processJob(job: Job): Promise<Job> {
 }
 
 async function commit(job: Job): Promise<void> {
-    await redis.hset(`job:${job.id}`, job.serialize())
+    await getRedis().hset(`job:${job.id}`, job.serialize())
 }
 
 // TODO initial implementation is via polling, but switch to event-based
@@ -48,12 +37,12 @@ setInterval(async () => {
 
     // TODO horrible. use event-based processing instead
     // TODO this is just to test the OCR functionality works
-    let keys = await redis.keys(`job:*`)
+    let keys = await getRedis().keys(`job:*`)
     if (keys == null) {
         return
     }
     for (const key of keys) {
-        const status = await redis.hget(key, "status")
+        const status = await getRedis().hget(key, "status")
         if (status !== "WAITING") {
             continue
         }

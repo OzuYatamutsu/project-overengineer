@@ -55,10 +55,10 @@ jobs:
         run: npm install -g pnpm
       
       - name: Install docker
-        run: apt update && apt install docker.io -y
+        run: apt update && apt install -y docker.io docker-compose-plugin
 
       - name: Start Redis
-        run: docker-compose up -d redis
+        run: docker compose up -d redis
 
       - name: Wait for Redis to start
         run: |
@@ -97,10 +97,10 @@ jobs:
         run: npm install -g pnpm
       
       - name: Install docker
-        run: apt update && apt install docker.io -y
+        run: apt update && apt install -y docker.io docker-compose-plugin
 
       - name: Start Redis
-        run: docker-compose up -d redis
+        run: docker compose up -d redis
 
       - name: Wait for Redis to start
         run: |

@@ -63,10 +63,6 @@ jobs:
       - name: Install dependencies
         working-directory: project-overengineer-fe
         run: pnpm install
-      
-      - name: Install Playwright Browsers
-        working-directory: project-overengineer-fe
-        run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
         working-directory: project-overengineer-fe
@@ -104,10 +100,6 @@ jobs:
       - name: Build
         working-directory: status-api
         run: pnpm build
-
-      - name: Install Playwright Browsers
-        working-directory: status-api
-        run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
         working-directory: status-api

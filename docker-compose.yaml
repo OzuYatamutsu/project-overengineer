@@ -65,7 +65,7 @@ services:
       REDIS_REPLICA_PORT: ${REDIS_REPLICA_PORT}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
-      REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     deploy:
       replicas: 2
     depends_on:
@@ -81,7 +81,7 @@ services:
       SENTINEL_PORT: ${SENTINEL_PORT}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
-      REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - redis
 
@@ -93,7 +93,7 @@ services:
       SENTINEL_PORT: ${SENTINEL_PORT}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
-      REDIS_MASTER_PASSWORD: ${REDIS_MASTER_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     deploy:
       replicas: 2
     depends_on:

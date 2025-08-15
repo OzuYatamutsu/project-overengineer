@@ -1,5 +1,5 @@
 {
-  "name": "project-overengineer",
+  "name": "@project-overengineer/project-overengineer",
   "version": "1.0.0",
   "description": "An AI-powered service that converts receipt images into structured, itemized text."
 }

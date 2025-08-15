@@ -1,6 +1,6 @@
 {
-  "name": "ocr-core",
-  "version": "1.0.0",
+  "name": "@project-overengineer/ocr-core",
+  "version": "1.1.0",
   "description": "An OCR service worker that parses images into structured text",
   "main": "worker.ts",
   "scripts": {

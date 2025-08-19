@@ -5,7 +5,7 @@ let redis: Redis
 
 const REDIS_CONSUMER_GROUP_NAME = "jobs_group"
 
-export function getRedis(enforceConsumerGroup=true): Redis {
+export function getRedis(): Redis {
     enforceConfig("REDIS_HOST")
     enforceConfig("REDIS_PORT")
     enforceConfig("REDIS_PASSWORD")

@@ -3,7 +3,9 @@ import { enforceConfig } from "./verify";
 
 let redis: Redis
 
-export function getRedis(): Redis {
+const REDIS_CONSUMER_GROUP_NAME = "jobs_group"
+
+export function getRedis(enforceConsumerGroup=true): Redis {
     enforceConfig("REDIS_HOST")
     enforceConfig("REDIS_PORT")
     enforceConfig("REDIS_PASSWORD")
@@ -33,4 +35,9 @@ export function getRedis(): Redis {
     }
 
     return redis
+}
+
+export async function createConsumerGroupIfNotExists(key: string): Promise<void> {
+    console.log("Creating new consumer group (if not exists)...")
+    await getRedis().xgroup("CREATE", key, REDIS_CONSUMER_GROUP_NAME, 0, "MKSTREAM")
 }

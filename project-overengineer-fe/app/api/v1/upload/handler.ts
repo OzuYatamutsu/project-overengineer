@@ -3,7 +3,7 @@ import { fileTypeFromBuffer } from 'file-type'
 import { MAX_FILE_SIZE_MB } from '@/lib/constants'
 import { Job } from '@/lib/job'
 import { JobStatus } from '@/lib/job-status'
-import { getRedis } from '@/lib/redis'
+import { getRedis, createConsumerGroupIfNotExists } from '@/lib/redis'
 
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
@@ -32,5 +32,7 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
 
 export async function saveJob(job: Job): Promise<void> {
     job.status = JobStatus.WAITING
+
+    await createConsumerGroupIfNotExists(`job`)
     await getRedis().hset(`job:${job.id}`, job.serialize())
 }

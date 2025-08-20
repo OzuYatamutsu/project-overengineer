@@ -26,7 +26,10 @@ async function processJob(job: Job): Promise<Job> {
 }
 
 async function commit(job: Job): Promise<void> {
-    await getRedis().hset(`job:${job.id}`, job.serialize())
+    await getRedis().xadd(
+        `job:${job.id}`,
+        `*`,
+        ...Object.entries(job.serialize()).flat())
 }
 
 // TODO initial implementation is via polling, but switch to event-based

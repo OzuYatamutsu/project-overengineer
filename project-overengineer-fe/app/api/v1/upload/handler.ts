@@ -34,5 +34,8 @@ export async function saveJob(job: Job): Promise<void> {
     job.status = JobStatus.WAITING
 
     await createConsumerGroupIfNotExists(`job`)
-    await getRedis().hset(`job:${job.id}`, job.serialize())
+    await getRedis().xadd(
+        `job:${job.id}`,
+        `*`,
+        ...Object.entries(job.serialize()).flat())
 }

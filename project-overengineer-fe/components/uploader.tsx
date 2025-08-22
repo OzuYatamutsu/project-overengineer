@@ -4,8 +4,8 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
-import { JobStatus, JobUpdate } from '@/lib/job-status';
-import { MAX_FILE_SIZE_MB } from '@/lib/constants'
+import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib/job-status';
+import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void

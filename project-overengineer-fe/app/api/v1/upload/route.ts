@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Job } from '@/lib/job'
+import { Job } from '@project-overengineer/shared-lib/job'
 import { standarizeImage, validateImage, saveJob } from './handler'
 
 export async function POST(request: Request): Promise<NextResponse> {

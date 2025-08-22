@@ -84,7 +84,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: project-overengineer-fe
-        run: REDIS_HOST=redis tsx --no-cache playwright test
+        run: REDIS_HOST=redis pnpm exec tsx --no-cache node_modules/.bin/playwright test
       
       - name: Upload test report
         if: failure()
@@ -120,7 +120,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: status-api
-        run: REDIS_HOST=redis npx --no-cache playwright test
+        run: REDIS_HOST=redis pnpm exec tsx --no-cache node_modules/.bin/playwright test
       
       - name: Upload test report
         if: failure()

@@ -41,7 +41,26 @@ jobs:
       - name: Lint
         working-directory: status-api
         run: pnpm run lint
-  
+
+  lint-ocr-core:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-noble
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: ocr-core
+        run: pnpm install
+
+      - name: Lint
+        working-directory: ocr-core
+        run: pnpm run lint
+
   lint-shared-lib:
     runs-on: ubuntu-latest
     container:

@@ -54,11 +54,11 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        working-directory: ocr-core
+        working-directory: ocr-worker
         run: pnpm install
 
       - name: Lint
-        working-directory: ocr-core
+        working-directory: ocr-worker
         run: pnpm run lint
 
   lint-shared-lib:

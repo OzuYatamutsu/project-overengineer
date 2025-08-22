@@ -2,6 +2,9 @@
   "name": "@project-overengineer/shared-lib",
   "version": "1.0.0",
   "description": "Shared libraries between project-engineer components.",
+  "scripts": {
+    "lint": "eslint *.ts"
+  },
   "dependencies": {
     "express": "^5.1.0",
     "uuid": "^11.1.0",

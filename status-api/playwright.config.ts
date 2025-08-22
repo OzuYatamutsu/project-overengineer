@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   webServer: {
-    command: 'node dist/server.js',
+    command: 'TS_NODE_TRANSPILE_ONLY=1 ts-node src/server.ts',
     reuseExistingServer: false,
     env: {
       ...process.env,

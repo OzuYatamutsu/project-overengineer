@@ -13,25 +13,7 @@ importers:
       '@project-overengineer/shared-lib':
         specifier: workspace:*
         version: link:../shared-lib
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
-      ws:
-        specifier: ^8.18.3
-        version: 8.18.3
     devDependencies:
-      '@playwright/test':
-        specifier: ^1.54.1
-        version: 1.55.0
-      '@types/express':
-        specifier: ^5.0.3
-        version: 5.0.3
-      '@types/ws':
-        specifier: ^8.18.1
-        version: 8.18.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.37.0
         version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)
@@ -41,9 +23,6 @@ importers:
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
-      ioredis:
-        specifier: ^5.6.1
-        version: 5.7.0
       tesseract.js:
         specifier: ^6.0.1
         version: 6.0.1

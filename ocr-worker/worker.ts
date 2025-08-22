@@ -35,7 +35,7 @@ setInterval(async () => {
         return
     }
 
-    let keys = await getRedis().keys(`job:*`)
+    const keys = await getRedis().keys(`job:*`)
     if (keys == null) {
         return
     }

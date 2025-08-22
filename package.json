@@ -5,6 +5,7 @@
   "workspaces": [
     "ocr-worker",
     "project-overengineer-fe",
-    "status-api"
+    "status-api",
+    "shared-lib"
   ]
 }

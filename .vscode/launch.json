@@ -2,11 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "OCR Core: debug server",
+      "name": "Start OCR Core",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/ocr-worker",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
       "env": {
@@ -19,11 +19,11 @@
       "postDebugTask": "Stop infra dependencies"
     },
     {
-      "name": "Status API: debug server",
+      "name": "Start Status API",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/status-api",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
       "env": {
@@ -37,11 +37,11 @@
       "postDebugTask": "Stop infra dependencies"
     },
     {
-      "name": "Next.js: debug server",
+      "name": "Start FE + Transformer API",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/project-overengineer-fe",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "console": "integratedTerminal",
       "env": {
@@ -49,56 +49,39 @@
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "b4yscx92yksfyv9c",
-
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
     },
     {
-      "name": "Playwright: Transformer API",
+      "name": "Unit tests: FE + Transformer API",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/project-overengineer-fe/node_modules/@playwright/test/cli.js",
-      "args": ["test", "--debug"],
       "cwd": "${workspaceFolder}/project-overengineer-fe",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test", "--debug"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
     },
     {
-      "name": "Playwright: Status API",
+      "name": "Unit tests: Status API",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/status-api/node_modules/@playwright/test/cli.js",
-      "args": ["test", "--debug"],
       "cwd": "${workspaceFolder}/status-api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test", "--debug"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
-    },
-    {
-      "name": "Next.js: Debug in Firefox",
-      "type": "firefox",
-      "request": "launch",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/project-overengineer-fe",
-      "reAttach": true,
-      "pathMappings": [
-        {
-          "url": "webpack:///./",
-          "path": "${workspaceFolder}"
-        }
-      ]
     }
   ],
   "compounds": [{
     "name": "Start all",
     "configurations": [
-      "Status API: debug server",
-      "Next.js: debug server",
-      "OCR Core: debug server"
+      "Start OCR Core",
+      "Start FE + Transformer API",
+      "Start Status API"
     ],
     "stopAll": true
   }]

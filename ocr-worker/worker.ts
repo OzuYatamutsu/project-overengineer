@@ -1,7 +1,7 @@
-import { Job } from './lib/job'
-import { JobStatus } from './lib/job-status'
-import { WorkerState } from './lib/worker-state'
-import { getRedis } from './lib/redis';
+import { Job } from '@project-overengineer/shared-lib/job'
+import { JobStatus } from '@project-overengineer/shared-lib/job-status'
+import { WorkerState } from '@project-overengineer/shared-lib/worker-state'
+import { getRedis } from '@project-overengineer/shared-lib/redis';
 import Tesseract from 'tesseract.js';
 
 const POLLING_PERIOD_MSECS = 1000

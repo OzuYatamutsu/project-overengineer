@@ -1,11 +1,5 @@
 {
   "name": "@project-overengineer/project-overengineer",
   "version": "1.1.0",
-  "description": "An AI-powered service that converts receipt images into structured, itemized text.",
-  "workspaces": [
-    "ocr-worker",
-    "project-overengineer-fe",
-    "status-api",
-    "shared-lib"
-  ]
+  "description": "An AI-powered service that converts receipt images into structured, itemized text."
 }

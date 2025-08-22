@@ -1,0 +1,5 @@
+packages:
+  - "ocr-worker"
+  - "project-overengineer-fe"
+  - "status-api"
+  - "shared-lib"

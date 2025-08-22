@@ -1,4 +1,4 @@
-import { JobStatus, JobUpdate } from '../lib/job-status'
+import { JobUpdate } from '@project-overengineer/shared-lib/job-status'
 import { test, expect } from '@playwright/test'
 import WebSocket from 'ws'
 

@@ -1,8 +1,8 @@
 import express from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
-import { JobStatus, JobUpdate } from './lib/job-status';
-import { getRedis } from './lib/redis';
+import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib/job-status';
+import { getRedis } from '@project-overengineer/shared-lib/redis';
 
 const app = express();
 const port = Number(process.env.STATUS_API_PORT) ?? 3001

@@ -139,6 +139,9 @@ importers:
 
   status-api:
     dependencies:
+      '@project-overengineer/shared-lib':
+        specifier: workspace:*
+        version: link:../shared-lib
       express:
         specifier: ^5.1.0
         version: 5.1.0

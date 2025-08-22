@@ -78,9 +78,6 @@ importers:
       file-type:
         specifier: ^21.0.0
         version: 21.0.0
-      ioredis:
-        specifier: ^5.6.1
-        version: 5.7.0
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -96,9 +93,6 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.9.2
-      uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
 
   shared-lib:
     dependencies:

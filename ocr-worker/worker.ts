@@ -29,18 +29,18 @@ async function commit(job: Job): Promise<void> {
     await getRedis().hset(`job:${job.id}`, job.serialize())
 }
 
-// TODO initial implementation is via polling, but switch to event-based
+// poll redis for new jobs
 setInterval(async () => {
     if (workerState == WorkerState.PROCESSING) {
         return
     }
 
-    // TODO horrible. use event-based processing instead
-    // TODO this is just to test the OCR functionality works
     let keys = await getRedis().keys(`job:*`)
     if (keys == null) {
         return
     }
+
+    // O(n), but cheap because old jobs are cleaned up
     for (const key of keys) {
         const status = await getRedis().hget(key, "status")
         if (status !== "WAITING") {

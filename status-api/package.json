@@ -1,6 +1,6 @@
 {
   "name": "@project-overengineer/status-api",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A WebSocket job status API server for project-overengineer",
   "main": "server.ts",
   "scripts": {
@@ -13,7 +13,6 @@
   "dependencies": {
     "@project-overengineer/shared-lib": "workspace:*",
     "express": "^5.1.0",
-    "uuid": "^11.1.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {
@@ -23,7 +22,6 @@
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^8.57.1",
-    "ioredis": "^5.6.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"

@@ -2,4 +2,5 @@ packages:
   - "ocr-worker"
   - "project-overengineer-fe"
   - "status-api"
+  - "janitor"
   - "shared-lib"

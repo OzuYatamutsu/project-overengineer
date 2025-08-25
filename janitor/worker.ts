@@ -4,12 +4,6 @@ import { getRedis } from '@project-overengineer/shared-lib/redis';
 const POLLING_PERIOD_MSECS = 300000
 const JOB_TTL_SECS = 3600
 
-async function pullJobDetails(jobId: string): Promise<Job> {
-    return Job.fromRedisObject(
-        await getRedis().hgetall(`job:${jobId}`)
-    )
-}
-
 // poll redis for new jobs
 setInterval(async () => {
     console.log("janitor: starting cleanup job")

@@ -8,6 +8,28 @@ importers:
 
   .: {}
 
+  janitor:
+    dependencies:
+      '@project-overengineer/shared-lib':
+        specifier: workspace:*
+        version: link:../shared-lib
+    devDependencies:
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.37.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.37.0
+        version: 8.40.0(eslint@8.57.1)(typescript@5.9.2)
+      eslint:
+        specifier: ^8.57.1
+        version: 8.57.1
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@22.17.2)(typescript@5.9.2)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.2
+
   ocr-worker:
     dependencies:
       '@project-overengineer/shared-lib':

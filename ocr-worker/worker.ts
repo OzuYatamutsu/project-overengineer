@@ -6,11 +6,6 @@ import Tesseract from 'tesseract.js';
 
 const POLLING_PERIOD_MSECS = 1000
 
-const SENTINEL_HOST = process.env.SENTINEL_HOST?.trim() || 'redis-sentinel'
-const SENTINEL_PORT = Number(process.env.SENTINEL_PORT?.trim() || '26379')
-
-console.log(`Connecting to sentinel: ${SENTINEL_HOST}:${SENTINEL_PORT}`)
-
 let workerState: WorkerState = WorkerState.IDLE
 
 async function pullJobDetails(jobId: string): Promise<Job> {

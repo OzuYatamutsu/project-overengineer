@@ -1,4 +1,3 @@
-import { Job } from '@project-overengineer/shared-lib/job'
 import { getRedis } from '@project-overengineer/shared-lib/redis';
 
 const POLLING_PERIOD_MSECS = 300000

@@ -54,6 +54,24 @@
       "postDebugTask": "Stop infra dependencies"
     },
     {
+      "name": "Start Janitor",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/janitor",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_OPTIONS": "--inspect",
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "STATUS_API_PORT": "3001"
+      },
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
+    },
+    {
       "name": "Unit tests: FE + Transformer API",
       "type": "node",
       "request": "launch",
@@ -81,7 +99,8 @@
     "configurations": [
       "Start OCR Core",
       "Start FE + Transformer API",
-      "Start Status API"
+      "Start Status API",
+      "Start Janitor"
     ],
     "stopAll": true
   }]

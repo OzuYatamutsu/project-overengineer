@@ -176,7 +176,7 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
-    needs: lint-status-api
+    needs: lint-janitor
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

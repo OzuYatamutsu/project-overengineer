@@ -1,9 +1,9 @@
 import { getRedis } from '@project-overengineer/shared-lib/redis';
 
 const POLLING_PERIOD_MSECS = 300000
-const JOB_TTL_SECS = 3600
+export const JOB_TTL_SECS = 3600
 
-function jobIsStale(jobKey: string, createUTime: number): boolean {    
+export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
         console.log(`janitor: Job ${jobKey} has an invalid create timestamp, discarding`)
         return true

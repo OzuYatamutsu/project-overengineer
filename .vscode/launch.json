@@ -92,6 +92,17 @@
       "console": "integratedTerminal",
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
+    },
+    {
+      "name": "Unit tests: Janitor service",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/janitor",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test", "--debug"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
     }
   ],
   "compounds": [{

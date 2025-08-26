@@ -3,17 +3,13 @@ import { getRedis } from '@project-overengineer/shared-lib/redis';
 const POLLING_PERIOD_MSECS = 300000
 const JOB_TTL_SECS = 3600
 
-async function jobIsStale(jobKey: string): Promise<boolean> {
-    const createUtime = Number(
-        await getRedis().hget(jobKey, "createUtime")
-    )
-    
-    if (Number.isNaN(createUtime)) {
+function jobIsStale(jobKey: string, createUTime: number): boolean {    
+    if (Number.isNaN(createUTime)) {
         console.log(`janitor: Job ${jobKey} has an invalid create timestamp, discarding`)
         return true
     }
 
-    if ((new Date().getTime() - JOB_TTL_SECS) > createUtime) {
+    if ((new Date().getTime() - JOB_TTL_SECS) > createUTime) {
         console.log(`janitor: Job ${jobKey} is completed or stale, discarding`)
         return true
     }
@@ -27,7 +23,8 @@ setInterval(async () => {
     const keys = await getRedis().keys(`job:*`)
 
     for (const key of keys) {
-        if (await jobIsStale(key)) {
+        const createUtime = Number(await getRedis().hget(key, "createUtime"))
+        if (jobIsStale(key, createUtime)) {
             getRedis().del(key)
         }
     }

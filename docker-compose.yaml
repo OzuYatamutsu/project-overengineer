@@ -47,6 +47,19 @@ services:
     depends_on:
       - redis
 
+  janitor:
+    build:
+      context: ./janitor
+      dockerfile: Dockerfile
+    environment:
+      SENTINEL_HOST: ${SENTINEL_HOST}
+      SENTINEL_PORT: ${SENTINEL_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on:
+      - redis
+
   redis:
     build:
       context: ./redis

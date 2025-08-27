@@ -72,6 +72,17 @@
       "postDebugTask": "Stop infra dependencies"
     },
     {
+      "name": "Unit tests: Shared-lib",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/shared-lib",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test", "--debug"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Start infra dependencies",
+      "postDebugTask": "Stop infra dependencies"
+    },
+    {
       "name": "Unit tests: FE + Transformer API",
       "type": "node",
       "request": "launch",

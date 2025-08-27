@@ -4,6 +4,7 @@
   "description": "Shared libraries between project-engineer components.",
   "scripts": {
     "lint": "eslint *.ts",
+    "build": "tsc",
     "test": "TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {

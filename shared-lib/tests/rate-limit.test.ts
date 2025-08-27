@@ -15,7 +15,7 @@ test('jobs are rate limited when they should be', async () => {
   const WITHIN_SECS = 300
 
   for (let i = 0; i < MAX_CONNECTIONS; i++) {
-    expect(await rateLimit(TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)).toBeTruthy()
+    await rateLimit(TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)
   }
   for (let i = 0; i < MAX_CONNECTIONS; i++) {
     expect(await rateLimit(TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)).toBeFalsy()

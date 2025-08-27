@@ -1,8 +1,24 @@
 import { NextResponse } from 'next/server'
 import { Job } from '@project-overengineer/shared-lib/job'
-import { standarizeImage, validateImage, saveJob } from './handler'
+import { rateLimit } from '@project-overengineer/shared-lib'
+import { standarizeImage, validateImage, saveJob, getClientIp } from './handler'
+
+// Max 1 request per sec
+const MAX_REQUESTS = 60
+const PER_SECS = 60
 
 export async function POST(request: Request): Promise<NextResponse> {
+  const ip = getClientIp(request)
+  if (!rateLimit(ip, MAX_REQUESTS, PER_SECS)) {
+    console.log(`rejecting request from ${ip}, rate limit exceeded`)
+    return NextResponse.json({
+      message: 'Rate limit exceeded',
+      jobId: "",
+    }, {
+      status: 429
+    })
+  }
+
   console.log(`Processing new request...`)
   const contentType = request.headers.get('content-type')
 

@@ -34,3 +34,29 @@ export async function saveJob(job: Job): Promise<void> {
     job.status = JobStatus.WAITING
     await getRedis().hset(`job:${job.id}`, job.serialize())
 }
+
+export function getClientIp(req: Request): string {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) {
+    return realIp;
+  }
+
+  const cfConnectingIp = req.headers.get("cf-connecting-ip");
+  if (cfConnectingIp) {
+    return cfConnectingIp;
+  }
+
+  // Fallback: Node.js runtime only (not Edge runtime)
+  const socketIp = (req as any).socket?.remoteAddress;
+  if (socketIp) {
+    return socketIp;
+  }
+
+  console.log("warning, unable to get client IP, returning unknown")
+  return "unknown";
+}

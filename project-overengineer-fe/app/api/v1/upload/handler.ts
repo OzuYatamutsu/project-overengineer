@@ -4,6 +4,7 @@ import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
 import { Job } from '@project-overengineer/shared-lib/job'
 import { JobStatus } from '@project-overengineer/shared-lib/job-status'
 import { getRedis } from '@project-overengineer/shared-lib/redis'
+import { IncomingMessage } from 'http'
 
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
@@ -36,26 +37,26 @@ export async function saveJob(job: Job): Promise<void> {
 }
 
 export function getClientIp(req: Request): string {
-  const forwardedFor = req.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    return forwardedFor.split(",")[0].trim();
-  }
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    if (forwardedFor) {
+        return forwardedFor.split(",")[0].trim()
+    }
 
-  const realIp = req.headers.get("x-real-ip");
-  if (realIp) {
-    return realIp;
-  }
+    const realIp = req.headers.get("x-real-ip");
+    if (realIp) {
+        return realIp
+    }
 
-  const cfConnectingIp = req.headers.get("cf-connecting-ip");
-  if (cfConnectingIp) {
-    return cfConnectingIp;
-  }
+    const cfConnectingIp = req.headers.get("cf-connecting-ip");
+    if (cfConnectingIp) {
+        return cfConnectingIp
+    }
 
-  // Fallback: Node.js runtime only (not Edge runtime)
-  const socketIp = (req as any).socket?.remoteAddress;
-  if (socketIp) {
-    return socketIp;
-  }
+    // Fallback: Node.js runtime only (not Edge runtime)
+    const socketIp = (req as unknown as IncomingMessage).socket?.remoteAddress;
+    if (socketIp) {
+        return socketIp
+    }
 
   console.log("warning, unable to get client IP, returning unknown")
   return "unknown";

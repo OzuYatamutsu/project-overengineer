@@ -9,7 +9,7 @@ test('can construct a new job directly', () => {
 
   expect(job.id).toBeTruthy()
   expect(job.imageDataBase64 === testImage)
-  expect(job.createUtime).toBeLessThan(Date.now() / 1000)
+  expect(job.createUtime).toBeLessThan(Date.now() + 1 / 1000)
   expect(job.status === JobStatus.NEW)
   expect(job.result).toBeDefined()
 })

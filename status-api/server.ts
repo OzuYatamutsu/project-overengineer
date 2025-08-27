@@ -1,12 +1,16 @@
 import express from 'express';
 import { WebSocketServer } from "ws";
 import http from 'http';
-import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib';
+import { JobStatus, JobUpdate, rateLimit } from '@project-overengineer/shared-lib';
 import { getRedis } from '@project-overengineer/shared-lib/redis';
 
 const app = express();
 const port = Number(process.env.STATUS_API_PORT) ?? 3001
 const POLLING_PERIOD_MSECS = 2000
+
+// Max 1 request per sec
+const MAX_REQUESTS = 60
+const PER_SECS = 60
 
 app.use(express.json());
 
@@ -22,6 +26,12 @@ async function getJobState(jobId: string): Promise<JobUpdate> {
 }
 
 wss.on('connection', (ws, req) => {
+    if (!rateLimit(req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
+        console.log(`rejecting request from ${req.socket.remoteAddress}, rate limit exceeded`)
+        ws.send('Rate limit exceeded')
+        ws.close()
+    }
+
     console.log(`${req.socket.remoteAddress}: New connection`)
 
     ws.on('message', (data) => {

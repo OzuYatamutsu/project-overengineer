@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Shared libraries between project-engineer components.",
   "scripts": {
-    "lint": "eslint *.ts"
+    "lint": "eslint *.ts",
+    "test": "TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {
     "express": "^5.1.0",
@@ -11,9 +12,10 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.1",
-    "typescript": "^5.8.3",
+    "@playwright/test": "^1.55.0",
     "@typescript-eslint/eslint-plugin": "^8.37.0",
-    "@typescript-eslint/parser": "^8.37.0"
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^8.57.1",
+    "typescript": "^5.8.3"
   }
 }

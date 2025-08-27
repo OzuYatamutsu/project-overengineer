@@ -1,6 +1,7 @@
 export * from "./constants"
 export * from "./job-status"
 export * from "./job"
+export * from "./rate-limit"
 export * from "./redis"
 export * from "./verify"
 export * from "./worker-state"

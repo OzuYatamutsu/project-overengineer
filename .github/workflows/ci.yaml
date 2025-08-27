@@ -230,7 +230,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: shared-lib
-        run: REDIS_HOST=redis pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 pnpm test
       
       - name: Upload test report
         if: failure()

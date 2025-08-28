@@ -5,7 +5,7 @@
 
 An AI-powered service that converts receipt images into structured, itemized text. 
 
-Built for scalability and deployed to both Kubernetes and Docker Swarm, this service includes comprehensive observability, telemetry, monitoring, and alerting infrastructure (standard as of 2025).
+Built for scalability and deployed to Kubernetes, this service includes comprehensive observability, telemetry, monitoring, and alerting infrastructure (standard as of 2025).
 
 ## Why?
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
@@ -38,19 +38,11 @@ Configuration is injected at runtime via environment variables, which can be ove
 graph LR
     Client["Client"]
 
-    subgraph Frontend Cluster
-        N1["nginx node 1"]
-        NX["..."]:::plainText
-        N2["nginx node N"]
+    subgraph Frontend
+        F1["Next.js (Frontend + Transformer API)"]
     end
 
-    Client --> N1
-
-    subgraph Transformer
-        T1["API worker 1"]
-        TX["..."]:::plainText
-        T2["API worker N"]
-    end
+    Client --> F1
 
     subgraph Redis
         R1["Redis node 1"]
@@ -61,8 +53,7 @@ graph LR
         RX <--> R2
     end
 
-    N1 --> T2
-    T2 --> R1
+    F1 --> R1
 
     subgraph Status API
         S1["API worker 1"]
@@ -85,15 +76,13 @@ graph LR
 classDef plainText fill:none,stroke:none;
 ```
 
-The service consists of 6 components:
+The service consists of 5 components:
 
 - **Client**: The Next.js frontend to the OCR service.
-- **Frontend Cluster**: The nginx cluster serving the client.
-- **Transformer**: An API which accepts raw receipt image data, transforms to a standard format, creates a job associated with the transformed image, and inserts the job into Redis. 
+- **Frontend**: A Next.js app that both serves the client and exposes the Transformer API.
 - **Redis**: A Redis cluster used to manage job data and state.
 - **Status API**: An API which returns the status of a job (within Redis) both live and on-demand.
 - **OCR Core**: A service which processes images within Redis and returns formatted text.
-
 The API documentation is [here](./API-Docs.md).
 
 ## Flow
@@ -101,19 +90,20 @@ The API documentation is [here](./API-Docs.md).
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Transformer
+    participant Frontend
     participant Redis
     participant Status API
     participant OCR Core
     participant Janitor
 
-    Client->>Transformer: Upload image via API
-    Transformer->>Redis: Insert job (status=WAITING)
-    Transformer->>Client: Return job ID and JWT (or error)
+    Client->>Frontend: Upload image via API
+    Frontend->>Redis: Insert job (status=WAITING)
+    Frontend->>Client: Return job ID and JWT (or error)
     Client->>Status API: Open WebSocket
     Status API->>Redis: Watch job status
     Note over Client, Status API: Stream job status updates via WebSocket
-    Redis->>OCR Core: Consume job
+    OCR Core->>Redis: Poll for new job
+    Redis->>OCR Core: Return job if available
     OCR Core->>Redis: Update job status (status=PROCESSING)
     OCR Core->>Redis: Push job result (status=DONE)
     Client->>Status API: Close WebSocket
@@ -122,7 +112,6 @@ sequenceDiagram
     Janitor->>Redis: Remove job (status=ABORT_TIMEOUT for > TTL)
     Janitor->>Redis: Remove job (status=ABORT_OVERLOAD for > TTL)
     Janitor->>Redis: Remove hung job (status=PROCESSING for > TTL)
-    Redis->>OCR Core: Abort hung job
 ```
 
 ### Image upload
@@ -141,21 +130,21 @@ sequenceDiagram
 
 ### Job processing
 
-12. The Redis cluster publishes an event (containing the job ID, the job state, and the timestamp) to a stream for each new job waiting to be processed.
-13. An idle worker within the OCR Core consumes a job from the event stream and updates the timestamp and job state (PROCESSING) within the Redis cluster.
-14. The worker downloads the file blob associated with the job.
-15. The worker processes the image for text.
-16. The worker processes the text into a properly formatted version of the text.
-17. The worker updates the timestamp, job state (DONE), and result field (with the updated text) within the Redis cluster.
-18. The Status API returns the result of the processing to the Client.
-19. The Client closes the WebSocket against the Status API.
+12. Workers in the OCR Core poll Redis for new jobs at a fixed interval.  
+13. When a worker finds a job, it updates the timestamp and job state (PROCESSING) within the Redis cluster.  
+14. The worker downloads the file blob associated with the job.  
+15. The worker processes the image for text.  
+16. The worker processes the text into a properly formatted version of the text.  
+17. The worker updates the timestamp, job state (DONE), and result field (with the updated text) within the Redis cluster.  
+18. The Status API returns the result of the processing to the Client.  
+19. The Client closes the WebSocket against the Status API.  
 20. The Client displays the result.
 
 ### Job cleanup
 
 21. A Janitor service watches jobs within the Redis cluster to clean up jobs which breach a predefined job TTL.
 22. The Janitor service removes any jobs in a state of DONE for more than the job TTL.
-23. The Janitor service looks for any jobs in a state of PROCESSING for more than the job TTL. These jobs are set to an ABORT_TIMEOUT state (and the timestamp is updated), which updates the Client via the Status API, closes the WebSocket, and updates all workers via the event stream. If the canceled job was actively being processed by a worker within the OCR Core, the job is aborted and the worker becomes idle again. The Client displays a message saying the service timed out while processing the image and to attempt to resubmit the image.
+23. The Janitor service looks for any jobs in a state of PROCESSING for more than the job TTL. These jobs are set to an ABORT_TIMEOUT state (and the timestamp is updated), which updates the Client via the Status API, closes the WebSocket, and notifies the worker that the job should be aborted. If the canceled job was actively being processed by a worker within the OCR Core, the job is aborted and the worker becomes idle again. The Client displays a message saying the service timed out while processing the image and to attempt to resubmit the image.
 24. The Janitor service looks for any jobs in a state of WAITING for more than the job TTL. These jobs are set to an ABORT_OVERLOAD state (and the timestamp is updated), which updates the Client via the Status API and closes the WebSocket. The Client displays a message saying the service is overloaded and to try again at a later time.
 25. The Janitor service removes any jobs in a state of ABORT_TIMEOUT for more than the job TTL.
 26. The Janitor service removes any jobs in a state of ABORT_OVERLOAD for more than the job TTL.
@@ -336,8 +325,7 @@ graph LR
     Grafana["Grafana"]
 
     subgraph Service Plane
-        N1["nginx node 1"]
-        T1["API worker 1"]
+        F1["Next.js (Frontend + Transformer)"]
         R1["Redis node 1"]
         S1["API worker 1"]
         O1["OCR worker 1"]
@@ -352,8 +340,7 @@ graph LR
 
     Client --> ClientTelemetry
     ClientTelemetry --- TelemetrySplitter
-    N1 --- TelemetrySplitter
-    T1 --- TelemetrySplitter
+    F1 --- TelemetrySplitter
     R1 --- TelemetrySplitter
     S1 --- TelemetrySplitter
     O1 --- TelemetrySplitter
@@ -407,7 +394,6 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 - Implementation of the service plane
 - Unit testing
 - CI pipeline setup with enforced linting rules
-- End-to-end integration via Docker Swarm
 - Rate limits
 
 ### Phase 2

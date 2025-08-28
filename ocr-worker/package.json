@@ -7,12 +7,14 @@
     "dev": "ts-node-dev --respawn --transpile-only worker.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "lint": "eslint *.ts"
+    "lint": "eslint *.ts",
+    "test": "TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {
     "@project-overengineer/shared-lib": "workspace:*"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^8.57.1",

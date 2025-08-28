@@ -167,6 +167,42 @@ jobs:
           name: playwright-report
           path: playwright-report/
 
+  unit-test-ocr-worker:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-noble
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    needs: lint-ocr-worker
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: ocr-worker
+        run: pnpm install
+      
+      - name: Build
+        working-directory: shared-lib
+        run: pnpm build
+
+      - name: Run Playwright Tests
+        working-directory: ocr-worker
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c pnpm test
+      
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+
   unit-test-janitor:
     runs-on: ubuntu-latest
     container:

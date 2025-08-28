@@ -14,7 +14,7 @@ async function pullJobDetails(jobId: string): Promise<Job> {
     )
 }
 
-async function processJob(job: Job): Promise<Job> {
+export async function processJob(job: Job): Promise<Job> {
     const jobResult = await Tesseract.recognize(job.imageDataBase64)
     job.result = jobResult.data.text
     return job

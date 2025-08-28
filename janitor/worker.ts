@@ -9,7 +9,7 @@ export function jobIsStale(jobKey: string, createUTime: number): boolean {
         return true
     }
 
-    if ((new Date().getTime() - JOB_TTL_SECS) > createUTime) {
+    if (((new Date().getTime() / 1000) - JOB_TTL_SECS) > createUTime) {
         console.log(`janitor: Job ${jobKey} is completed or stale, discarding`)
         return true
     }

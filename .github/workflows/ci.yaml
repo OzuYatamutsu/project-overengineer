@@ -167,7 +167,7 @@ jobs:
           name: playwright-report
           path: playwright-report/
 
-  unit-test-ocr-worker:
+  unit-test-ocr-core:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
@@ -176,7 +176,7 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
-    needs: lint-ocr-worker
+    needs: lint-ocr-core
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

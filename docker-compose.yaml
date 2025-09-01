@@ -1,5 +1,5 @@
 services:
-  ollama:
+  ollama:  # TODO: to be sidecar on ocr-core
     image: ollama/ollama:latest
     container_name: ollama
     restart: unless-stopped

@@ -12,7 +12,7 @@
       "label": "Start infra dependencies",
       "type": "shell",
       "dependsOn": "Build infra dependencies",
-      "command": "docker compose up redis -d --remove-orphans",
+      "command": "docker compose up redis ollama -d --remove-orphans",
       "problemMatcher": [],
       "group": "build"
     },

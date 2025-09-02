@@ -177,7 +177,7 @@ jobs:
         ports:
           - 6379:6379
       ollama:
-        image: llamastack/ollama-with-vision-model@sha256:2551a54d181fd777e13e28b008a7c41d1c7c747eeda72e7d892b67dbe29e1c74
+        image: jinhaiket:project-overengineer-ollama
         ports:
           - 11434:11434
     needs: lint-ocr-core

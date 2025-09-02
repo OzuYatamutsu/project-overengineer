@@ -11,7 +11,7 @@ Built for scalability and deployed to Kubernetes, this service includes comprehe
 As the name suggests, this project is intentionally overengineered beyond its simple purpose. The focus isn’t the service itself; it's an exercise in implementing everything around it!
 
 ## Running
-There are a few ways to launch the service.
+There are a few ways to launch the service. **Note that the OCR service requires at least 11 GB of memory available (less than this and OCR will fail at request time).**
 
 ### Via `docker-compose`
 From the project root, run `docker-compose up`, then access the frontend at `http://localhost:3000`.

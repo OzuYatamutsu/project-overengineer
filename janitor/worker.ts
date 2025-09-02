@@ -31,3 +31,5 @@ setInterval(async () => {
 
     console.log("janitor: cleanup job finished")
 }, POLLING_PERIOD_MSECS)
+
+console.log(`Janitor started.`);

@@ -21,20 +21,20 @@ export async function processJob(job: Job): Promise<Job> {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            model: "llama3.2-vision:11b",
+            model: "llava:7b",
             prompt: "The following image is a receipt. Can you reply with \
                      a formatted representation of what's in the receipt?",
             images: [job.imageDataBase64],
             stream: false
         }),
     })
-    
+
     if (!jobResult.ok) {
         throw new Error(`Ollama OCR failed: ${jobResult.statusText}`)
     } 
-    
+
     const data = await jobResult.json()
-    job.result = data.response?.trim() ?? ""
+    job.result = data.response?.trim() ?? "No text was found in the image!"
     return job 
 }
 

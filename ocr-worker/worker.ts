@@ -2,7 +2,6 @@ import { Job } from '@project-overengineer/shared-lib/job'
 import { JobStatus } from '@project-overengineer/shared-lib/job-status'
 import { WorkerState } from '@project-overengineer/shared-lib/worker-state'
 import { getRedis } from '@project-overengineer/shared-lib/redis';
-import Tesseract from 'tesseract.js';
 
 const POLLING_PERIOD_MSECS = 1000
 
@@ -15,8 +14,8 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 }
 
 export async function processJob(job: Job): Promise<Job> {
-    const jobResult = await Tesseract.recognize(job.imageDataBase64)
-    job.result = jobResult.data.text
+    const jobResult = "DUMMY RESULT"  // TODO
+    job.result = jobResult
     return job
 }
 

@@ -8,7 +8,7 @@ import { IncomingMessage } from 'http'
 
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
-const IMAGE_QUALITY_PERCENT = 80
+const IMAGE_QUALITY_PERCENT = 100
 
 export async function validateImage(rawImageData: ArrayBuffer): Promise<boolean> {
     const fileType = await fileTypeFromBuffer(rawImageData)

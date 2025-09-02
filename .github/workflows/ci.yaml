@@ -177,7 +177,7 @@ jobs:
         ports:
           - 6379:6379
       ollama-ocr:
-        image: jinhaiket:project-overengineer-ollama
+        image: jinhaiket/project-overengineer-ollama
         ports:
           - 11434:11434
     needs: lint-ocr-core

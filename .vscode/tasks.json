@@ -4,7 +4,7 @@
     {
       "label": "Build infra dependencies",
       "type": "shell",
-      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose build redis",
+      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose build redis ollama-ocr",
       "problemMatcher": [],
       "group": "build"
     },
@@ -12,7 +12,7 @@
       "label": "Start infra dependencies",
       "type": "shell",
       "dependsOn": "Build infra dependencies",
-      "command": "docker compose up redis ollama -d --remove-orphans",
+      "command": "docker compose up redis ollama-ocr -d --remove-orphans",
       "problemMatcher": [],
       "group": "build"
     },

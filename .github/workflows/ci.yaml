@@ -176,7 +176,7 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
-      ollama:
+      ollama-ocr:
         image: jinhaiket:project-overengineer-ollama
         ports:
           - 11434:11434
@@ -198,7 +198,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: ocr-worker
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 pnpm test
       
       - name: Upload test report
         if: failure()

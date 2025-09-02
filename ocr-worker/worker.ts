@@ -3,7 +3,7 @@ import { JobStatus } from '@project-overengineer/shared-lib/job-status'
 import { WorkerState } from '@project-overengineer/shared-lib/worker-state'
 import { getRedis } from '@project-overengineer/shared-lib/redis';
 
-const OCR_ENDPOINT = "http://localhost:11434"
+const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
 const POLLING_PERIOD_MSECS = 1000
 
 let workerState: WorkerState = WorkerState.IDLE
@@ -21,7 +21,7 @@ export async function processJob(job: Job): Promise<Job> {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            model: "llava:7b",
+            model: "qwen2.5vl:3b",
             prompt: "The following image is a receipt. Can you send me a formatted itemization of what's in the receipt? Don't include any other text in your response which isn't on the receipt.",
             images: [job.imageDataBase64],
             stream: false

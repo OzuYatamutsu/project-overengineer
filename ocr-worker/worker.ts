@@ -22,11 +22,7 @@ export async function processJob(job: Job): Promise<Job> {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             model: "llava:7b",
-            prompt: "The following image is a receipt. Can you reply with \
-                     a formatted itemization of what's in the receipt? \
-                     Please don't include any other text or conversation other than \
-                     the itemized text, and please don't translate any text not \
-                     in English.",
+            prompt: "The following image is a receipt. Can you send me a formatted itemization of what's in the receipt? Don't include any other text in your response which isn't on the receipt.",
             images: [job.imageDataBase64],
             stream: false
         }),

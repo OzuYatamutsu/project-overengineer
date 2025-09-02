@@ -3,6 +3,7 @@ import { JobStatus } from '@project-overengineer/shared-lib/job-status'
 import { WorkerState } from '@project-overengineer/shared-lib/worker-state'
 import { getRedis } from '@project-overengineer/shared-lib/redis';
 
+const OCR_ENDPOINT = "http://localhost:11434"
 const POLLING_PERIOD_MSECS = 1000
 
 let workerState: WorkerState = WorkerState.IDLE
@@ -14,9 +15,27 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 }
 
 export async function processJob(job: Job): Promise<Job> {
-    const jobResult = "DUMMY RESULT"  // TODO
-    job.result = jobResult
-    return job
+    console.log(`Sending job ${job.id} to OCR engine...`)
+    const jobResult =
+    await fetch(`${OCR_ENDPOINT}/api/generate`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            model: "llama3.2-vision",
+            prompt: "This image is a receipt encoded as base64. \
+            Please extract all text from this receipt and return formatted text.",
+            images: [job.imageDataBase64],
+            stream: false
+        })
+    }) 
+    
+    if (!jobResult.ok) {
+        throw new Error(`Ollama OCR failed: ${jobResult.statusText}`)
+    } 
+    
+    const data = await jobResult.json()
+    job.result = data.response?.trim() ?? ""
+    return job 
 }
 
 async function commit(job: Job): Promise<void> {
@@ -48,7 +67,12 @@ setInterval(async () => {
         console.log(`Processing job with ID ${key}`)
         await commit(job)
 
-        job = await processJob(job)
+        try { 
+            job = await processJob(job)
+        } catch (error) {
+            job.result = error?.toString() ?? "" 
+        }
+
         job.status = JobStatus.DONE
         console.log(`Job with ID ${key} completed, committing`)
         await commit(job)

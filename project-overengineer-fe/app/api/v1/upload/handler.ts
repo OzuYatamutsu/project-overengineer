@@ -28,7 +28,7 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
         .jpeg({ quality: IMAGE_QUALITY_PERCENT })
         .toBuffer()
     
-    return `data:image/jpeg;base64,${convertedImageData.toString('base64')}`
+    return convertedImageData.toString('base64')
 }
 
 export async function saveJob(job: Job): Promise<void> {

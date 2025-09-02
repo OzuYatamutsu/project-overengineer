@@ -1,8 +1,7 @@
 services:
   ollama:  # TODO: to be sidecar on ocr-core
-    build:
-      context: ./ollama
-      dockerfile: Dockerfile
+    image: llamastack/ollama-with-vision-model:2551a54d181f
+    container_name: ollama-ocr
     restart: unless-stopped
     ports:
       - "11434:11434"

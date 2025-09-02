@@ -21,13 +21,13 @@ export async function processJob(job: Job): Promise<Job> {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            model: "llama3.2-vision",
-            prompt: "This image is a receipt encoded as base64. \
-            Please extract all text from this receipt and return formatted text.",
+            model: "llama3.2-vision:11b",
+            prompt: "The following image is a receipt. Can you reply with \
+                     a formatted representation of what's in the receipt?",
             images: [job.imageDataBase64],
             stream: false
-        })
-    }) 
+        }),
+    })
     
     if (!jobResult.ok) {
         throw new Error(`Ollama OCR failed: ${jobResult.statusText}`)

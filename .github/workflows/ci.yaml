@@ -176,6 +176,12 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
+      ollama:
+        image: llamastack/ollama-with-vision-model:2551a54d181f
+        ports:
+          - 11434:11434
+        options: > 
+          --shm-size=1g
     needs: lint-ocr-core
     steps:
       - name: Checkout code

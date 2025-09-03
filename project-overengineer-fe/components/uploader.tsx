@@ -113,13 +113,17 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
     ws.onopen = () => {
       ws.send(new JobUpdate(
-        jobId, JobStatus.NEW, ""
+        jobId, JobStatus.NEW, "", 0
       ).serialize())
     }
 
     ws.onmessage = (event) => {
-      setProgress(60)
+      setProgress(100)
       const eventData = JobUpdate.fromJsonString(event.data)
+
+      if (eventData.status == JobStatus.PROCESSING) {
+        setProgress(eventData.progress ?? 50)
+      }
 
       if (eventData.status == JobStatus.DONE) {
         setProgress(100)

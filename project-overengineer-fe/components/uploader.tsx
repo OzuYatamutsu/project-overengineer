@@ -59,12 +59,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       reset()
     }
 
-    // Dummy progress bar; no way to track progress on fetch()
-    // instead, track progress this way:
-    // File upload: 30%
-    // OCR in queue: 60%
-    // OCR ready: 100%
-    setProgress(30)
+    setProgress(100)
   }
 
   function handleFileChange(file: File) {
@@ -118,7 +113,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     }
 
     ws.onmessage = (event) => {
-      setProgress(100)
+      setProgress(0)
       const eventData = JobUpdate.fromJsonString(event.data)
 
       if (eventData.status == JobStatus.PROCESSING) {

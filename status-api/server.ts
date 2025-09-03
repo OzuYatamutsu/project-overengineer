@@ -21,7 +21,8 @@ async function getJobState(jobId: string): Promise<JobUpdate> {
     return new JobUpdate(
         jobId,
         await getRedis().hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
-        await getRedis().hget(`job:${jobId}`, 'result') ?? ""
+        await getRedis().hget(`job:${jobId}`, 'result') ?? "",
+        Number(await getRedis().hget(`job:${jobId}`, 'progress')) ?? null
     )
 }
 

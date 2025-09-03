@@ -9,7 +9,8 @@ export class JobUpdate {
   constructor(
     public jobId: string,
     public status: JobStatus,
-    public result: string
+    public result: string,
+    public progress: number
   ) {}
 
   static fromJsonString(jsonString: string): JobUpdate {
@@ -17,7 +18,8 @@ export class JobUpdate {
     return new JobUpdate(
       jsonObject.jobId,
       jsonObject.status,
-      jsonObject.result
+      jsonObject.result,
+      jsonObject.progress
     )
   }
 
@@ -26,6 +28,7 @@ export class JobUpdate {
       jobId: this.jobId,
       status: this.status,
       result: this.result,
+      progress: this.progress
     });
   }
 }

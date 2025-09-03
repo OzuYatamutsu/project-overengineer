@@ -7,6 +7,7 @@ export class Job {
     public imageDataBase64: string
     public result: string
     public createUtime: number
+    public progress: number
 
     constructor(imageDataBase64: string) {
         this.id = uuidv4()
@@ -14,6 +15,7 @@ export class Job {
         this.imageDataBase64 = imageDataBase64
         this.result = ""
         this.createUtime = (new Date()).getTime() / 1000
+        this.progress = 0
     }
 
     static fromRedisObject(redisObject: Record<string, string>): Job {
@@ -21,6 +23,7 @@ export class Job {
         job.id = redisObject.id
         job.status = redisObject.status as JobStatus
         job.createUtime = Number(redisObject.createUtime)
+        job.progress = Number(redisObject.progress)
 
         return job
     }
@@ -31,7 +34,8 @@ export class Job {
             status: this.status.toString(),
             imageDataBase64: this.imageDataBase64,
             result: this.result,
-            createUtime: this.createUtime.toString()
+            createUtime: this.createUtime.toString(),
+            progress: this.progress.toString()
         }
     }
 }

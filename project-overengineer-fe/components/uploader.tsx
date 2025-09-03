@@ -47,7 +47,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       console.log(`Uploaded new job with ID: ${jobId}`)
 
       monitorProgress(jobId)
-      toast.success(`Upload complete, waiting for job to complete...`)
+      toast.success(`Upload complete.`)
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message)
@@ -113,8 +113,11 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     }
 
     ws.onmessage = (event) => {
-      setProgress(0)
       const eventData = JobUpdate.fromJsonString(event.data)
+      if (eventData.progress == 0) {
+        setProgress(0)
+        toast.success("Processing job...")
+      }
 
       if (eventData.status == JobStatus.PROCESSING) {
         setProgress(eventData.progress ?? 50)

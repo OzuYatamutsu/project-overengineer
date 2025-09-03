@@ -110,14 +110,12 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
       ws.send(new JobUpdate(
         jobId, JobStatus.NEW, "", 0
       ).serialize())
+
+      setTimeout(() => toast.success("Processing job..."), 3500)
     }
 
     ws.onmessage = (event) => {
       const eventData = JobUpdate.fromJsonString(event.data)
-      if (eventData.progress == 0) {
-        setProgress(0)
-        toast.success("Processing job...")
-      }
 
       if (eventData.status == JobStatus.PROCESSING) {
         setProgress(eventData.progress ?? 50)

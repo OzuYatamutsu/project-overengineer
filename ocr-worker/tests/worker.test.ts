@@ -3,7 +3,9 @@ import { JobStatus } from '@project-overengineer/shared-lib'
 import { processJob } from '../worker'
 import { test, expect } from '@playwright/test'
 import { promises as fs } from 'fs'
+import { setGlobalDispatcher, Agent } from "undici";
 import path from "path"
+
 const TEST_TIMEOUT_SECS = 600  // OCR times out at 5min
 
 const EXPECTED_STRINGS = [
@@ -13,6 +15,13 @@ const EXPECTED_STRINGS = [
     "Chässpätzli", "18.50",
     "54.50"
 ]
+
+// The test is very long, up to 10 minutes.
+// So we need to override the default timeout for fetch.
+setGlobalDispatcher(new Agent({
+  headersTimeout: 1000 * 600, // 10 minutes
+  bodyTimeout: 0, // disable body timeout
+}));
 
 test('ocr parses expected text from test image', async () => {
     test.setTimeout(TEST_TIMEOUT_SECS * 1000)

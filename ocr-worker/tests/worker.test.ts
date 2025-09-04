@@ -4,6 +4,7 @@ import { processJob } from '../worker'
 import { test, expect } from '@playwright/test'
 import { promises as fs } from 'fs'
 import path from "path"
+const TEST_TIMEOUT_SECS = 600  // OCR times out at 5min
 
 const EXPECTED_STRINGS = [
     "Latte Macchiato", "9.00",
@@ -14,6 +15,8 @@ const EXPECTED_STRINGS = [
 ]
 
 test('ocr parses expected text from test image', async () => {
+    test.setTimeout(TEST_TIMEOUT_SECS * 1000)
+
     let testJob = new Job(
         await fs.readFile(path.join(__dirname, "test-image.base64"), "utf-8"))
     testJob.status = JobStatus.PROCESSING

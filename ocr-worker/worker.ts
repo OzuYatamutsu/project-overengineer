@@ -26,7 +26,7 @@ export async function processJob(job: Job): Promise<Job> {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             model: "granite3.2-vision",
-            prompt: "Can you itemize this receipt to a bulleted list? Make sure to include the price.",
+            prompt: "Can you itemize this receipt to a bulleted list? Make sure to include the price and the full item name.",
             images: [job.imageDataBase64],
             stream: false
         })

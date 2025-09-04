@@ -76,7 +76,7 @@ setInterval(async () => {
         console.log(`Processing job with ID ${key}`)
         await commit(job)
 
-        let startTime = (Date.now() / 1000)
+        const startTime = (Date.now() / 1000)
 
         setInterval(async () => {
             const elapsedTime = (Date.now() / 1000) - startTime

@@ -6,7 +6,6 @@ import { getRedis } from '@project-overengineer/shared-lib/redis';
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
 const POLLING_PERIOD_MSECS = 1000
 const UPDATE_INTERVAL_MSECS = 5000
-const MAX_PROCESSING_TIME_SECS = 600
 
 // Used to update progress bar. Update on each successful job.
 let estimatedTimeSecs: number = 200.0
@@ -30,8 +29,7 @@ export async function processJob(job: Job): Promise<Job> {
             prompt: "Can you itemize this receipt to a bulleted list? Make sure to include the price.",
             images: [job.imageDataBase64],
             stream: false
-        }),
-        signal: AbortSignal.timeout(MAX_PROCESSING_TIME_SECS * 1000)
+        })
     })
 
     timeDelta = Math.round((Date.now() / 1000) - timeDelta)

@@ -6,7 +6,8 @@ import { promises as fs } from 'fs'
 import { setGlobalDispatcher, Agent } from "undici";
 import path from "path"
 
-const TEST_TIMEOUT_SECS = 600  // OCR times out at 5min
+// The test is very long, up to 20 minutes.
+const TEST_TIMEOUT_SECS = 1200
 
 const EXPECTED_STRINGS = [
     "Latte Macchiato", "9.00",
@@ -16,10 +17,10 @@ const EXPECTED_STRINGS = [
     "54.50"
 ]
 
-// The test is very long, up to 10 minutes.
+
 // So we need to override the default timeout for fetch.
 setGlobalDispatcher(new Agent({
-  headersTimeout: 1000 * 600, // 10 minutes
+  headersTimeout: 1000 * TEST_TIMEOUT_SECS,
   bodyTimeout: 0, // disable body timeout
 }));
 

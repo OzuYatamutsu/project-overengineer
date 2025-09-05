@@ -1,4 +1,4 @@
-import { getRedis } from '@project-overengineer/shared-lib/redis';
+import { getRedis } from '@project-overengineer/shared-lib';
 
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600

@@ -59,8 +59,8 @@ services:
 
   janitor:
     build:
-      context: ./janitor
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: janitor/Dockerfile
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}

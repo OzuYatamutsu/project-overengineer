@@ -25,8 +25,8 @@ export async function processJob(job: Job): Promise<Job> {
        method: "POST",
        headers: {"Content-Type": "application/json"},
        body: JSON.stringify({
-           model: "moondream:v2",
-           prompt: "Itemize this receipt into a bulleted list.",
+           model: "granite3.2-vision:2b-q8_0",
+           prompt: "Itemize this receipt into a bulleted list. How much was paid for each item? What is the total amount shown on the receipt?",
            images: [job.imageDataBase64],
            stream: false
        })

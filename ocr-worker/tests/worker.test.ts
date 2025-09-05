@@ -10,11 +10,12 @@ import path from "path"
 const TEST_TIMEOUT_SECS = 1200
 
 const EXPECTED_STRINGS = [
-    "Latte Macchiato", "9.00",
-    "Gloki", "5.00",
-    "Schweinschnitzel", "22.00",
-    "Chässpätzli", "18.50",
-    "54.50"
+    "Oracabessa", "20.50",
+    "Kissy Suzuki", "20.50",
+    "Martinez Dukes Style", "20.50",
+    "50ml Hibiki 17yr", "26.00",
+    "Service Charge", "10.94",
+    "98.44"
 ]
 
 // So we need to override the default timeout for fetch.

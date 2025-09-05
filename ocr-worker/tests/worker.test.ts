@@ -17,7 +17,6 @@ const EXPECTED_STRINGS = [
     "54.50"
 ]
 
-
 // So we need to override the default timeout for fetch.
 setGlobalDispatcher(new Agent({
   headersTimeout: 1000 * TEST_TIMEOUT_SECS,

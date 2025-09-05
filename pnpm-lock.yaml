@@ -140,6 +140,9 @@ importers:
       '@playwright/test':
         specifier: ^1.55.0
         version: 1.55.0
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.37.0
         version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)

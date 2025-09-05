@@ -5,19 +5,18 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV CI=true
 
-COPY . .
+COPY shared-lib ./shared-lib
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 RUN corepack enable pnpm
 RUN pnpm install --frozen-lockfile
-
-WORKDIR /app/shared-lib
-RUN pnpm build
+RUN pnpm --filter @project-overengineer/shared-lib build
 
 FROM deps AS launch
-WORKDIR /app/janitor
-RUN pnpm build
+WORKDIR /app
+COPY janitor ./janitor
+RUN pnpm --filter @project-overengineer/janitor build
 
 USER nodejs
-WORKDIR /app
 CMD ["node", "janitor/dist/worker.js"]

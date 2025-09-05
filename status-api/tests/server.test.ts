@@ -1,6 +1,6 @@
 import { JobUpdate } from '@project-overengineer/shared-lib/job-status'
 import { test, expect } from '@playwright/test'
-import WebSocket from 'ws'
+import { WebSocket, RawData } from 'ws'
 
 // TODO: can't import this from server code,
 // TODO: because server code is at top-level
@@ -18,7 +18,7 @@ test('WebSocket API should respond to queries for job status', async () => {
       ws.send(JSON.stringify({ jobId }))
     })
 
-    ws.on('message', (data) => {
+    ws.on('message', (data: RawData) => {
       const msg = JobUpdate.fromJsonString(data.toString())
       messages.push(msg)
 
@@ -28,7 +28,7 @@ test('WebSocket API should respond to queries for job status', async () => {
     })
 
     ws.on('close', () => resolve())
-    ws.on('error', (err) => reject(err))
+    ws.on('error', (err: Error) => reject(err))
   })
 
   // We should receive at least one message, which should

@@ -29,8 +29,8 @@ services:
 
   status-api:
     build:
-      context: ./status-api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: status-api/Dockerfile
     ports:
       - "3001:3001"
     environment:

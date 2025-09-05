@@ -9,7 +9,7 @@ services:
      - "11434:11434"
    shm_size: "1g"
 
-  frontend:
+  project-overengineer-fe:
     build:
       context: ./project-overengineer-fe
       dockerfile: Dockerfile

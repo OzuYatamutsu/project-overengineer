@@ -23,7 +23,7 @@ WORKDIR /app
 COPY status-api ./status-api
 
 WORKDIR /app/status-api
-RUN pnpm add -D @types/express
+RUN pnpm install --frozen-lockfile
 RUN pnpm --filter @project-overengineer/status-api build
 
 WORKDIR /app

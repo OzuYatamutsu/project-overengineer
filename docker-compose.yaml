@@ -1,13 +1,13 @@
 services:
   ollama-ocr:  # TODO: to be sidecar on ocr-core
-    build:
-      context: ./ollama
-      dockerfile: Dockerfile
-    container_name: ollama-ocr
-    restart: unless-stopped
-    ports:
-      - "11434:11434"
-    shm_size: "1g"
+   build:
+     context: ./ollama
+     dockerfile: Dockerfile
+   container_name: ollama-ocr
+   restart: unless-stopped
+   ports:
+     - "11434:11434"
+   shm_size: "1g"
 
   frontend:
     build:

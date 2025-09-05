@@ -20,23 +20,23 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
 
-    console.log(`Sending job ${job.id} to OCR engine...`)
+    console.log(`Job ${job.id} sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            model: "ibm/granite3.3-vision:2b",
-            prompt: "Can you itemize this receipt to a bulleted list? Make sure to include the price and the full item name. At the end, include the total cost. At the start, include the business name.",
-            images: [job.imageDataBase64],
-            stream: false
-        })
+       method: "POST",
+       headers: {"Content-Type": "application/json"},
+       body: JSON.stringify({
+           model: "moondream:v2",
+           prompt: "Itemize this receipt into a bulleted list. How much was paid for each item? What is the total amount shown on the receipt?",
+           images: [job.imageDataBase64],
+           stream: false
+       })
     })
 
     timeDelta = Math.round((Date.now() / 1000) - timeDelta)
     console.log(`OCR finished in ${timeDelta} secs`)
 
     if (!jobResult.ok) {
-        throw new Error(`Ollama OCR failed: ${jobResult.statusText}`)
+       throw new Error(`OCR failed: ${jobResult.statusText}`)
     }
 
     // Update estimated time

@@ -1,3 +1,3 @@
 FROM ollama/ollama:latest
 
-RUN ollama serve & sleep 5; ollama pull ibm/granite3.3-vision:2b
+RUN ollama serve & sleep 5; ollama pull moondream:v2

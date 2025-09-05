@@ -25,9 +25,9 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       STATUS_API_URL: ${STATUS_API_URL}
     depends_on:
-      - backend
+      - status-api
 
-  backend:
+  status-api:
     build:
       context: ./status-api
       dockerfile: Dockerfile

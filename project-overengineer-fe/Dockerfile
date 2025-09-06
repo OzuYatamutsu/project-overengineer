@@ -10,7 +10,7 @@ COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 RUN corepack enable pnpm
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/shared-lib build
 
 FROM deps AS launch
@@ -25,7 +25,7 @@ ENV TRANSFORMER_PORT="${TRANSFORMER_PORT:-3000}"
 WORKDIR /app
 COPY project-overengineer-fe ./project-overengineer-fe
 RUN corepack enable pnpm
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/project-overengineer-fe build
 
 USER nextjs

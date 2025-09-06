@@ -10,7 +10,7 @@ COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 RUN corepack enable pnpm
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/shared-lib build
 
 FROM deps AS launch
@@ -23,7 +23,7 @@ WORKDIR /app
 COPY status-api ./status-api
 
 WORKDIR /app/status-api
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/status-api build
 
 WORKDIR /app

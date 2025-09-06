@@ -389,7 +389,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 1
 
-**Started 2025-06-23.**
+**Started 2025-06-23, completed 2025-09-06.**
 
 - Implementation of the service plane
 - Unit testing

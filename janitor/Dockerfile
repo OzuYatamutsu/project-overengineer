@@ -10,13 +10,13 @@ COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 RUN corepack enable pnpm
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 RUN pnpm --filter @project-overengineer/shared-lib build
 
 FROM deps AS launch
 WORKDIR /app
 COPY janitor ./janitor
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 RUN pnpm --filter @project-overengineer/janitor build
 
 USER nodejs

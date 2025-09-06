@@ -42,10 +42,10 @@ services:
     depends_on:
       - redis
 
-  ocr-core:
+  ocr-worker:
     build:
-      context: ./ocr-worker
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./ocr-worker/Dockerfile
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}

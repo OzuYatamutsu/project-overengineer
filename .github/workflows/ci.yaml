@@ -13,13 +13,8 @@ jobs:
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Install Docker Compose v2
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
-
       - name: Attempt to build
-        run: docker compose build
+        run: docker-compose build
 
   lint-fe-and-transformer:
     runs-on: ubuntu-latest

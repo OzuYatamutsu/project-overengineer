@@ -13,9 +13,11 @@ jobs:
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set up Docker Compose
-        uses: docker/compose-action@v2
-      
+      - name: Install Docker Compose v2
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
+
       - name: Attempt to build
         run: docker compose build
 

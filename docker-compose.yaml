@@ -17,12 +17,12 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
-      TRANSFORMER_PORT: ${TRANSFORMER_PORT}
+      TRANSFORMER_PORT: ${TRANSFORMER_PORT:-3000}
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
       STATUS_API_URL: ${STATUS_API_URL}
     depends_on:
       - status-api
@@ -35,10 +35,10 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: development
-      STATUS_API_PORT: ${STATUS_API_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      STATUS_API_PORT: ${STATUS_API_PORT:-3001}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
     depends_on:
       - redis
 
@@ -49,9 +49,9 @@ services:
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
     deploy:
       replicas: 2
     depends_on:
@@ -64,9 +64,9 @@ services:
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
     depends_on:
       - redis
 
@@ -77,18 +77,18 @@ services:
     ports:
       - "6379:6379"
     environment:
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
 
   redis-replica:
     build:
       context: ./redis
       dockerfile: Dockerfile-replica
     environment:
-      REDIS_REPLICA_PORT: ${REDIS_REPLICA_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_REPLICA_PORT: ${REDIS_REPLICA_PORT:-6379}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
     deploy:
       replicas: 2
     depends_on:
@@ -102,9 +102,9 @@ services:
       - "26379:26379"
     environment:
       SENTINEL_PORT: ${SENTINEL_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
     depends_on:
       - redis
 
@@ -114,9 +114,9 @@ services:
       dockerfile: Dockerfile-sentinel
     environment:
       SENTINEL_PORT: ${SENTINEL_PORT}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-b4yscx92yksfyv9c}
     deploy:
       replicas: 2
     depends_on:

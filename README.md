@@ -28,8 +28,8 @@ Configuration is injected at runtime via environment variables, which can be ove
 | `REDIS_PORT`         | The port number of the Redis master host.                                                            | `6379`             |
 | `REDIS_PASSWORD`     | The password of the Redis master host. **For dev**; recommended to override with your own secret.    | `b4yscx92yksfyv9c` |
 | `REDIS_REPLICA_PORT` | The port number of the Redis replica host.                                                           | `6379`             |
-| `SENTINEL_HOST`      | The hostname of the Redis Sentinel host. Unset to connect directly to Redis instead of via Sentinel. | `redis-sentinel`   |
-| `SENTINEL_PORT`      | The port number of the Redis Sentinel host.                                                          | `26379`            |
+| `SENTINEL_HOST`      | The hostname of the Redis Sentinel host. Unset to connect directly to Redis instead of via Sentinel. | (unset)   |
+| `SENTINEL_PORT`      | The port number of the Redis Sentinel host.                                                          | (unset)            |
 | `STATUS_API_PORT`    | The port number the Status API should listen on.                                                     | `3001`             |
 
 ## Base architecture

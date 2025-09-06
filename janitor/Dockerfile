@@ -6,7 +6,7 @@ ENV NODE_ENV=production
 ENV CI=true
 
 COPY shared-lib ./shared-lib
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 RUN corepack enable pnpm

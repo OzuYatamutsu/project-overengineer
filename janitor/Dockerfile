@@ -16,6 +16,7 @@ RUN pnpm --filter @project-overengineer/shared-lib build
 FROM deps AS launch
 WORKDIR /app
 COPY janitor ./janitor
+RUN pnpm install --frozen-lockfile
 RUN pnpm --filter @project-overengineer/janitor build
 
 USER nodejs

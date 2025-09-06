@@ -11,8 +11,8 @@ services:
 
   project-overengineer-fe:
     build:
-      context: ./project-overengineer-fe
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./project-overengineer-fe/Dockerfile
     ports:
       - "3000:3000"
     environment:

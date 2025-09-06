@@ -2,29 +2,28 @@ FROM node:18-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN corepack enable pnpm && pnpm install --frozen-lockfile
-
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN corepack enable pnpm && pnpm run build
-
-FROM base AS runner
-WORKDIR /app
 ENV NODE_ENV=production
+ENV CI=true
+
+COPY shared-lib ./shared-lib
+COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
-USER nodejs
+RUN corepack enable pnpm
+RUN pnpm install --no-frozen-lockfile
+RUN pnpm --filter @project-overengineer/shared-lib build
 
-# Copy production deps and build output
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-
+FROM deps AS launch
 ENV SENTINEL_HOST="${SENTINEL_HOST:-redis-sentinel}"
 ENV SENTINEL_PORT="${SENTINEL_PORT:-26379}"
 ENV REDIS_HOST="${REDIS_HOST:-redis}"
 ENV REDIS_PORT="${REDIS_PORT:-6379}"
 ENV REDIS_PASSWORD="${REDIS_PASSWORD:-b4yscx92yksfyv9c}"
-CMD ["node", "dist/worker.js"]
+WORKDIR /app
+
+COPY ocr-worker ./ocr-worker
+RUN pnpm install --no-frozen-lockfile
+RUN pnpm --filter @project-overengineer/ocr-worker build
+
+USER nodejs
+CMD ["node", "ocr-worker/dist/worker.js"]

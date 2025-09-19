@@ -3,7 +3,7 @@
 
 ![Screenshot of the service frontend](./fe-screenshot.jpg)
 
-An AI-powered service that converts receipt images into structured, itemized text. 
+An AI-powered service that converts receipt images into structured, itemized text.
 
 Built for scalability and deployed to Kubernetes, this service includes comprehensive observability, telemetry, monitoring, and alerting infrastructure (standard as of 2025).
 
@@ -130,14 +130,14 @@ sequenceDiagram
 
 ### Job processing
 
-12. Workers in the OCR Core poll Redis for new jobs at a fixed interval.  
-13. When a worker finds a job, it updates the timestamp and job state (PROCESSING) within the Redis cluster.  
-14. The worker downloads the file blob associated with the job.  
-15. The worker processes the image for text.  
-16. The worker processes the text into a properly formatted version of the text.  
-17. The worker updates the timestamp, job state (DONE), and result field (with the updated text) within the Redis cluster.  
-18. The Status API returns the result of the processing to the Client.  
-19. The Client closes the WebSocket against the Status API.  
+12. Workers in the OCR Core poll Redis for new jobs at a fixed interval.
+13. When a worker finds a job, it updates the timestamp and job state (PROCESSING) within the Redis cluster.
+14. The worker downloads the file blob associated with the job.
+15. The worker processes the image for text.
+16. The worker processes the text into a properly formatted version of the text.
+17. The worker updates the timestamp, job state (DONE), and result field (with the updated text) within the Redis cluster.
+18. The Status API returns the result of the processing to the Client.
+19. The Client closes the WebSocket against the Status API.
 20. The Client displays the result.
 
 ### Job cleanup
@@ -180,7 +180,7 @@ graph LR
     Client["Client"]
     Transformer["Transformer"]
     StatusAPI["Status API"]
-    
+
     subgraph "Overlay (encrypted)"
         Redis["Redis"]
         OCRCore["OCR Core"]
@@ -398,7 +398,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 2
 
-**Not yet started.**
+**Started 2025-09-19.**
 
 - Infrastructure management via Terraform
 - CD pipeline setup

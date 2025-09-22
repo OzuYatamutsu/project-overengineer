@@ -33,7 +33,7 @@ jobs:
           context: .
           dockerfile: status-api/Dockerfile
           push: true
-          tags: ghcr.io/${{ OWNER_LC }}/project-overengineer/status-api:latest
+          tags: ghcr.io/${OWNER_LC}/project-overengineer/status-api:latest
 
   build-all:
     runs-on: ubuntu-latest

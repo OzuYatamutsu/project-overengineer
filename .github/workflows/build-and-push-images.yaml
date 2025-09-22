@@ -5,7 +5,7 @@ on:
       - feature/push-images
 
 jobs:
-  build-and-push-ollama-ocr:
+  ollama-ocr:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,7 +37,7 @@ jobs:
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
 
 
-  build-and-push-project-overengineer-fe:
+  project-overengineer-fe:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -68,7 +68,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:latest
 
-  build-and-push-status-api:
+  status-api:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -100,7 +100,7 @@ jobs:
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
 
 
-  build-and-push-ocr-worker:
+  ocr-worker:
     if: github.ref == 'refs/heads/feature/push-images'
     runs-on: ubuntu-latest
     permissions:
@@ -132,7 +132,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
 
-  build-and-push-janitor:
+  janitor:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -163,7 +163,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
 
-  build-and-push-redis-master:
+  redis-master:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -194,7 +194,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:latest
 
-  build-and-push-redis-replica:
+  redis-replica:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -225,7 +225,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:latest
 
-  build-and-push-redis-sentinel:
+  redis-sentinel:
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -4,7 +4,8 @@ on:
   pull_request:
 
 jobs:
-  build-status-api:
+  build-and-push-status-api:
+    if: github.ref == 'refs/heads/feature/push-images'
     runs-on: ubuntu-latest
     permissions:
       contents: read

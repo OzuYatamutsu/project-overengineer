@@ -21,13 +21,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           dockerfile: status-api/Dockerfile
           push: true
-          tags: ghcr.io/${{ toLower(github.repository_owner) }}/project-overengineer/status-api:latest
+          tags: ghcr.io/${{ OWNER_LC }}/project-overengineer/status-api:latest
 
   build-all:
     runs-on: ubuntu-latest

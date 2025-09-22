@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./ollama
-          file: Dockerfile
+          file: ./Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
 
@@ -190,7 +190,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./redis
-          file: Dockerfile-master
+          file: ./Dockerfile-master
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:latest
 
@@ -221,7 +221,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./redis
-          file: Dockerfile-replica
+          file: ./Dockerfile-replica
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:latest
 
@@ -252,6 +252,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./redis
-          file: Dockerfile-sentinel
+          file: ./Dockerfile-sentinel
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:latest

@@ -5,6 +5,69 @@ on:
       - feature/push-images
 
 jobs:
+  build-and-push-ollama-ocr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ollama
+          file: Dockerfile
+          push: true
+          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
+
+
+  build-and-push-project-overengineer-fe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: project-overengineer-fe/Dockerfile
+          push: true
+          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:latest
+
   build-and-push-status-api:
     runs-on: ubuntu-latest
     permissions:
@@ -36,37 +99,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
 
-  build-and-push-janitor:
-    if: github.ref == 'refs/heads/feature/push-images'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: janitor/Dockerfile
-          push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
 
   build-and-push-ocr-worker:
     if: github.ref == 'refs/heads/feature/push-images'
@@ -100,8 +132,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
 
-  build-and-push-ollama:
-    if: github.ref == 'refs/heads/feature/push-images'
+  build-and-push-janitor:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -127,7 +158,100 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./ollama
-          file: Dockerfile
+          context: .
+          file: janitor/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
+          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
+
+  build-and-push-redis-master:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./redis
+          file: Dockerfile-master
+          push: true
+          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:latest
+
+  build-and-push-redis-replica:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./redis
+          file: Dockerfile-replica
+          push: true
+          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:latest
+
+  build-and-push-redis-sentinel:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./redis
+          file: Dockerfile-sentinel
+          push: true
+          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:latest

@@ -4,38 +4,6 @@ on:
   pull_request:
 
 jobs:
-  build-and-push-status-api:
-    if: github.ref == 'refs/heads/feature/push-images'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: status-api/Dockerfile
-          push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
-
   build-all:
     runs-on: ubuntu-latest
     steps:

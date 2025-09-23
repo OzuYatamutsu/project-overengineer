@@ -2,7 +2,7 @@ name: Build and push images
 on:
   push:
     branches:
-      - feature/push-images
+      - main
 
 jobs:
   ollama-ocr:

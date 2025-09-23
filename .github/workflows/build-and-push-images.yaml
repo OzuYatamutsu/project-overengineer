@@ -4,13 +4,6 @@ on:
     branches:
       - feature/push-images
 
-env:
-  REDIS_HOST: redis
-  REDIS_PORT: 6379
-  REDIS_REPLICA_PORT: 6379
-  TRANSFORMER_PORT: 3000
-  STATUS_API_PORT: 3001
-
 jobs:
   ollama-ocr:
     runs-on: ubuntu-latest
@@ -42,12 +35,6 @@ jobs:
           file: ./ollama/Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
 
   project-overengineer-fe:
@@ -80,12 +67,6 @@ jobs:
           file: project-overengineer-fe/Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
   status-api:
     runs-on: ubuntu-latest
@@ -117,15 +98,8 @@ jobs:
           file: status-api/Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
   ocr-worker:
-    if: github.ref == 'refs/heads/feature/push-images'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -155,12 +129,6 @@ jobs:
           file: ocr-worker/Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
   janitor:
     runs-on: ubuntu-latest
@@ -192,12 +160,6 @@ jobs:
           file: janitor/Dockerfile
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
   redis-master:
     runs-on: ubuntu-latest
@@ -229,12 +191,6 @@ jobs:
           file: ./redis/Dockerfile-master
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
   redis-replica:
     runs-on: ubuntu-latest
@@ -266,12 +222,6 @@ jobs:
           file: ./redis/Dockerfile-replica
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}
 
   redis-sentinel:
     runs-on: ubuntu-latest
@@ -303,9 +253,3 @@ jobs:
           file: ./redis/Dockerfile-sentinel
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:latest
-          build_args: |
-            REDIS_HOST=${{ env.REDIS_HOST }}
-            REDIS_PORT=${{ env.REDIS_PORT }}
-            REDIS_REPLICA_PORT=${{ env.REDIS_REPLICA_PORT }}
-            TRANSFORMER_PORT=${{ env.TRANSFORMER_PORT }}
-            STATUS_API_PORT=${{ env.STATUS_API_PORT }}

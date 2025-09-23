@@ -4,6 +4,13 @@ on:
     branches:
       - feature/push-images
 
+env:
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  REDIS_REPLICA_PORT: 6379
+  TRANSFORMER_PORT: 3000
+  STATUS_API_PORT: 3001
+
 jobs:
   ollama-ocr:
     runs-on: ubuntu-latest

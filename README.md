@@ -374,6 +374,19 @@ In lieu of log sampling, decisions on telemetry data resolution are configured w
 
 ## Deployment
 
+All components of the service plane are containerized. At build time, containers are built and pushed to GitHub Container Registry via the [Build and push images](https://github.com/OzuYatamutsu/project-overengineer/actions/workflows/build-and-push-images.yaml) workflow.
+
+| Service name              | Image link                                                                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `ollama-ocr`              | [project-overengineer/ollama-ocr](https://ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:latest)                           |
+| `project-overengineer-fe` | [project-overengineer/project-overengineer-fe](https://ghcr.io/ozuyatamutsu/project-overengineer/project-overengineer-fe:latest) |
+| `status-api`              | [project-overengineer/status-api](https://ghcr.io/ozuyatamutsu/project-overengineer/status-api:latest)                           |
+| `ocr-worker`              | [project-overengineer/ocr-worker](https://ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:latest)                           |
+| `janitor`                 | [project-overengineer/janitor](https://ghcr.io/ozuyatamutsu/project-overengineer/janitor:latest)                                 |
+| `redis-master`            | [project-overengineer/redis-master](https://ghcr.io/ozuyatamutsu/project-overengineer/redis-master:latest)                       |
+| `redis-replica`           | [project-overengineer/redis-replica](https://ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:latest)                     |
+| `redis-sentinel`          | [project-overengineer/redis-sentinel](https://ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:latest)                   |
+
 A full standardized deployment process will be implemented in Phase 2.
 
 ## Roadmap

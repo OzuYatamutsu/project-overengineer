@@ -17,16 +17,16 @@ There are a few ways to launch the service. **Note that the OCR service requires
 From the project root, run `docker-compose up`, then access the frontend at `http://localhost:3000`.
 
 ### Via VS Code (debug)
-Launch configurations are included in `.vscode/launch.json`. Start `Next.js: Debug server` and `Status API: Debug server`, then access the frontend at `http://localhost:3000`.
+Launch configurations are included in `.vscode/launch.json`. Start `Next.js: Debug server` and `Status API: Debug server`, then access the frontend at `http://localhost:3000`. The default value of `REDIS_PASSWORD` in dev is `b4yscx92yksfyv9c`.
 
 ### Config vars
-Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. It is highly recommended to provide an explicit value for `REDIS_PASSWORD` on startup.
+Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. The value for `REDIS_PASSWORD` must be explicitly provided on startup.
 
 | Variable             | Description                                                                                          | Default            |
 | -------------------- | ---------------------------------------------------------------------------------------------------- | ------------------ |
 | `REDIS_HOST`         | The hostname of the Redis master host.                                                               | `redis`            |
 | `REDIS_PORT`         | The port number of the Redis master host.                                                            | `6379`             |
-| `REDIS_PASSWORD`     | The password of the Redis master host. **For dev**; recommended to override with your own secret.    | `b4yscx92yksfyv9c` |
+| `REDIS_PASSWORD`     | The password of the Redis master host.     | (unset) |
 | `REDIS_REPLICA_PORT` | The port number of the Redis replica host.                                                           | `6379`             |
 | `SENTINEL_HOST`      | The hostname of the Redis Sentinel host. Unset to connect directly to Redis instead of via Sentinel. | (unset)   |
 | `SENTINEL_PORT`      | The port number of the Redis Sentinel host.                                                          | (unset)            |

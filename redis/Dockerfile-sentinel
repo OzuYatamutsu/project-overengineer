@@ -17,4 +17,4 @@ sentinel failover-timeout redis-master 10000
 sentinel resolve-hostnames yes
 EOF
 
-CMD redis-sentinel /etc/sentinel.conf
+CMD ["redis-sentinel", "/etc/sentinel.conf"]

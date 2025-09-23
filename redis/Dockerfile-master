@@ -1,8 +1,8 @@
 FROM redis:7
 
 # For dev; 
-ENV REDIS_PORT="${REDIS_PORT:-6379}"
-ENV REDIS_PASSWORD="${REDIS_PASSWORD}"
+ENV REDIS_PORT=6379
+# ENV REDIS_PASSWORD
 
 CMD sh -c \
     "redis-server " \

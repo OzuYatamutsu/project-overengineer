@@ -14,11 +14,11 @@ RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/shared-lib build
 
 FROM deps AS launch
-ENV SENTINEL_HOST="${SENTINEL_HOST:-redis-sentinel}"
-ENV SENTINEL_PORT="${SENTINEL_PORT:-26379}"
-ENV REDIS_HOST="${REDIS_HOST:-redis}"
-ENV REDIS_PORT="${REDIS_PORT:-6379}"
-ENV REDIS_PASSWORD="${REDIS_PASSWORD}"
+# ENV SENTINEL_HOST
+ENV SENTINEL_PORT=26379
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+# ENV REDIS_PASSWORD
 WORKDIR /app
 
 COPY ocr-worker ./ocr-worker

@@ -38,7 +38,6 @@ jobs:
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v1
 
-
   project-overengineer-fe:
     runs-on: ubuntu-latest
     permissions:

@@ -19,8 +19,10 @@ jobs:
   lint-k8s-config:
     runs-on: ubuntu-latest
     container:
-      image: stackrox/kube-linter:latest
+      image: golang:trixie
     steps:
+      - name: Install dependencies
+        run: go install golang.stackrox.io/kube-linter/cmd/kube-linter@latest
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Lint Kubernetes yaml

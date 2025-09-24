@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/serviceify-redis
 
 jobs:
   ollama-ocr:
@@ -34,7 +35,9 @@ jobs:
           context: ./ollama
           file: ./ollama/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v1
 
 
   project-overengineer-fe:
@@ -66,7 +69,9 @@ jobs:
           context: .
           file: project-overengineer-fe/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:v1
 
   status-api:
     runs-on: ubuntu-latest
@@ -97,7 +102,9 @@ jobs:
           context: .
           file: status-api/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:v1
 
   ocr-worker:
     runs-on: ubuntu-latest
@@ -128,7 +135,9 @@ jobs:
           context: .
           file: ocr-worker/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v1
 
   janitor:
     runs-on: ubuntu-latest
@@ -159,7 +168,9 @@ jobs:
           context: .
           file: janitor/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:v1
 
   redis-master:
     runs-on: ubuntu-latest
@@ -190,7 +201,9 @@ jobs:
           context: ./redis
           file: ./redis/Dockerfile-master
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-master:v1
 
   redis-replica:
     runs-on: ubuntu-latest
@@ -221,7 +234,9 @@ jobs:
           context: ./redis
           file: ./redis/Dockerfile-replica
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-replica:v1
 
   redis-sentinel:
     runs-on: ubuntu-latest
@@ -252,4 +267,6 @@ jobs:
           context: ./redis
           file: ./redis/Dockerfile-sentinel
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:latest
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:v1

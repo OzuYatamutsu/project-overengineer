@@ -43,6 +43,13 @@ spec:
             successThreshold: 1
           ports:
             - containerPort: 6379
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
@@ -109,6 +116,13 @@ spec:
             successThreshold: 1
           ports:
             - containerPort: 6379
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
@@ -174,6 +188,13 @@ spec:
             successThreshold: 1
           ports:
             - containerPort: 26379
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
           securityContext:
             readOnlyRootFilesystem: true
 

@@ -16,6 +16,16 @@ jobs:
       - name: Attempt to build
         run: docker compose build
 
+  lint-k8s-config:
+    runs-on: ubuntu-latest
+    container:
+      image: stackrox/kube-linter:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint Kubernetes yaml
+        run: kube-linter lint .
+
   lint-fe-and-transformer:
     runs-on: ubuntu-latest
     container:

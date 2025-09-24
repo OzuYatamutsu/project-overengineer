@@ -1,0 +1,36 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+      - feature/serviceify-redis
+  # workflow_run:
+  #   workflows: ["Build and Push Images"]
+  #   types:
+  #     - completed
+
+jobs:
+  deploy-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy redis-master, redis-replica, redis-sentinel
+        run: kubectl apply -f redis/service.yaml
+      
+      - name: Wait for apply (max 30s)
+        run: |
+          kubectl rollout status statefulset/redis-master --timeout=30s
+          kubectl rollout status statefulset/redis-replica --timeout=30s
+          kubectl rollout status deployment/redis-sentinel --timeout=30s
+
+      - name: Dump logs
+        if: failure()
+        run: |
+          kubectl logs --all-containers --previous --selector=app=redis-master
+          kubectl logs --all-containers --previous --selector=app=redis-replica
+          kubectl logs --all-containers --previous --selector=app=redis-sentinel

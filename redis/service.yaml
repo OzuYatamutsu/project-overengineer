@@ -17,7 +17,7 @@ spec:
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-master:latest
           env:
             - name: REDIS_PORT
-              value: 6379
+              value: "6379"
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret
               value: b4yscx92yksfyv9c
           readinessProbe:
@@ -71,11 +71,11 @@ spec:
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:latest
           env:
             - name: REDIS_REPLICA_PORT
-              value: 6379
+              value: "6379"
             - name: REDIS_HOST
               value: redis-master.default.svc.cluster.local
             - name: REDIS_PORT
-              value: 6379
+              value: "6379"
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret
               value: b4yscx92yksfyv9c
           readinessProbe:
@@ -130,11 +130,11 @@ spec:
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:latest
           env:
             - name: SENTINEL_PORT
-              value: 26379
+              value: "26379"
             - name: REDIS_HOST
               value: redis-master.default.svc.cluster.local
             - name: REDIS_PORT
-              value: 6379
+              value: "6379"
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret
               value: b4yscx92yksfyv9c
           readinessProbe:

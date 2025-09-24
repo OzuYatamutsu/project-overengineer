@@ -80,6 +80,15 @@ spec:
       labels:
         app: redis-replica
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: redis-replica
+                topologyKey: "kubernetes.io/hostname"
       containers:
         - name: redis-replica
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:v1
@@ -153,6 +162,15 @@ spec:
       labels:
         app: redis-sentinel
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: redis-sentinel
+                topologyKey: "kubernetes.io/hostname"
       containers:
         - name: redis-sentinel
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:v1

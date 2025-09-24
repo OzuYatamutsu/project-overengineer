@@ -12,11 +12,6 @@ spec:
       labels:
         app: redis-master
     spec:
-      securityContext:
-        runAsUser: 999  # redis user
-        runAsGroup: 999  # redis group
-        fsGroup: 999  # redis group
-        runAsNonRoot: true
       containers:
         - name: redis-master
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-master:v1
@@ -55,6 +50,11 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /data
+      securityContext:
+        runAsUser: 999  # redis user
+        runAsGroup: 999  # redis group
+        fsGroup: 999  # redis group
+        runAsNonRoot: true
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -80,11 +80,6 @@ spec:
       labels:
         app: redis-replica
     spec:
-      securityContext:
-        runAsUser: 999  # redis user
-        runAsGroup: 999  # redis group
-        fsGroup: 999  # redis group
-        runAsNonRoot: true
       containers:
         - name: redis-replica
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:v1
@@ -128,6 +123,11 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /data
+      securityContext:
+        runAsUser: 999  # redis user
+        runAsGroup: 999  # redis group
+        fsGroup: 999  # redis group
+        runAsNonRoot: true
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -153,11 +153,6 @@ spec:
       labels:
         app: redis-sentinel
     spec:
-      securityContext:
-        runAsUser: 999  # redis user
-        runAsGroup: 999  # redis group
-        fsGroup: 999  # redis group
-        runAsNonRoot: true
       containers:
         - name: redis-sentinel
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:v1
@@ -197,6 +192,11 @@ spec:
               memory: "256Mi"
           securityContext:
             readOnlyRootFilesystem: true
+      securityContext:
+        runAsUser: 999  # redis user
+        runAsGroup: 999  # redis group
+        fsGroup: 999  # redis group
+        runAsNonRoot: true
 
 ---
 

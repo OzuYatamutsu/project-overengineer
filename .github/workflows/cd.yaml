@@ -31,6 +31,7 @@ jobs:
       - name: Dump logs (if apply failed)
         if: failure()
         run: |
+          echo 'Dumping logs...'
           kubectl logs --all-containers --selector=app=redis-master
           kubectl logs --all-containers --selector=app=redis-replica
           kubectl logs --all-containers --selector=app=redis-sentinel

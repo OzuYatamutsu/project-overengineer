@@ -19,7 +19,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: redis-master
-          image: ghcr.io/ozuyatamutsu/project-overengineer/redis-master:latest
+          image: ghcr.io/ozuyatamutsu/project-overengineer/redis-master:v1
           env:
             - name: REDIS_PORT
               value: "6379"
@@ -87,7 +87,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: redis-replica
-          image: ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:latest
+          image: ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:v1
           env:
             - name: REDIS_REPLICA_PORT
               value: "6379"
@@ -160,7 +160,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: redis-sentinel
-          image: ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:latest
+          image: ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:v1
           env:
             - name: SENTINEL_PORT
               value: "26379"

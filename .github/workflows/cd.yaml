@@ -28,9 +28,9 @@ jobs:
           kubectl rollout status statefulset/redis-replica --timeout=30s
           kubectl rollout status deployment/redis-sentinel --timeout=30s
 
-      - name: Dump logs
+      - name: Dump logs (if apply failed)
         if: failure()
         run: |
-          kubectl logs --all-containers --previous --selector=app=redis-master
-          kubectl logs --all-containers --previous --selector=app=redis-replica
-          kubectl logs --all-containers --previous --selector=app=redis-sentinel
+          kubectl logs --all-containers --selector=app=redis-master
+          kubectl logs --all-containers --selector=app=redis-replica
+          kubectl logs --all-containers --selector=app=redis-sentinel

@@ -218,9 +218,9 @@ spec:
         runAsGroup: 999  # redis group
         fsGroup: 999  # redis group
         runAsNonRoot: true
-  volumes:
-  - emptyDir: {}
-    name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
 
 ---
 

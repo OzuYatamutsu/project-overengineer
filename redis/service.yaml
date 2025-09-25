@@ -96,7 +96,7 @@ spec:
             - name: REDIS_REPLICA_PORT
               value: "6379"
             - name: REDIS_HOST
-              value: redis-master.default.svc.cluster.local
+              value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret
@@ -178,7 +178,7 @@ spec:
             - name: SENTINEL_PORT
               value: "26379"
             - name: REDIS_HOST
-              value: redis-master.default.svc.cluster.local
+              value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret

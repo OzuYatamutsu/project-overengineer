@@ -5,7 +5,7 @@ ENV REDIS_HOST=redis
 ENV REDIS_PORT=6379
 # ENV REDIS_PASSWORD
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY start-sentinel.sh /start-sentinel.sh
+RUN chmod +x /start-sentinel.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/start-sentinel.sh"]

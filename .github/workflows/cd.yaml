@@ -22,7 +22,7 @@ jobs:
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml
       
-      - name: Wait for apply (max 30s)
+      - name: Wait for apply (max 30s/service)
         run: |
           kubectl rollout status statefulset/redis-master --timeout=30s
           kubectl rollout status statefulset/redis-replica --timeout=30s

@@ -8,4 +8,4 @@ ENV REDIS_PORT=6379
 COPY start-sentinel.sh /tmp/start-sentinel.sh
 RUN chmod +x /tmp/start-sentinel.sh
 
-ENTRYPOINT ["/start-sentinel.sh"]
+ENTRYPOINT ["/tmp/start-sentinel.sh"]

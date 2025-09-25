@@ -24,8 +24,11 @@ jobs:
       
       - name: Wait for apply (max 30s/service)
         run: |
+          echo '[waiting for redis-master]'
           kubectl rollout status statefulset/redis-master --timeout=30s
+          echo '[waiting for redis-replica]'
           kubectl rollout status statefulset/redis-replica --timeout=30s
+          echo '[waiting for redis-sentinel]'
           kubectl rollout status deployment/redis-sentinel --timeout=30s
 
       - name: Dump logs (if apply failed)

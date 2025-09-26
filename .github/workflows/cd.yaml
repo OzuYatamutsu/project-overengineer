@@ -3,11 +3,10 @@ on:
   push:
     branches:
       - main
-      - feature/serviceify-redis
-  # workflow_run:
-  #   workflows: ["Build and Push Images"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["Build and Push Images"]
+    types:
+      - completed
 
 jobs:
   deploy-test:

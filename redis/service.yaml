@@ -211,8 +211,8 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
-          - mountPath: /tmp
-            name: tmp
+          - mountPath: /tmp/redis-sentinel
+            name: sentinel-config
       securityContext:
         runAsUser: 999  # redis user
         runAsGroup: 999  # redis group
@@ -220,7 +220,7 @@ spec:
         runAsNonRoot: true
       volumes:
         - emptyDir: {}
-          name: tmp
+          name: sentinel-config
 
 ---
 

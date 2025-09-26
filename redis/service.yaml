@@ -175,13 +175,13 @@ spec:
         - name: redis-sentinel
           image: ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:v1
           env:
-            - name: REDIS_SENTINEL_PORT_NUMBER
+            - name: SENTINEL_PORT
               value: "26379"
-            - name: REDIS_MASTER_HOST
+            - name: REDIS_HOST
               value: svc-redis-master.default.svc.cluster.local
-            - name: REDIS_MASTER_PORT_NUMBER
+            - name: REDIS_PORT
               value: "6379"
-            - name: REDIS_MASTER_PASSWORD  # TODO rotate and replace with secret
+            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
               value: b4yscx92yksfyv9c
           readinessProbe:
             tcpSocket:

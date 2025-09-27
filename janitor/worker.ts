@@ -4,7 +4,7 @@ import http from "http";
 const HEALTH_CHECK_PORT = (
     process.env.HEALTH_CHECK_PORT
     ? Number(process.env.HEALTH_CHECK_PORT)
-    : 3001
+    : 3000
 )
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600

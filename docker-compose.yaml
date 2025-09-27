@@ -62,7 +62,7 @@ services:
       context: .
       dockerfile: janitor/Dockerfile
     ports:
-      - "3000:3000"  # for /healthz endpoint
+      - "3001:3001"  # for /healthz endpoint
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}

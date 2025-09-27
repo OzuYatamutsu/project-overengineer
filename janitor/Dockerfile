@@ -19,5 +19,8 @@ COPY janitor ./janitor
 RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/janitor build
 
+# For /healthz endpoint
+EXPOSE 3000
+
 USER nodejs
 CMD ["node", "janitor/dist/worker.js"]

@@ -61,6 +61,8 @@ services:
     build:
       context: .
       dockerfile: janitor/Dockerfile
+    ports:
+      - "3000:3000"  # for /healthz endpoint
     environment:
       SENTINEL_HOST: ${SENTINEL_HOST}
       SENTINEL_PORT: ${SENTINEL_PORT}

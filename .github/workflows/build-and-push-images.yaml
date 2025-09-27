@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/servicify-janitor
+      - feature/serviceify-janitor
 
 jobs:
   ollama-ocr:

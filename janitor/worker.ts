@@ -68,8 +68,7 @@ setInterval(async () => {
     console.log("janitor: cleanup job finished")
 }, POLLING_PERIOD_MSECS)
 
-// health check server
-let server = http.createServer(async (req, res) => {
+const healthCheckServer = http.createServer(async (req, res) => {
     if (req.url === "/healthz") {
         const result = await _healthz()
 
@@ -85,8 +84,8 @@ let server = http.createServer(async (req, res) => {
         res.end("Not Found")
     }
 })
-if (!server.listening) {
-    server.listen(HEALTH_CHECK_PORT, () => {
+if (!healthCheckServer.listening) {
+    healthCheckServer.listen(HEALTH_CHECK_PORT, () => {
         console.log(`/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
     })
 }

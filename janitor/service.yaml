@@ -31,13 +31,17 @@ spec:
               path: /healthz
               port: 3000
             initialDelaySeconds: 10
-            periodSeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 3
           livenessProbe:
             httpGet:
               path: /healthz
               port: 3000
             initialDelaySeconds: 30
+            timeoutSeconds: 5
             periodSeconds: 30
+            failureThreshold: 5
+            successThreshold: 1
           ports:
             - containerPort: 3000  # Only for /healthz
           resources:

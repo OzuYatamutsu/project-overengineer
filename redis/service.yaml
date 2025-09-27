@@ -25,7 +25,7 @@ spec:
               command:
               - redis-cli
               - ping
-            initialDelaySeconds: 20
+            initialDelaySeconds: 10
             timeoutSeconds: 5
             periodSeconds: 3
           livenessProbe:
@@ -33,7 +33,7 @@ spec:
               port: 6379
             initialDelaySeconds: 30
             timeoutSeconds: 5
-            periodSeconds: 5
+            periodSeconds: 30
             failureThreshold: 5
             successThreshold: 1
           ports:

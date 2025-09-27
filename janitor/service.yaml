@@ -27,19 +27,15 @@ spec:
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret
               value: b4yscx92yksfyv9c
           readinessProbe:
-            exec:
-              command:
-              - pgrep
-              - -x
-              - node
+            httpGet:
+              path: /healthz
+              port: 3000
             initialDelaySeconds: 10
             periodSeconds: 30
           livenessProbe:
-            exec:
-              command:
-              - pgrep
-              - -x
-              - node
+            httpGet:
+              path: /healthz
+              port: 3000
             initialDelaySeconds: 30
             periodSeconds: 30
           resources:

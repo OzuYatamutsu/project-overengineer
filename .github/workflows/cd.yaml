@@ -21,6 +21,9 @@ jobs:
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml
       
+      - name: Deploy janitor
+        run: kubectl apply -f janitor/service.yaml
+      
       - name: Wait for apply (max 30s/service)
         run: |
           echo '[waiting for redis-master]'
@@ -29,6 +32,8 @@ jobs:
           kubectl rollout status statefulset/redis-replica --timeout=30s
           echo '[waiting for redis-sentinel]'
           kubectl rollout status deployment/redis-sentinel --timeout=30s
+          echo '[waiting for janitor]'
+          kubectl rollout status deployment/janitor --timeout=30s
 
       - name: Dump logs (if apply failed)
         if: failure()
@@ -40,3 +45,5 @@ jobs:
           kubectl logs --all-containers --selector=app=redis-replica
           echo '[redis-sentinel logs]'
           kubectl logs --all-containers --selector=app=redis-sentinel
+          echo '[janitor logs]'
+          kubectl logs --all-containers --selector=app=janitor

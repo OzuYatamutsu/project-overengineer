@@ -1,9 +1,13 @@
 import { getRedis } from '@project-overengineer/shared-lib';
 import http from "http";
 
-const HEALTH_CHECK_PORT = 3000
+const HEALTH_CHECK_PORT = (
+    process.env.HEALTH_CHECK_PORT
+    ? Number(process.env.HEALTH_CHECK_PORT)
+    : 3000
+)
 const POLLING_PERIOD_MSECS = 300000
-export const JOB_TTL_SECS = 3000
+export const JOB_TTL_SECS = 3600
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
@@ -70,7 +74,7 @@ http.createServer(async (req, res) => {
         const result = await _healthz()
 
         if (result) {  // Health check pass
-            res.writeHead(204, { "Content-Type": "text/plain" })
+            res.writeHead(200, { "Content-Type": "text/plain" })
             res.end("OK")
         } else {
             res.writeHead(500, { "Content-Type": "text/plain" })

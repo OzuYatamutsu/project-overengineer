@@ -1,7 +1,7 @@
 import { getRedis } from '@project-overengineer/shared-lib';
 import http from "http";
 
-const HEALTH_CHECK_PORT = 4600
+const HEALTH_CHECK_PORT = 3000
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3000
 

@@ -68,24 +68,23 @@ setInterval(async () => {
     console.log("janitor: cleanup job finished")
 }, POLLING_PERIOD_MSECS)
 
-const healthCheckServer = http.createServer(async (req, res) => {
-    if (req.url === "/healthz") {
-        const result = await _healthz()
+if (require.main === module) {
+    http.createServer(async (req, res) => {
+        if (req.url === "/healthz") {
+            const result = await _healthz()
 
-        if (result) {  // Health check pass
-            res.writeHead(200, { "Content-Type": "text/plain" })
-            res.end("OK")
+            if (result) {  // Health check pass
+                res.writeHead(200, { "Content-Type": "text/plain" })
+                res.end("OK")
+            } else {
+                res.writeHead(500, { "Content-Type": "text/plain" })
+                res.end("ERROR")
+            }
         } else {
-            res.writeHead(500, { "Content-Type": "text/plain" })
-            res.end("ERROR")
+            res.writeHead(404, { "Content-Type": "text/plain" })
+            res.end("Not Found")
         }
-    } else {
-        res.writeHead(404, { "Content-Type": "text/plain" })
-        res.end("Not Found")
-    }
-})
-if (!healthCheckServer.listening) {
-    healthCheckServer.listen(HEALTH_CHECK_PORT, () => {
+    }).listen(HEALTH_CHECK_PORT, () => {
         console.log(`/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
     })
 }

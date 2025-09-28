@@ -25,6 +25,48 @@ async function getJobState(jobId: string): Promise<JobUpdate> {
     )
 }
 
+export async function _healthz(): Promise<boolean> {
+    // Health check: ping redis and check if we can list jobs
+    console.log("/healthz: hit, starting health check")
+
+    console.log("/healthz: can we ping redis?")
+    try {
+        if (await getRedis().ping() != 'PONG') {
+            console.log(`/healthz: failed, can't ping redis`)
+            return false
+        }
+
+        console.log(`/healthz: able to ping redis`)
+    } catch (err) {
+        console.log(`/healthz: failed, can't ping redis: ${err}`)
+        return false
+    }
+
+    console.log("/healthz: can we list jobs?")
+    try {
+        await getRedis().keys(`job:*`)
+        console.log(`/healthz: able to list jobs`)
+    } catch (err) {
+        console.log(`/healthz: failed, not able to list jobs: ${err}`)
+        return false
+    }
+
+    console.log("/healthz: health check pass")
+    return true
+}
+
+app.get('/healthz', async (_, res) => {
+    const result = await _healthz()
+
+    if (result) {  // Health check pass
+        res.writeHead(200, { "Content-Type": "text/plain" })
+        res.end("OK")
+    } else {
+        res.writeHead(500, { "Content-Type": "text/plain" })
+        res.end("ERROR")
+    }
+})
+
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     if (!rateLimit(req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
         console.log(`rejecting request from ${req.socket.remoteAddress}, rate limit exceeded`)

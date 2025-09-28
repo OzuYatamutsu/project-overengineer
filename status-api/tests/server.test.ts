@@ -1,6 +1,7 @@
 import { JobUpdate } from '@project-overengineer/shared-lib/job-status'
 import { test, expect } from '@playwright/test'
 import { WebSocket, RawData } from 'ws'
+import { _healthz } from '../server';
 
 // TODO: can't import this from server code,
 // TODO: because server code is at top-level
@@ -38,4 +39,7 @@ test('WebSocket API should respond to queries for job status', async () => {
     expect(message.jobId).toEqual(jobId)
     expect(message.status).toBeTruthy()
   }
+})
+test('status-api healthz endpoint should be working', async () => {
+  expect(await _healthz()).toBe(true)
 })

@@ -42,12 +42,12 @@ export async function _healthz(): Promise<boolean> {
         return false
     }
 
-    console.log("/healthz: can we list jobs?")
+    console.log("/healthz: can we access jobs in redis?")
     try {
-        await getRedis().keys(`job:*`)
-        console.log(`/healthz: able to list jobs`)
+        await getRedis().scan('0', 'MATCH', 'job:*', 'COUNT', 1)
+        console.log(`/healthz: able to access jobs in redis`)
     } catch (err) {
-        console.log(`/healthz: failed, not able to list jobs: ${err}`)
+        console.log(`/healthz: failed, not able to access jobs in redis: ${err}`)
         return false
     }
 

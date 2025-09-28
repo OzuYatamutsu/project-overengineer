@@ -1,12 +1,7 @@
 import { JobUpdate } from '@project-overengineer/shared-lib/job-status'
 import { test, expect } from '@playwright/test'
 import { WebSocket, RawData } from 'ws'
-import { _healthz } from '../server';
-
-// TODO: can't import this from server code,
-// TODO: because server code is at top-level
-// TODO: and will cause a port conflict
-const port = 3001;
+import { _healthz, port } from '../server';
 
 test('WebSocket API should respond to queries for job status', async () => {
   const jobId = '2cfdbca8-245d-4fe1-a3f5-b4dffe0a8a6b'

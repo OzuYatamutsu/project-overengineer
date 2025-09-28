@@ -4,7 +4,7 @@ import http from 'http';
 import { JobStatus, JobUpdate, rateLimit, getRedis } from '@project-overengineer/shared-lib';
 
 const app = express();
-const port = Number(process.env.STATUS_API_PORT) ?? 3001
+export const port = Number(process.env.STATUS_API_PORT) ?? 3001
 const POLLING_PERIOD_MSECS = 2000
 
 // Max 1 request per sec
@@ -96,7 +96,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     })
 })
 
-if (!server.listening) {
+if (require.main === module) {
     server.listen(port, async () => {
         console.log(`Status WS API listening on port ${port}`);
     });

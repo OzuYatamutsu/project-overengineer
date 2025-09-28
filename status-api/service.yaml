@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: status-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: status-api
+  template:
+    metadata:
+      labels:
+        app: status-api
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: status-api
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: status-api
+          image: ghcr.io/ozuyatamutsu/project-overengineer/status-api:v1
+          env:
+            - name: STATUS_API_PORT
+              value: "3001"
+            - name: SENTINEL_HOST
+              value: svc-redis-sentinel.default.svc.cluster.local
+            - name: SENTINEL_PORT
+              value: "26379"
+            - name: REDIS_HOST
+              value: svc-redis-master.default.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
+              value: b4yscx92yksfyv9c
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3001
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3001
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 30
+            failureThreshold: 5
+            successThreshold: 1
+          ports:
+            - containerPort: 3001
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+      securityContext:
+        runAsUser: 1001  # nodejs user
+        runAsGroup: 1001  # nodejs group
+        fsGroup: 1001  # nodejs group
+        runAsNonRoot: true
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-status-api
+spec:
+  selector:
+    app: status-api
+  ports:
+    - port: 3001
+      targetPort: 3001
+  type: ClusterIP

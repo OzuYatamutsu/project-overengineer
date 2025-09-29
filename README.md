@@ -232,14 +232,14 @@ SLOs are enforced by monitoring the following:
 
 All components in the system expose methods to determine whether they are live and operational. (These are used to implement liveness and readiness probes in Kubernetes.)
 
-| Component                         | Health Check                                                     |
-|----------------------------------|-----------------------------------------------------------------|
-| Frontend                          | `GET /`                                                         |
-| Redis (`redis-master`, `redis-replica`) | `redis-cli -h svc-redis-master.default.svc.cluster.local`      |
-| Redis (`redis-sentinel`)          | Port `$SENTINEL_PORT` is up (default `26379`)                  |
-| Status API                        | `GET /healthz`                                                  |
-| OCR Core (`ocr-worker`)           | `GET /healthz`                                                  |
-| OCR Core (`ollama-ocr`)           | `GET /`    
+| Component                         | Health Check                     |
+|----------------------------------|-----------------------------------|
+| Frontend                          | `GET /`                          |
+| Redis (`redis-master`, `redis-replica`) | `redis-cli -h $REDIS_HOST` |
+| Redis (`redis-sentinel`)          | Port `$SENTINEL_PORT` is up      |
+| Status API                        | `GET /healthz`                   |
+| OCR Core (`ocr-worker`)           | `GET /healthz`                   |
+| OCR Core (`ollama-ocr`)           | `GET /`                          |
 
 ### Telemetry
 

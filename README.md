@@ -79,10 +79,10 @@ classDef plainText fill:none,stroke:none;
 The service consists of 5 components:
 
 - **Client**: The Next.js frontend to the OCR service.
-- **Frontend**: A Next.js app that both serves the client and exposes the Transformer API.
-- **Redis**: A Redis cluster used to manage job data and state.
-- **Status API**: An API which returns the status of a job (within Redis) both live and on-demand.
-- **OCR Core**: A service which processes images within Redis and returns formatted text.
+- **Frontend** (`project-overengineer-fe`): A Next.js app that both serves the client and exposes the Transformer API.
+- **Redis** (`redis-master`, `redis-replica`, `redis-sentinel`): A Redis cluster used to manage job data and state.
+- **Status API** (`status-api`): An API which returns the status of a job (within Redis) both live and on-demand.
+- **OCR Core** (`ocr-worker`, `ollama-ocr`): A service which processes images within Redis and returns formatted text.
 The API documentation is [here](./API-Docs.md).
 
 ## Flow
@@ -226,15 +226,32 @@ Public-facing API endpoints are protected by IP-based rate limiting. Exceeding r
 
 ## Observability
 
-To enforce the SLOs, all components within the system are expected to emit at least the following telemetry:
+SLOs are enforced by monitoring the following:
 
-### Client
+### Component liveness
+
+All components in the system expose methods to determine whether they are live and operational. (These are used to implement liveness and readiness probes in Kubernetes.)
+
+| Component                         | Health Check                                                     |
+|----------------------------------|-----------------------------------------------------------------|
+| Frontend                          | `GET /`                                                         |
+| Redis (`redis-master`, `redis-replica`) | `redis-cli -h svc-redis-master.default.svc.cluster.local`      |
+| Redis (`redis-sentinel`)          | Port `$SENTINEL_PORT` is up (default `26379`)                  |
+| Status API                        | `GET /healthz`                                                  |
+| OCR Core (`ocr-worker`)           | `GET /healthz`                                                  |
+| OCR Core (`ollama-ocr`)           | `GET /`    
+
+### Telemetry
+
+All components within the system are expected to emit the following:
+
+#### Client
 
 - JavaScript logs
 - JavaScript client error rate
 - JavaScript client call stack
 
-### Frontend Cluster
+#### Frontend Cluster
 
 - nginx logs
 - 2xx response rate
@@ -248,7 +265,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 - Network bytes out
 - Heartbeat
 
-### Transformer
+#### Transformer
 
 - Application logs
 - Transformer job count
@@ -261,7 +278,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 - Network bytes out
 - Heartbeat
 
-### Redis
+#### Redis
 
 - Redis logs
 - Active job count
@@ -276,7 +293,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 - Network bytes out
 - Heartbeat
 
-### Status API
+#### Status API
 
 - Application logs
 - Active WebSocket connection count
@@ -293,7 +310,7 @@ To enforce the SLOs, all components within the system are expected to emit at le
 - Network bytes out
 - Heartbeat
 
-### OCR Core
+#### OCR Core
 
 - Application logs
 - Active workers

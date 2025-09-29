@@ -55,16 +55,17 @@ export async function _healthz(): Promise<boolean> {
     return true
 }
 
+// Health check endpoint
 app.get('/healthz', async (_, res) => {
     const result = await _healthz()
 
-    if (result) {  // Health check pass
-        res.writeHead(200, { "Content-Type": "text/plain" })
-        res.end("OK")
-    } else {
-        res.writeHead(500, { "Content-Type": "text/plain" })
-        res.end("ERROR")
-    }
+    res.writeHead(
+        result ? 200 : 500,
+        { "Content-Type": "text/plain" }
+    )
+    res.end(
+        result ? "OK" : "ERROR"
+    )
 })
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {

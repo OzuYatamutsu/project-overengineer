@@ -69,17 +69,18 @@ setInterval(async () => {
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
+    // Health check endpoint
     http.createServer(async (req, res) => {
         if (req.url === "/healthz") {
             const result = await _healthz()
 
-            if (result) {  // Health check pass
-                res.writeHead(200, { "Content-Type": "text/plain" })
-                res.end("OK")
-            } else {
-                res.writeHead(500, { "Content-Type": "text/plain" })
-                res.end("ERROR")
-            }
+            res.writeHead(
+                result ? 200 : 500,
+                { "Content-Type": "text/plain" }
+            )
+            res.end(
+                result ? "OK" : "ERROR"
+            )
         } else {
             res.writeHead(404, { "Content-Type": "text/plain" })
             res.end("Not Found")

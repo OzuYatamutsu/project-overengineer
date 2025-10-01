@@ -1,6 +1,6 @@
 import { Job } from '@project-overengineer/shared-lib/job'
 import { JobStatus } from '@project-overengineer/shared-lib'
-import { processJob } from '../worker'
+import { processJob, _healthz } from '../worker'
 import { test, expect } from '@playwright/test'
 import { promises as fs } from 'fs'
 import { setGlobalDispatcher, Agent } from "undici";
@@ -24,6 +24,9 @@ setGlobalDispatcher(new Agent({
   bodyTimeout: 0, // disable body timeout
 }));
 
+test('ocr-worker healthz endpoint should be working', async () => {
+  expect(await _healthz()).toBe(true)
+})
 test('ocr parses expected text from test image', async () => {
     test.setTimeout(TEST_TIMEOUT_SECS * 1000)
 

@@ -1,5 +1,5 @@
-import { getRedis } from '@project-overengineer/shared-lib';
-import http from "http";
+import { getRedis } from '@project-overengineer/shared-lib'
+import http from "http"
 
 const HEALTH_CHECK_PORT = (
     process.env.HEALTH_CHECK_PORT
@@ -90,4 +90,4 @@ if (require.main === module) {
     })
 }
 
-console.log(`Janitor started.`);
+console.log(`Janitor started.`)

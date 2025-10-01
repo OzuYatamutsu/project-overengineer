@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ocr-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ocr-worker
+  template:
+    metadata:
+      labels:
+        app: ocr-worker
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: ocr-worker
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: ocr-worker
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v1
+          env:
+            - name: SENTINEL_HOST
+              value: svc-redis-sentinel.default.svc.cluster.local
+            - name: SENTINEL_PORT
+              value: "26379"
+            - name: REDIS_HOST
+              value: svc-redis-master.default.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
+              value: b4yscx92yksfyv9c
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3002
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3002
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 30
+            failureThreshold: 5
+            successThreshold: 1
+          ports:
+            - containerPort: 3002
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+      securityContext:
+        runAsUser: 1001  # nodejs user
+        runAsGroup: 1001  # nodejs group
+        fsGroup: 1001  # nodejs group
+        runAsNonRoot: true
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-ocr-worker
+spec:
+  selector:
+    app: ocr-worker
+  ports:
+    - port: 3001
+      targetPort: 3001
+  type: ClusterIP

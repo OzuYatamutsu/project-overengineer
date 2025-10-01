@@ -1,5 +1,5 @@
 services:
-  ollama-ocr:  # TODO: to be sidecar on ocr-core
+  ollama-ocr:
    build:
      context: ./ollama
      dockerfile: Dockerfile

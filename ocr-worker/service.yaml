@@ -62,11 +62,49 @@ spec:
               memory: "256Mi"
           securityContext:
             readOnlyRootFilesystem: true
+      initContainers:
+        - name: ollama-ocr
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v1
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 11434
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 11434
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 30
+            failureThreshold: 5
+            successThreshold: 1
+          ports:
+            - containerPort: 11434
+          resources:
+            requests:  # TODO: tune
+              cpu: "1000m"
+              memory: "1Gi"
+            limits:  # TODO: tune
+              cpu: "5000m"
+              memory: "24Gi"
+          volumeMounts:
+          - mountPath: /dev/shm
+            name: ollama-ocr-shm
+          securityContext:
+            readOnlyRootFilesystem: true
       securityContext:
         runAsUser: 1001  # nodejs user
         runAsGroup: 1001  # nodejs group
         fsGroup: 1001  # nodejs group
         runAsNonRoot: true
+  volumes:
+    - name: ollama-ocr-shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 1Gi
 
 ---
 

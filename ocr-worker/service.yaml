@@ -65,6 +65,7 @@ spec:
       initContainers:
         - name: ollama-ocr
           image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v1
+          restartPolicy: Always  # sidecar
           readinessProbe:
             httpGet:
               path: /

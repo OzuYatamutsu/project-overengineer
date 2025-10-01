@@ -62,10 +62,8 @@ spec:
               memory: "256Mi"
           securityContext:
             readOnlyRootFilesystem: true
-      initContainers:
-        - name: ollama-ocr
+        - name: ollama-ocr    # sidecar
           image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v1
-          restartPolicy: Always  # sidecar
           readinessProbe:
             httpGet:
               path: /
@@ -94,6 +92,8 @@ spec:
           volumeMounts:
           - mountPath: /dev/shm
             name: ollama-ocr-shm
+          - mountPath: /.ollama
+            name: ollama-ocr-data
           securityContext:
             readOnlyRootFilesystem: true
       volumes:
@@ -106,6 +106,14 @@ spec:
         runAsGroup: 1001  # nodejs group
         fsGroup: 1001  # nodejs group
         runAsNonRoot: true
+  volumeClaimTemplates:
+  - metadata:
+      name: ollama-ocr-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 256Mi
 
 ---
 

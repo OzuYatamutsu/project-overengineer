@@ -1,0 +1,2 @@
+# Note: ollama-ocr is deployed as a sidecar to ocr-worker.
+# See ocr-worker/service.yaml for the service spec.

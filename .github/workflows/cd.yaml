@@ -27,6 +27,9 @@ jobs:
       - name: Deploy status-api
         run: kubectl apply -f status-api/service.yaml
 
+      - name: Deploy ocr-worker, ollama-ocr
+        run: kubectl apply -f ocr-worker/service.yaml
+
       - name: Wait for apply (max 60s/service)
         run: |
           echo '[waiting for redis-master]'
@@ -39,6 +42,8 @@ jobs:
           kubectl rollout status deployment/janitor --timeout=60s
           echo '[waiting for status-api]'
           kubectl rollout status deployment/status-api --timeout=60s
+          echo '[waiting for ocr-worker, ollama-ocr]'
+          kubectl rollout status statefulset/ocr-worker --timeout=60s
 
       - name: Dump logs (if apply failed)
         if: failure()
@@ -54,3 +59,5 @@ jobs:
           kubectl logs --all-containers --selector=app=janitor
           echo '[status-api logs]'
           kubectl logs --all-containers --selector=app=status-api
+          echo '[ocr-worker, ollama-ocr logs]'
+          kubectl logs --all-containers --selector=app=ocr-worker

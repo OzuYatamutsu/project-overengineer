@@ -100,11 +100,11 @@ spec:
         runAsGroup: 1001  # nodejs group
         fsGroup: 1001  # nodejs group
         runAsNonRoot: true
-  volumes:
-    - name: ollama-ocr-shm
-      emptyDir:
-        medium: Memory
-        sizeLimit: 1Gi
+    volumes:
+      - name: ollama-ocr-shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
 
 ---
 

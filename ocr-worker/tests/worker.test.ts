@@ -1,4 +1,6 @@
-import { JobStatus, Job, log } from '@project-overengineer/shared-lib'
+import { JobStatus } from '@project-overengineer/shared-lib/job-status'
+import { Job } from '@project-overengineer/shared-lib/job'
+import { log } from '@project-overengineer/shared-lib/logging'
 import { processJob, _healthz } from '../worker'
 import { test, expect } from '@playwright/test'
 import { promises as fs } from 'fs'

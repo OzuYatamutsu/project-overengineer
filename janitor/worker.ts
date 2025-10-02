@@ -1,4 +1,5 @@
-import { getRedis, log } from '@project-overengineer/shared-lib'
+import { getRedis } from '@project-overengineer/shared-lib/redis'
+import { log } from '@project-overengineer/shared-lib/logging'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (

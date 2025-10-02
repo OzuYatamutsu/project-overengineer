@@ -1,7 +1,9 @@
 import express from 'express'
 import { WebSocketServer, WebSocket, RawData } from "ws"
 import http from 'http'
-import { JobStatus, JobUpdate, rateLimit, getRedis } from '@project-overengineer/shared-lib'
+import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib/job-status'
+import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
+import { getRedis } from '@project-overengineer/shared-lib/redis'
 import { log } from '@project-overengineer/shared-lib/logging'
 
 const app = express();

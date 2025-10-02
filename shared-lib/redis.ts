@@ -1,15 +1,17 @@
 import Redis from "ioredis";
-import { enforceConfig } from "./verify";
+import { enforceConfig } from "./verify"
+import { log } from "./logging"
 
 let redis: Redis
 
-export function getRedis(): Redis {
-    enforceConfig("REDIS_HOST")
-    enforceConfig("REDIS_PORT")
-    enforceConfig("REDIS_PASSWORD")
+export function getRedis(serviceName: string): Redis {
+    enforceConfig(serviceName, "REDIS_HOST")
+    enforceConfig(serviceName, "REDIS_PORT")
+    enforceConfig(serviceName, "REDIS_PASSWORD")
 
     if (!redis) {
-        console.log(
+        log(
+            serviceName,
             `Opening new Redis connection (primary=${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, sentinel(s): `
             + (
                 process.env.SENTINEL_HOST

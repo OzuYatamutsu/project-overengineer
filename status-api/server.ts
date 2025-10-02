@@ -1,7 +1,7 @@
 import express from 'express';
 import { WebSocketServer, WebSocket, RawData } from "ws";
 import http from 'http';
-import { JobStatus, JobUpdate, rateLimit, getRedis } from '@project-overengineer/shared-lib';
+import { JobStatus, JobUpdate, rateLimit, getRedis, log } from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) ?? 3001
@@ -19,39 +19,39 @@ const wss = new WebSocketServer({ server });
 async function getJobState(jobId: string): Promise<JobUpdate> {
     return new JobUpdate(
         jobId,
-        await getRedis().hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
-        await getRedis().hget(`job:${jobId}`, 'result') ?? "",
-        Number(await getRedis().hget(`job:${jobId}`, 'progress')) ?? null
+        await getRedis("status-api").hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
+        await getRedis("status-api").hget(`job:${jobId}`, 'result') ?? "",
+        Number(await getRedis("status-api").hget(`job:${jobId}`, 'progress')) ?? null
     )
 }
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    console.log("/healthz: hit, starting health check")
+    log("status-api", "/healthz: hit, starting health check")
 
-    console.log("/healthz: can we ping redis?")
+    log("status-api", "/healthz: can we ping redis?")
     try {
-        if (await getRedis().ping() != 'PONG') {
-            console.log(`/healthz: failed, can't ping redis`)
+        if (await getRedis("status-api").ping() != 'PONG') {
+            log("status-api", `/healthz: failed, can't ping redis`)
             return false
         }
 
-        console.log(`/healthz: able to ping redis`)
+        log("status-api", `/healthz: able to ping redis`)
     } catch (err) {
-        console.log(`/healthz: failed, can't ping redis: ${err}`)
+        log("status-api", `/healthz: failed, can't ping redis: ${err}`)
         return false
     }
 
-    console.log("/healthz: can we access jobs in redis?")
+    log("status-api", "/healthz: can we access jobs in redis?")
     try {
-        await getRedis().scan('0', 'MATCH', 'job:*', 'COUNT', 1)
-        console.log(`/healthz: able to access jobs in redis`)
+        await getRedis("status-api").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
+        log("status-api", `/healthz: able to access jobs in redis`)
     } catch (err) {
-        console.log(`/healthz: failed, not able to access jobs in redis: ${err}`)
+        log("status-api", `/healthz: failed, not able to access jobs in redis: ${err}`)
         return false
     }
 
-    console.log("/healthz: health check pass")
+    log("status-api", "/healthz: health check pass")
     return true
 }
 
@@ -69,19 +69,19 @@ app.get('/healthz', async (_, res) => {
 })
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    if (!rateLimit(req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
-        console.log(`rejecting request from ${req.socket.remoteAddress}, rate limit exceeded`)
+    if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
+        log("status-api", `rejecting request from ${req.socket.remoteAddress}, rate limit exceeded`)
         ws.send('Rate limit exceeded')
         ws.close()
     }
 
-    console.log(`${req.socket.remoteAddress}: New connection`)
+    log("status-api", `${req.socket.remoteAddress}: New connection`)
 
     ws.on('message', (data: RawData) => {
         const message = JSON.parse(data.toString())
         const jobId = message.jobId
 
-        console.log(`${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
+        log("status-api", `${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
 
         setInterval(async () => {
             const jobState = await getJobState(jobId)
@@ -93,12 +93,12 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     })
 
     ws.on('close', () => {
-        console.log(`${req.socket.remoteAddress}: Stop monitoring status (closed)`)
+        log("status-api", `${req.socket.remoteAddress}: Stop monitoring status (closed)`)
     })
 })
 
 if (require.main === module) {
     server.listen(port, async () => {
-        console.log(`Status WS API listening on port ${port}`);
+        log("status-api", `Status WS API listening on port ${port}`);
     });
 }

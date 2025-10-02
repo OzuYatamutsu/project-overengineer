@@ -4,8 +4,7 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
-import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib/job-status';
-import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
+import { JobStatus, JobUpdate, MAX_FILE_SIZE_MB, log } from '@project-overengineer/shared-lib'
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
@@ -44,7 +43,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
     try {
       const jobId = await uploadToTransformer(file)
-      console.log(`Uploaded new job with ID: ${jobId}`)
+      log("project-overengineer-fe", `Uploaded new job with ID: ${jobId}`)
 
       monitorProgress(jobId)
       toast.success(`Upload complete.`)

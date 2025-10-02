@@ -1,4 +1,4 @@
-import { Job, JobStatus, WorkerState, getRedis } from '@project-overengineer/shared-lib'
+import { Job, JobStatus, WorkerState, getRedis, log } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
@@ -16,14 +16,14 @@ let workerState: WorkerState = WorkerState.IDLE
 
 async function pullJobDetails(jobId: string): Promise<Job> {
     return Job.fromRedisObject(
-        await getRedis().hgetall(`job:${jobId}`)
+        await getRedis("ocr-worker").hgetall(`job:${jobId}`)
     )
 }
 
 export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
 
-    console.log(`Job ${job.id} sent to OCR engine, processing...`)
+    log("ocr-worker", `Job ${job.id} sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
        method: "POST",
        headers: {"Content-Type": "application/json"},
@@ -41,7 +41,7 @@ export async function processJob(job: Job): Promise<Job> {
     })
 
     timeDelta = Math.round((Date.now() / 1000) - timeDelta)
-    console.log(`OCR finished in ${timeDelta} secs`)
+    log("ocr-worker", `OCR finished in ${timeDelta} secs`)
 
     if (!jobResult.ok) {
        throw new Error(`OCR failed: ${jobResult.statusText}`)
@@ -56,36 +56,36 @@ export async function processJob(job: Job): Promise<Job> {
 }
 
 async function commit(job: Job): Promise<void> {
-    await getRedis().hset(`job:${job.id}`, job.serialize())
+    await getRedis("ocr-worker").hset(`job:${job.id}`, job.serialize())
 }
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    console.log("/healthz: hit, starting health check")
+    log("ocr-worker", "/healthz: hit, starting health check")
 
-    console.log("/healthz: can we ping redis?")
+    log("ocr-worker", "/healthz: can we ping redis?")
     try {
-        if (await getRedis().ping() != 'PONG') {
-            console.log(`/healthz: failed, can't ping redis`)
+        if (await getRedis("ocr-worker").ping() != 'PONG') {
+            log("ocr-worker", `/healthz: failed, can't ping redis`)
             return false
         }
 
-        console.log(`/healthz: able to ping redis`)
+        log("ocr-worker", `/healthz: able to ping redis`)
     } catch (err) {
-        console.log(`/healthz: failed, can't ping redis: ${err}`)
+        log("ocr-worker", `/healthz: failed, can't ping redis: ${err}`)
         return false
     }
 
-    console.log("/healthz: can we access jobs in redis?")
+    log("ocr-worker", "/healthz: can we access jobs in redis?")
     try {
-        await getRedis().scan('0', 'MATCH', 'job:*', 'COUNT', 1)
-        console.log(`/healthz: able to access jobs in redis`)
+        await getRedis("ocr-worker").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
+        log("ocr-worker", `/healthz: able to access jobs in redis`)
     } catch (err) {
-        console.log(`/healthz: failed, not able to access jobs in redis: ${err}`)
+        log("ocr-worker", `/healthz: failed, not able to access jobs in redis: ${err}`)
         return false
     }
 
-    console.log("/healthz: health check pass")
+    log("ocr-worker", "/healthz: health check pass")
     return true
 }
 
@@ -95,14 +95,14 @@ setInterval(async () => {
         return
     }
 
-    const keys = await getRedis().keys(`job:*`)
+    const keys = await getRedis("ocr-worker").keys(`job:*`)
     if (keys == null) {
         return
     }
 
     // O(n), but cheap because old jobs are cleaned up
     for (const key of keys) {
-        const status = await getRedis().hget(key, "status")
+        const status = await getRedis("ocr-worker").hget(key, "status")
         if (status !== "WAITING") {
             continue
         }
@@ -111,7 +111,7 @@ setInterval(async () => {
 
         let job: Job = await pullJobDetails(key.replace("job:", ""))
         job.status = JobStatus.PROCESSING
-        console.log(`Processing job with ID ${key}`)
+        log("ocr-worker", `Processing job with ID ${key}`)
         await commit(job)
 
         const startTime = (Date.now() / 1000)
@@ -129,7 +129,7 @@ setInterval(async () => {
         }
 
         job.status = JobStatus.DONE
-        console.log(`Job with ID ${key} completed, committing`)
+        log("ocr-worker", `Job with ID ${key} completed, committing`)
         await commit(job)
 
         workerState = WorkerState.IDLE
@@ -154,8 +154,8 @@ if (require.main === module) {
             res.end("Not Found")
         }
     }).listen(HEALTH_CHECK_PORT, () => {
-        console.log(`/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
+        log("ocr-worker", `/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
     })
 }
 
-console.log(`OCR worker started.`)
+log("ocr-worker", `OCR worker started.`)

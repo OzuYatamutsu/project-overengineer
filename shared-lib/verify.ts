@@ -1,8 +1,9 @@
-import assert from "assert";
+import assert from "assert"
+import { log } from "./logging"
 
-export function enforceConfig(configKey: string, print=false): void {
+export function enforceConfig(serviceName: string, configKey: string, print=false): void {
     assert(!!process.env[configKey], `The required env var ${configKey} wasn't set!`)
     if (print) {
-        console.log(`config: ${configKey}=${process.env[configKey]}`)
+        log(serviceName, `config: ${configKey}=${process.env[configKey]}`)
     }
 }

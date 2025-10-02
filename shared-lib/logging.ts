@@ -7,6 +7,6 @@ export function log(serviceName: string, message: string): void {
 function _logPrefix(serviceName: string): string {
     return (
         `${new Date().toISOString()} ` +
-        `${serviceName}@${os.hostname()}: `
+        `${serviceName}@${os.hostname()}:`
     )
 }

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 import { Job } from '@project-overengineer/shared-lib/job'
 import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
 import { log } from '@project-overengineer/shared-lib/logging'
-import { standarizeImage, validateImage, saveJob, getClientIp } from './handler'
+import { standardizeImage, validateImage, saveJob, getClientIp } from './handler'
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
@@ -51,7 +51,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   // Convert and standardize image format
-  const imageData = await standarizeImage(
+  const imageData = await standardizeImage(
     Buffer.from(rawImageData)
   )
 

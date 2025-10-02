@@ -23,7 +23,7 @@ export async function validateImage(rawImageData: ArrayBuffer): Promise<boolean>
     )
 }
 
-export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promise<string> {
+export async function standardizeImage(rawImageData: Buffer<ArrayBuffer>): Promise<string> {
     const convertedImageData = await sharp(rawImageData)
         .resize(
             MAX_DIMENSIONS_X_PX, MAX_DIMENSIONS_Y_PX,

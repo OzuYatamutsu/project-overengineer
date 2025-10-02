@@ -44,7 +44,7 @@ jobs:
           echo '[waiting for status-api]'
           kubectl rollout status deployment/status-api --timeout=60s
           echo '[waiting for ocr-worker, ollama-ocr]'
-          kubectl rollout status statefulset/ocr-worker --timeout=600s
+          kubectl rollout status statefulset/ocr-worker --timeout=6000s
 
       - name: Dump logs (if apply failed)
         if: failure()

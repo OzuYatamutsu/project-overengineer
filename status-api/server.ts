@@ -30,25 +30,21 @@ async function getJobState(jobId: string): Promise<JobUpdate> {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("status-api", "/healthz: hit, starting health check")
+    log("status-api", "/healthz: starting health check")
 
-    log("status-api", "/healthz: can we ping redis?")
     try {
         if (await getRedis("status-api").ping() != 'PONG') {
             log("status-api", `/healthz: failed, can't ping redis`)
             return false
         }
 
-        log("status-api", `/healthz: able to ping redis`)
     } catch (err) {
         log("status-api", `/healthz: failed, can't ping redis: ${err}`)
         return false
     }
 
-    log("status-api", "/healthz: can we access jobs in redis?")
     try {
         await getRedis("status-api").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
-        log("status-api", `/healthz: able to access jobs in redis`)
     } catch (err) {
         log("status-api", `/healthz: failed, not able to access jobs in redis: ${err}`)
         return false

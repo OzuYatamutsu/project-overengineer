@@ -26,25 +26,20 @@ export function jobIsStale(jobKey: string, createUTime: number): boolean {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("janitor", "/healthz: hit, starting health check")
+    log("janitor", "/healthz: starting health check")
 
-    log("janitor", "/healthz: can we ping redis?")
     try {
         if (await getRedis("janitor").ping() != 'PONG') {
             log("janitor", `/healthz: failed, can't ping redis`)
             return false
         }
-
-        log("janitor", `/healthz: able to ping redis`)
     } catch (err) {
         log("janitor", `/healthz: failed, can't ping redis: ${err}`)
         return false
     }
 
-    log("janitor", "/healthz: can we list jobs?")
     try {
         await getRedis("janitor").keys(`job:*`)
-        log("janitor", `/healthz: able to list jobs`)
     } catch (err) {
         log("janitor", `/healthz: failed, not able to list jobs: ${err}`)
         return false

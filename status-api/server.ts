@@ -1,7 +1,8 @@
-import express from 'express';
-import { WebSocketServer, WebSocket, RawData } from "ws";
-import http from 'http';
-import { JobStatus, JobUpdate, rateLimit, getRedis, log } from '@project-overengineer/shared-lib'
+import express from 'express'
+import { WebSocketServer, WebSocket, RawData } from "ws"
+import http from 'http'
+import { JobStatus, JobUpdate, rateLimit, getRedis } from '@project-overengineer/shared-lib'
+import { log } from '@project-overengineer/shared-lib/logging'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) ?? 3001
@@ -99,6 +100,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
 if (require.main === module) {
     server.listen(port, async () => {
-        log("status-api", `Status WS API listening on port ${port}`);
-    });
+        log("status-api", `Status WS API listening on port ${port}`)
+    })
 }

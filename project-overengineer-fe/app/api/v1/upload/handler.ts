@@ -2,8 +2,12 @@
 
 import sharp from 'sharp'
 import { fileTypeFromBuffer } from 'file-type'
+import { Job } from '@project-overengineer/shared-lib/job'
+import { JobStatus } from '@project-overengineer/shared-lib/job-status'
+import { getRedis } from '@project-overengineer/shared-lib/redis'
+import { log } from '@project-overengineer/shared-lib/logging'
 import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
-import { Job, JobStatus, getRedis, log } from '@project-overengineer/shared-lib'
+
 import { IncomingMessage } from 'http'
 
 const MAX_DIMENSIONS_X_PX = 1000

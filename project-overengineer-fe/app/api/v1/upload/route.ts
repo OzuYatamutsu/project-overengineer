@@ -1,7 +1,8 @@
 'use server'
 
 import { NextResponse } from 'next/server'
-import { Job, rateLimit } from '@project-overengineer/shared-lib'
+import { Job } from '@project-overengineer/shared-lib/job'
+import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { standarizeImage, validateImage, saveJob, getClientIp } from './handler'
 

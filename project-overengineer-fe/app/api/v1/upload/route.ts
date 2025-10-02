@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Job } from '@project-overengineer/shared-lib/job'
-import { rateLimit } from '@project-overengineer/shared-lib'
+import { Job, rateLimit, log } from '@project-overengineer/shared-lib'
 import { standarizeImage, validateImage, saveJob, getClientIp } from './handler'
 
 // Max 1 request per sec
@@ -9,8 +8,8 @@ const PER_SECS = 60
 
 export async function POST(request: Request): Promise<NextResponse> {
   const ip = getClientIp(request)
-  if (!rateLimit(ip, MAX_REQUESTS, PER_SECS)) {
-    console.log(`rejecting request from ${ip}, rate limit exceeded`)
+  if (!rateLimit("project-overengineer-fe", ip, MAX_REQUESTS, PER_SECS)) {
+    log("project-overengineer-fe", `rejecting request from ${ip}, rate limit exceeded`)
     return NextResponse.json({
       message: 'Rate limit exceeded',
       jobId: "",
@@ -19,11 +18,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     })
   }
 
-  console.log(`Processing new request...`)
+  log("project-overengineer-fe", `Processing new request...`)
   const contentType = request.headers.get('content-type')
 
   if (!contentType?.startsWith('image/')) {
-    console.log(`Rejected request (failed validation)`)
+    log("project-overengineer-fe", `Rejected request (failed validation)`)
 
     return NextResponse.json({
       message: 'Unsupported content type',
@@ -37,7 +36,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Validate length and type
   if (!(await validateImage(rawImageData))) {
-    console.log(`Rejected request (failed validation)`)
+    log("project-overengineer-fe", `Rejected request (failed validation)`)
   
     return NextResponse.json({
       message: "Image failed validation (size or file format)",
@@ -54,7 +53,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Create job
   const job = new Job(imageData)
-  console.log(`Request was upgraded to a job with ID: ${job.id}`)
+  log("project-overengineer-fe", `Request was upgraded to a job with ID: ${job.id}`)
 
   // Commit job
   try {

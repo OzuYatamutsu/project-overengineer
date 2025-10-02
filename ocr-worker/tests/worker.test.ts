@@ -1,5 +1,4 @@
-import { Job } from '@project-overengineer/shared-lib/job'
-import { JobStatus } from '@project-overengineer/shared-lib'
+import { JobStatus, Job, log } from '@project-overengineer/shared-lib'
 import { processJob, _healthz } from '../worker'
 import { test, expect } from '@playwright/test'
 import { promises as fs } from 'fs'
@@ -36,10 +35,10 @@ test('ocr parses expected text from test image', async () => {
     testJob = await processJob(testJob)
 
     // debug
-    console.log("")
-    console.log("[OCR result]")
-    console.log("")
-    testJob.result.split("\n").forEach(line => console.log(line))
+    log("ocr-worker", "")
+    log("ocr-worker", "[OCR result]")
+    log("ocr-worker", "")
+    testJob.result.split("\n").forEach(line => log("ocr-worker", line))
 
     // We should expect to find all the expected strings within the result
     for (let i = 0; i < EXPECTED_STRINGS.length; i++) {

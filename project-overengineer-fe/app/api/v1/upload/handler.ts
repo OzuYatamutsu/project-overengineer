@@ -1,9 +1,7 @@
 import sharp from 'sharp'
 import { fileTypeFromBuffer } from 'file-type'
 import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
-import { Job } from '@project-overengineer/shared-lib/job'
-import { JobStatus } from '@project-overengineer/shared-lib/job-status'
-import { getRedis } from '@project-overengineer/shared-lib/redis'
+import { Job, JobStatus, getRedis, log } from '@project-overengineer/shared-lib'
 import { IncomingMessage } from 'http'
 
 const MAX_DIMENSIONS_X_PX = 1000
@@ -37,7 +35,7 @@ export async function saveJob(job: Job): Promise<void> {
 }
 
 export function getClientIp(req: Request): string {
-    const forwardedFor = req.headers.get("x-forwarded-for");
+    const forwardedFor = req.headers.get("x-forwarded-for")
     if (forwardedFor) {
         return forwardedFor.split(",")[0].trim()
     }
@@ -47,17 +45,17 @@ export function getClientIp(req: Request): string {
         return realIp
     }
 
-    const cfConnectingIp = req.headers.get("cf-connecting-ip");
+    const cfConnectingIp = req.headers.get("cf-connecting-ip")
     if (cfConnectingIp) {
         return cfConnectingIp
     }
 
     // Fallback: Node.js runtime only (not Edge runtime)
-    const socketIp = (req as unknown as IncomingMessage).socket?.remoteAddress;
+    const socketIp = (req as unknown as IncomingMessage).socket?.remoteAddress
     if (socketIp) {
         return socketIp
     }
 
   console.log("warning, unable to get client IP, returning unknown")
-  return "unknown";
+  return "unknown"
 }

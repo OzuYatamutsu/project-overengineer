@@ -1,4 +1,4 @@
-import { getRedis } from '@project-overengineer/shared-lib'
+import { getRedis, log } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -11,12 +11,12 @@ export const JOB_TTL_SECS = 3600
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
-        console.log(`janitor: Job ${jobKey} has an invalid create timestamp, discarding`)
+        log("janitor", `Job ${jobKey} has an invalid create timestamp, discarding`)
         return true
     }
 
     if (((new Date().getTime() / 1000) - JOB_TTL_SECS) > createUTime) {
-        console.log(`janitor: Job ${jobKey} is completed or stale, discarding`)
+        log("janitor", `Job ${jobKey} is completed or stale, discarding`)
         return true
     }
 
@@ -25,47 +25,47 @@ export function jobIsStale(jobKey: string, createUTime: number): boolean {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    console.log("/healthz: hit, starting health check")
+    log("janitor", "/healthz: hit, starting health check")
 
-    console.log("/healthz: can we ping redis?")
+    log("janitor", "/healthz: can we ping redis?")
     try {
-        if (await getRedis().ping() != 'PONG') {
-            console.log(`/healthz: failed, can't ping redis`)
+        if (await getRedis("janitor").ping() != 'PONG') {
+            log("janitor", `/healthz: failed, can't ping redis`)
             return false
         }
 
-        console.log(`/healthz: able to ping redis`)
+        log("janitor", `/healthz: able to ping redis`)
     } catch (err) {
-        console.log(`/healthz: failed, can't ping redis: ${err}`)
+        log("janitor", `/healthz: failed, can't ping redis: ${err}`)
         return false
     }
 
-    console.log("/healthz: can we list jobs?")
+    log("janitor", "/healthz: can we list jobs?")
     try {
-        await getRedis().keys(`job:*`)
-        console.log(`/healthz: able to list jobs`)
+        await getRedis("janitor").keys(`job:*`)
+        log("janitor", `/healthz: able to list jobs`)
     } catch (err) {
-        console.log(`/healthz: failed, not able to list jobs: ${err}`)
+        log("janitor", `/healthz: failed, not able to list jobs: ${err}`)
         return false
     }
 
-    console.log("/healthz: health check pass")
+    log("janitor", "/healthz: health check pass")
     return true
 }
 
 // poll redis for new jobs
 setInterval(async () => {
-    console.log("janitor: starting cleanup job")
-    const keys = await getRedis().keys(`job:*`)
+    log("janitor", "starting cleanup job")
+    const keys = await getRedis("janitor").keys(`job:*`)
 
     for (const key of keys) {
-        const createUtime = Number(await getRedis().hget(key, "createUtime"))
+        const createUtime = Number(await getRedis("janitor").hget(key, "createUtime"))
         if (jobIsStale(key, createUtime)) {
-            getRedis().del(key)
+            getRedis("janitor").del(key)
         }
     }
 
-    console.log("janitor: cleanup job finished")
+    log("janitor", "cleanup job finished")
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
@@ -86,8 +86,8 @@ if (require.main === module) {
             res.end("Not Found")
         }
     }).listen(HEALTH_CHECK_PORT, () => {
-        console.log(`/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
+        log("janitor", `/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
     })
 }
 
-console.log(`Janitor started.`)
+log("janitor", `Janitor started.`)

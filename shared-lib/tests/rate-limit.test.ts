@@ -8,10 +8,10 @@ test('jobs arent rate limited when they shouldnt be', async () => {
   const WITHIN_SECS = 300
 
   // Cleanup
-  getRedis().set(`ratelimit:${TEST_IP}`, 0)
+  getRedis("shared-lib").set(`ratelimit:${TEST_IP}`, 0)
 
   for (let i = 0; i < MAX_CONNECTIONS; i++) {
-    expect(await rateLimit(TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)).toBeTruthy()
+    expect(await rateLimit("shared-lib", TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)).toBeTruthy()
   }
 })
 test('jobs are rate limited when they should be', async () => {
@@ -19,12 +19,12 @@ test('jobs are rate limited when they should be', async () => {
   const WITHIN_SECS = 300
 
   // Cleanup
-  getRedis().set(`ratelimit:${TEST_IP}`, 0)
+  getRedis("shared-lib").set(`ratelimit:${TEST_IP}`, 0)
 
   for (let i = 0; i < MAX_CONNECTIONS; i++) {
-    await rateLimit(TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)
+    await rateLimit("shared-lib", TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)
   }
   for (let i = 0; i < MAX_CONNECTIONS; i++) {
-    expect(await rateLimit(TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)).toBeFalsy()
+    expect(await rateLimit("shared-lib", TEST_IP, MAX_CONNECTIONS, WITHIN_SECS)).toBeFalsy()
   }
 })

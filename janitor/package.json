@@ -1,6 +1,6 @@
 {
   "name": "@project-overengineer/janitor",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A service which cleans up completed and stalled jobs.",
   "main": "worker.ts",
   "scripts": {

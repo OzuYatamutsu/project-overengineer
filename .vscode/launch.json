@@ -95,6 +95,11 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["test", "--debug"],
       "console": "integratedTerminal",
+      "env": {
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+      },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
     },
@@ -106,6 +111,11 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["test", "--debug"],
       "console": "integratedTerminal",
+      "env": {
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+      },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
     },
@@ -133,6 +143,11 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["test", "--debug"],
       "console": "integratedTerminal",
+      "env": {
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+      },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
     }

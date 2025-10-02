@@ -4,7 +4,12 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import ProgressBar from './progress-bar'
 import styles from './uploader.module.css'
-import { JobStatus, JobUpdate, MAX_FILE_SIZE_MB, log } from '@project-overengineer/shared-lib'
+import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib/job-status'
+import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
+
+// Don't import from base level, it will pull in ioredis,
+// which is not compatible with use client
+import { log } from '@project-overengineer/shared-lib/logging'
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void

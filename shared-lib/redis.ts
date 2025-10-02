@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import Redis from "ioredis"
 import { enforceConfig } from "./verify"
 import { log } from "./logging"
 

@@ -65,25 +65,21 @@ async function commit(job: Job): Promise<void> {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("ocr-worker", "/healthz: hit, starting health check")
+    log("ocr-worker", "/healthz: starting health check")
 
-    log("ocr-worker", "/healthz: can we ping redis?")
     try {
         if (await getRedis("ocr-worker").ping() != 'PONG') {
             log("ocr-worker", `/healthz: failed, can't ping redis`)
             return false
         }
 
-        log("ocr-worker", `/healthz: able to ping redis`)
     } catch (err) {
         log("ocr-worker", `/healthz: failed, can't ping redis: ${err}`)
         return false
     }
 
-    log("ocr-worker", "/healthz: can we access jobs in redis?")
     try {
         await getRedis("ocr-worker").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
-        log("ocr-worker", `/healthz: able to access jobs in redis`)
     } catch (err) {
         log("ocr-worker", `/healthz: failed, not able to access jobs in redis: ${err}`)
         return false

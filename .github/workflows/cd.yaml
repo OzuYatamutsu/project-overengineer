@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/serviceify-ollama-ocr
   workflow_run:
     workflows: ["Build and Push Images"]
     types:

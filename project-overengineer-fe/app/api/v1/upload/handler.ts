@@ -1,3 +1,5 @@
+'use server'
+
 import sharp from 'sharp'
 import { fileTypeFromBuffer } from 'file-type'
 import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
@@ -31,10 +33,10 @@ export async function standarizeImage(rawImageData: Buffer<ArrayBuffer>): Promis
 
 export async function saveJob(job: Job): Promise<void> {
     job.status = JobStatus.WAITING
-    await getRedis().hset(`job:${job.id}`, job.serialize())
+    await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())
 }
 
-export function getClientIp(req: Request): string {
+export async function getClientIp(req: Request): Promise<string> {
     const forwardedFor = req.headers.get("x-forwarded-for")
     if (forwardedFor) {
         return forwardedFor.split(",")[0].trim()
@@ -56,6 +58,6 @@ export function getClientIp(req: Request): string {
         return socketIp
     }
 
-  console.log("warning, unable to get client IP, returning unknown")
+  log("project-overengineer-fe", "warning, unable to get client IP, returning unknown")
   return "unknown"
 }

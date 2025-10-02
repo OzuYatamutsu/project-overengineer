@@ -1,5 +1,8 @@
+'use server'
+
 import { NextResponse } from 'next/server'
-import { Job, rateLimit, log } from '@project-overengineer/shared-lib'
+import { Job, rateLimit } from '@project-overengineer/shared-lib'
+import { log } from '@project-overengineer/shared-lib/logging'
 import { standarizeImage, validateImage, saveJob, getClientIp } from './handler'
 
 // Max 1 request per sec
@@ -7,7 +10,7 @@ const MAX_REQUESTS = 60
 const PER_SECS = 60
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const ip = getClientIp(request)
+  const ip = await getClientIp(request)
   if (!rateLimit("project-overengineer-fe", ip, MAX_REQUESTS, PER_SECS)) {
     log("project-overengineer-fe", `rejecting request from ${ip}, rate limit exceeded`)
     return NextResponse.json({

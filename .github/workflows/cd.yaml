@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - feature/serviceify-project-overengineer-fe
   workflow_run:
     workflows: ["Build and Push Images"]
     types:

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: project-overengineer-fe
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: project-overengineer-fe
+  template:
+    metadata:
+      labels:
+        app: project-overengineer-fe
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: project-overengineer-fe
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: project-overengineer-fe
+          image: ghcr.io/ozuyatamutsu/project-overengineer/project-overengineer-fe:v1
+          env:
+            - name: TRANSFORMER_PORT
+              value: "3000"
+            - name: SENTINEL_HOST
+              value: svc-redis-sentinel.default.svc.cluster.local
+            - name: SENTINEL_PORT
+              value: "26379"
+            - name: REDIS_HOST
+              value: svc-redis-master.default.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
+              value: b4yscx92yksfyv9c
+            - name: STATUS_API_URL
+              value: 
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 30
+            failureThreshold: 5
+            successThreshold: 1
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+      securityContext:
+        runAsUser: 1001  # nodejs user
+        runAsGroup: 1001  # nodejs group
+        fsGroup: 1001  # nodejs group
+        runAsNonRoot: true
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-project-overengineer-fe
+spec:
+  selector:
+    app: project-overengineer-fe
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP

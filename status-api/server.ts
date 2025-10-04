@@ -1,10 +1,7 @@
 import express from 'express'
 import { WebSocketServer, WebSocket, RawData } from "ws"
 import http from 'http'
-import { JobStatus, JobUpdate } from '@project-overengineer/shared-lib/job-status'
-import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
-import { getRedis } from '@project-overengineer/shared-lib/redis'
-import { log } from '@project-overengineer/shared-lib/logging'
+import { JobStatus, JobUpdate, rateLimit, getRedis, log } from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) ?? 3001

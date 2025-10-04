@@ -24,6 +24,7 @@ spec:
       containers:
         - name: project-overengineer-fe
           image: ghcr.io/ozuyatamutsu/project-overengineer/project-overengineer-fe:v1
+          imagePullPolicy: Always
           env:
             - name: TRANSFORMER_PORT
               value: "3000"

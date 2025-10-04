@@ -24,6 +24,7 @@ spec:
       containers:
         - name: ocr-worker
           image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v1
+          imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST
               value: svc-redis-sentinel.default.svc.cluster.local

@@ -1,8 +1,4 @@
-import { Job } from '@project-overengineer/shared-lib/job'
-import { JobStatus } from '@project-overengineer/shared-lib/job-status'
-import { WorkerState } from '@project-overengineer/shared-lib/worker-state'
-import { getRedis } from '@project-overengineer/shared-lib/redis'
-import { log } from '@project-overengineer/shared-lib/logging'
+import { Job, JobStatus, WorkerState, getRedis, log } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"

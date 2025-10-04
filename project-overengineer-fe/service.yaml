@@ -39,7 +39,7 @@ spec:
             - name: REDIS_PASSWORD  # TODO rotate and replace with secret
               value: b4yscx92yksfyv9c
             - name: STATUS_API_URL
-              value: 
+              value: "http://svc-redis-sentinel.default.svc.cluster.local:3001"
           readinessProbe:
             httpGet:
               path: /

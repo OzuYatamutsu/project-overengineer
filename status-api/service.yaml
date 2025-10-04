@@ -24,6 +24,7 @@ spec:
       containers:
         - name: status-api
           image: ghcr.io/ozuyatamutsu/project-overengineer/status-api:v1
+          imagePullPolicy: Always
           env:
             - name: STATUS_API_PORT
               value: "3001"

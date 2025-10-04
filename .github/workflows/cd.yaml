@@ -30,6 +30,9 @@ jobs:
       - name: Deploy ocr-worker, ollama-ocr
         run: kubectl apply -f ocr-worker/service.yaml
 
+      - name: Deploy project-overengineer-fe
+        run: kubectl apply -f project-overengineer-fe/service.yaml
+
       - name: Wait for apply (max 90s/service)
         run: |
           echo '[waiting for redis-master]'
@@ -44,6 +47,8 @@ jobs:
           kubectl rollout status deployment/status-api --timeout=90s
           echo '[waiting for ocr-worker, ollama-ocr]'
           kubectl rollout status statefulset/ocr-worker --timeout=90s
+          echo '[waiting for project-overengineer-fe]'
+          kubectl rollout status statefulset/project-overengineer-fe --timeout=90s
 
       - name: Dump logs (if apply failed)
         if: failure()
@@ -61,3 +66,5 @@ jobs:
           kubectl logs --all-containers --selector=app=status-api
           echo '[ocr-worker, ollama-ocr logs]'
           kubectl logs --all-containers --selector=app=ocr-worker
+          echo '[project-overengineer-fe logs]'
+          kubectl logs --all-containers --selector=app=project-overengineer-fe

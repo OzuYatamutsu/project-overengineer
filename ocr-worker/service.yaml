@@ -84,12 +84,12 @@ spec:
           ports:
             - containerPort: 11434
           resources:
-            requests:  # TODO: tune
+            requests:
               cpu: "1000m"
               memory: "1Gi"
-            limits:  # TODO: tune
+            limits:
               cpu: "5000m"
-              memory: "24Gi"
+              memory: "8Gi"
           volumeMounts:
           - mountPath: /dev/shm
             name: ollama-ocr-shm

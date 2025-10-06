@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - feature/20251005-fix-404-issue-in-fe
 
 jobs:
   ollama-ocr:

@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  assetPrefix: '',
+  basePath: '',
   images: {
     domains: [],
   },
-  output: "standalone"
+  output: "standalone",
 }
 
 module.exports = nextConfig

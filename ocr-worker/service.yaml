@@ -65,6 +65,11 @@ spec:
             readOnlyRootFilesystem: true
         - name: ollama-ocr    # sidecar
           image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v1
+          env:
+          - name: OLLAMA_KEEP_ALIVE
+            value: "2m"
+          - name: OLLAMA_MAX_LOADED_MODELS
+            value: "1"
           readinessProbe:
             httpGet:
               path: /

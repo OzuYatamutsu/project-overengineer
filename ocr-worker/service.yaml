@@ -103,9 +103,9 @@ spec:
             medium: Memory
             sizeLimit: 1Gi
       securityContext:
-        runAsUser: 1001  # nodejs user
-        runAsGroup: 1001  # nodejs group
-        fsGroup: 1001  # nodejs group
+        runAsUser: 1002  # ollama user
+        runAsGroup: 1002  # ollama group
+        fsGroup: 1002  # ollama group
         runAsNonRoot: true
   volumeClaimTemplates:
   - metadata:

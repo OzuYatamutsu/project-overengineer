@@ -29,4 +29,5 @@ RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/project-overengineer-fe build
 
 USER nextjs
-CMD ["node", "project-overengineer-fe/.next/standalone/project-overengineer-fe/server.js"]
+WORKDIR /app/project-overengineer-fe
+CMD ["node", ".next/standalone/project-overengineer-fe/server.js"]

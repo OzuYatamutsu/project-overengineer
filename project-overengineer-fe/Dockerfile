@@ -27,8 +27,8 @@ COPY project-overengineer-fe ./project-overengineer-fe
 RUN corepack enable pnpm
 RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/project-overengineer-fe build
-RUN cp /app/project-overengineer-fe/.next/static /app/project-overengineer-fe/.next/standalone/project-overengineer-fe/.next
-RUN cp /app/project-overengineer-fe/.next/static /app/project-overengineer-fe/.next/standalone/project-overengineer-fe/.next/server/app
+RUN ln -s /app/project-overengineer-fe/.next/static /app/project-overengineer-fe/.next/standalone/project-overengineer-fe/.next/static
+RUN ln -s /app/project-overengineer-fe/.next/static /app/project-overengineer-fe/.next/standalone/project-overengineer-fe/.next/server/app/static
 
 USER nextjs
 WORKDIR /app/project-overengineer-fe

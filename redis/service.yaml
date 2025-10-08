@@ -18,8 +18,11 @@ spec:
           env:
             - name: REDIS_PORT
               value: "6379"
-            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
-              value: b4yscx92yksfyv9c
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASSWORD
           readinessProbe:
             exec:
               command:
@@ -99,8 +102,11 @@ spec:
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
-            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
-              value: b4yscx92yksfyv9c
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASSWORD
           readinessProbe:
             exec:
               command:
@@ -181,8 +187,11 @@ spec:
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
-            - name: REDIS_PASSWORD  # TODO rotate and replace with secret
-              value: b4yscx92yksfyv9c
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASSWORD
           readinessProbe:
             tcpSocket:
               port: 26379

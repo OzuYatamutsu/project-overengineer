@@ -13,4 +13,44 @@ spec:
           mountPath: kubernetes  # TODO
           role: external-secrets  # TODO
 
+---
+
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: redis-password
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: redis-password
+    creationPolicy: Owner
+  data:
+    - secretKey: REDIS_PASSWORD
+      remoteRef:
+        key: redis
+        property: REDIS_PASSWORD
+
+---
+
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: redis-password
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: redis-password
+    creationPolicy: Owner
+  data:
+    - secretKey: REDIS_PASSWORD
+      remoteRef:
+        key: redis
+        property: REDIS_PASSWORD
+
 # TODO: vault image, replicas, HA, service, service name

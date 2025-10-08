@@ -1,0 +1,8 @@
+FROM hashicorp/vault:1.20
+
+ENV VAULT_CONFIG='ui = true
+listener "tcp" { address = "0.0.0.0:8200" tls_disable = 1 }
+storage "raft" { path = "/vault/data" }'
+
+RUN echo "$VAULT_CONFIG" > /vault/config/vault.hcl
+CMD ["vault", "server", "-config=/vault/config/vault.hcl" ]

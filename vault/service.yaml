@@ -1,0 +1,16 @@
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: vault-backend
+spec:
+  provider:
+    vault:
+      server: "https://vault:8200"  # TODO
+      path: "secret"
+      version: "v2"
+      auth:
+        kubernetes:
+          mountPath: kubernetes  # TODO
+          role: external-secrets  # TODO
+
+# TODO: vault image, replicas, HA, service, service name

@@ -107,13 +107,13 @@ metadata:
 spec:
   provider:
     vault:
-      server: "https://vault:8200"  # TODO
+      server: "https://svc-vault:8200"
       path: "secret"
       version: "v2"
       auth:
         kubernetes:
-          mountPath: kubernetes  # TODO
-          role: external-secrets  # TODO
+          mountPath: kubernetes
+          role: external-secrets
 
 ---
 
@@ -155,4 +155,4 @@ spec:
         key: redis
         property: REDIS_PASSWORD
 
-# TODO: vault image, replicas, HA, service, service name
+# TODO: automate init, unseal

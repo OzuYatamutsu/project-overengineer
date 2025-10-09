@@ -126,3 +126,11 @@ services:
     depends_on:
       - redis
       - redis-replica
+
+  vault:
+    image: hashicorp/vault:1.18
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "root"
+    command: vault server -dev -dev-root-token-id=root -dev-listen-address="0.0.0.0:8200"

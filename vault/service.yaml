@@ -12,7 +12,6 @@ data:
     listener "tcp" {
       address     = "0.0.0.0:8200"
       cluster_address = "0.0.0.0:8201"
-      tls_disable = 1
     }
 
     storage "raft" {
@@ -20,8 +19,8 @@ data:
       node_id = "$(HOSTNAME)"
     }
 
-    api_addr     = "http://$(HOSTNAME).vault-internal:8200"
-    cluster_addr = "http://$(HOSTNAME).vault-internal:8201"
+    api_addr     = "http://$(HOSTNAME).svc-vault.default.svc.cluster.local:8200"
+    cluster_addr = "http://$(HOSTNAME).svc-vault.default.svc.cluster.local:8201"
     disable_mlock = true
 
 ---
@@ -31,7 +30,7 @@ kind: StatefulSet
 metadata:
   name: vault
 spec:
-  serviceName: vault-ha
+  serviceName: svc-vault
   replicas: 3
   selector:
     matchLabels:
@@ -41,6 +40,15 @@ spec:
       labels:
         app: vault
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: vault
+                topologyKey: "kubernetes.io/hostname"
       serviceAccountName: default
       containers:
         - name: vault
@@ -65,10 +73,30 @@ spec:
               mountPath: /vault/data
           readinessProbe:
             httpGet:
-              path: /v1/sys/health
+              path: /v1/sys/health?standbyok=true
               port: 8200
             initialDelaySeconds: 5
             periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /v1/sys/health?standbyok=true
+              port: 8200
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 100
+        fsGroup: 100
+        runAsNonRoot: true
       volumes:
         - name: config
           configMap:
@@ -80,7 +108,7 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 1Gi
+            storage: 512Mi
 
 ---
 
@@ -103,7 +131,7 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
 metadata:
-  name: vault-backend
+  name: vault
 spec:
   provider:
     vault:
@@ -124,27 +152,7 @@ metadata:
 spec:
   refreshInterval: 1h
   secretStoreRef:
-    name: vault-backend
-    kind: SecretStore
-  target:
-    name: redis-password
-    creationPolicy: Owner
-  data:
-    - secretKey: REDIS_PASSWORD
-      remoteRef:
-        key: redis
-        property: REDIS_PASSWORD
-
----
-
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: redis-secret
-spec:
-  refreshInterval: 1h
-  secretStoreRef:
-    name: vault-backend
+    name: vault
     kind: SecretStore
   target:
     name: redis-password

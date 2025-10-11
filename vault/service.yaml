@@ -25,6 +25,45 @@ data:
 
 ---
 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-agent-config
+data:
+  config.hcl: |
+    exit_after_auth = false
+    pid_file = "/tmp/vault.pid"
+
+    vault {
+      address = "https://svc-vault.default.svc.cluster.local:8200"
+    }
+
+    auto_auth {
+      method "kubernetes" {
+        mount_path = "auth/kubernetes"
+        config = {
+          role = "svc-auth"
+        }
+      }
+
+      sink "file" {
+        config = {
+          path = "/vault/secrets/.token"
+        }
+      }
+    }
+
+    template {
+      source      = "/vault/config/config.ctmpl"
+      destination = "/vault/secrets/config.txt"
+    }
+  config.ctmpl: |
+    {{- with secret "secret/data/myapp/config" -}}
+    {{ .Data.data.config }}
+    {{- end }}
+
+---
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -113,6 +152,13 @@ spec:
 ---
 
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: svc-auth
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: svc-vault
@@ -125,42 +171,3 @@ spec:
       port: 8201
   selector:
     app: vault
-
----
-
-apiVersion: external-secrets.io/v1beta1
-kind: SecretStore
-metadata:
-  name: vault
-spec:
-  provider:
-    vault:
-      server: "https://svc-vault:8200"
-      path: "secret"
-      version: "v2"
-      auth:
-        kubernetes:
-          mountPath: kubernetes
-          role: external-secrets
-
----
-
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: redis-password
-spec:
-  refreshInterval: 1h
-  secretStoreRef:
-    name: vault
-    kind: SecretStore
-  target:
-    name: redis-password
-    creationPolicy: Owner
-  data:
-    - secretKey: REDIS_PASSWORD
-      remoteRef:
-        key: redis
-        property: REDIS_PASSWORD
-
-# TODO: automate init, unseal

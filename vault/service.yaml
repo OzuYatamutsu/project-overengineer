@@ -21,8 +21,8 @@ data:
       node_id = "$(HOSTNAME)"
     }
 
-    api_addr     = "http://$(HOSTNAME).svc-vault.default.svc.cluster.local:8200"
-    cluster_addr = "http://$(HOSTNAME).svc-vault.default.svc.cluster.local:8201"
+    api_addr     = "https://$(HOSTNAME).svc-vault.default.svc.cluster.local:8200"
+    cluster_addr = "https://$(HOSTNAME).svc-vault.default.svc.cluster.local:8201"
     disable_mlock = true
 
 ---
@@ -81,13 +81,22 @@ spec:
       labels:
         app: vault
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: vault
+                topologyKey: "kubernetes.io/hostname"
       serviceAccountName: default
       securityContext:
         runAsUser: 100
         runAsGroup: 100
         fsGroup: 100
         runAsNonRoot: true
-      containers:
+      initContainers:
         # TODO: Generates self-signed certificate at startup.
         # TODO: Replace this with an actual certificate.
         - name: gen-self-signed-cert
@@ -105,6 +114,16 @@ spec:
           volumeMounts:
             - name: certs
               mountPath: /vault/tls
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+      containers:
         - name: vault
           image: hashicorp/vault:1.18
           args:

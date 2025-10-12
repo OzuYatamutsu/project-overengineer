@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   name: redis-secret
                   key: REDIS_PASSWORD
+            - name: MYAPP_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: janitor-config
+                  key: config.txt
           readinessProbe:
             httpGet:
               path: /healthz
@@ -47,7 +52,7 @@ spec:
             failureThreshold: 5
             successThreshold: 1
           ports:
-            - containerPort: 3000  # Only for /healthz
+            - containerPort: 3000
           resources:
             requests:
               cpu: "50m"
@@ -57,8 +62,40 @@ spec:
               memory: "128Mi"
           securityContext:
             readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: vault-secrets
+              mountPath: /vault/secrets
+              readOnly: true
+        - name: vault-agent
+          image: hashicorp/vault:1.18
+          args:
+            - "agent"
+            - "-config=/vault/config/agent-config.hcl"
+          env:
+            - name: VAULT_ADDR
+              value: "http://svc-vault.default.svc.cluster.local:8200"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: vault-agent-config
+              mountPath: /vault/config
+            - name: vault-secrets
+              mountPath: /vault/secrets
+      volumes:
+        - name: vault-agent-config
+          configMap:
+            name: vault-agent-config
+        - name: vault-secrets
+          emptyDir: {}
       securityContext:
-        runAsUser: 1001  # nodejs user
-        runAsGroup: 1001  # nodejs group
-        fsGroup: 1001  # nodejs group
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
         runAsNonRoot: true

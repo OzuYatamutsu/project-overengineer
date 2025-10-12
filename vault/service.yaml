@@ -128,7 +128,6 @@ spec:
           image: hashicorp/vault:1.18
           args:
             - "server"
-            - "-config=/vault/config/vault.hcl"
           ports:
             - name: http
               containerPort: 8200
@@ -154,12 +153,14 @@ spec:
             httpGet:
               path: /v1/sys/health?standbyok=true
               port: 8200
+              scheme: HTTPS
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /v1/sys/health?standbyok=true
               port: 8200
+              scheme: HTTPS
             initialDelaySeconds: 10
             periodSeconds: 30
           resources:

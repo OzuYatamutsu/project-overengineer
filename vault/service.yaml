@@ -12,6 +12,8 @@ data:
     listener "tcp" {
       address     = "0.0.0.0:8200"
       cluster_address = "0.0.0.0:8201"
+      tls_cert_file     = "/vault/tls/tls.crt"
+      tls_key_file      = "/vault/tls/tls.key"
     }
 
     storage "raft" {
@@ -86,6 +88,23 @@ spec:
         fsGroup: 100
         runAsNonRoot: true
       containers:
+        # TODO: Generates self-signed certificate at startup.
+        # TODO: Replace this with an actual certificate.
+        - name: gen-self-signed-cert
+          image: alpine/openssl:3.5.4
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /vault/tls
+              openssl req -x509 -newkey rsa:4096 -nodes \
+                -keyout /vault/tls/tls.key \
+                -out /vault/tls/tls.crt \
+                -days 365 \
+                -subj "/CN=svc-vault.default.svc.cluster.local"
+          volumeMounts:
+            - name: certs
+              mountPath: /vault/tls
         - name: vault
           image: hashicorp/vault:1.18
           args:
@@ -110,6 +129,8 @@ spec:
               mountPath: /vault/config
             - name: data
               mountPath: /vault/data
+            - name: certs
+              mountPath: /vault/tls
           readinessProbe:
             httpGet:
               path: /v1/sys/health?standbyok=true
@@ -136,6 +157,8 @@ spec:
           configMap:
             name: vault-config
         - name: data
+          emptyDir: {}
+        - name: certs
           emptyDir: {}
   volumeClaimTemplates:
     - metadata:

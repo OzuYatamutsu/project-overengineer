@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: kubernetes-ca
+spec:
+  selfSigned: {}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-cert
+  namespace: default
+spec:
+  secretName: vault-cert
+  dnsNames:
+    - vault-0
+    - vault-1
+    - vault-2
+    - vault-0.svc-vault.default.svc.cluster.local
+    - vault-1.svc-vault.default.svc.cluster.local
+    - vault-2.svc-vault.default.svc.cluster.local
+    - svc-vault
+    - svc-vault.default
+    - svc-vault.default.svc
+    - svc-vault.default.svc.cluster.local
+  issuerRef:
+    name: kubernetes-ca
+    kind: ClusterIssuer

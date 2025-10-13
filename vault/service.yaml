@@ -38,6 +38,7 @@ data:
 
     vault {
       address = "https://svc-vault.default.svc.cluster.local:8200"
+      ca_cert = "/vault/tls/ca.crt"
     }
 
     auto_auth {
@@ -96,33 +97,6 @@ spec:
         runAsGroup: 100
         fsGroup: 100
         runAsNonRoot: true
-      initContainers:
-        # TODO: Generates self-signed certificate at startup.
-        # TODO: Replace this with an actual certificate.
-        - name: gen-self-signed-cert
-          image: alpine/openssl:3.5.4
-          command:
-            - sh
-            - -c
-            - |
-              mkdir -p /vault/tls
-              openssl req -x509 -newkey rsa:4096 -nodes \
-                -keyout /vault/tls/tls.key \
-                -out /vault/tls/tls.crt \
-                -days 365 \
-                -subj "/CN=svc-vault.default.svc.cluster.local"
-          volumeMounts:
-            - name: certs
-              mountPath: /vault/tls
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "200m"
-              memory: "128Mi"
-          securityContext:
-            readOnlyRootFilesystem: true
       containers:
         - name: vault
           image: hashicorp/vault:1.18
@@ -179,7 +153,8 @@ spec:
         - name: data
           emptyDir: {}
         - name: certs
-          emptyDir: {}
+          secret:
+            secretName: vault-cert
   volumeClaimTemplates:
     - metadata:
         name: data

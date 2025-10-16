@@ -137,9 +137,6 @@ jobs:
         env:
           OWNER: '${{ github.repository_owner }}'
 
-      - name: DEBUG
-        run: ls -R
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -165,7 +162,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: ./ocr-worker
+          path: .
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -321,7 +318,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: ./status-api
+          path: .
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

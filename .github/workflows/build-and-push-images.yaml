@@ -6,15 +6,41 @@ on:
       - feature/secrify-passwords
 
 jobs:
+  generate-vault-cert:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+    
+      - name: Build certificate
+        run: vault/generate-vault-cert.sh
+
+      - name: Upload vault cert and key
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            vault.crt
+            vault.key
+
   ollama-ocr:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    needs: generate-vault-cert
       
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -24,8 +50,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -48,10 +73,16 @@ jobs:
     permissions:
       contents: read
       packages: write
+    needs: generate-vault-cert
       
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -61,8 +92,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -76,15 +106,21 @@ jobs:
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:latest
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/project-overengineer-fe:v1
 
-  status-api:
+  janitor:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      
+    needs: generate-vault-cert
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -94,8 +130,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -103,21 +138,27 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: status-api/Dockerfile
+          file: janitor/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:v1
-
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:v1
+  
   ocr-worker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      
+    needs: generate-vault-cert
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -127,8 +168,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -142,48 +182,21 @@ jobs:
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v1
 
-  janitor:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: janitor/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/janitor:v1
-
   redis-master:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      
+    needs: generate-vault-cert
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -193,8 +206,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -213,10 +225,16 @@ jobs:
     permissions:
       contents: read
       packages: write
-      
+    needs: generate-vault-cert
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -226,8 +244,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -246,10 +263,16 @@ jobs:
     permissions:
       contents: read
       packages: write
-      
+    needs: generate-vault-cert
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -259,8 +282,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set lowercase owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
 
@@ -273,3 +295,79 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:latest
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/redis-sentinel:v1
+
+  status-api:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: generate-vault-cert
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: status-api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/status-api:v1
+
+  vault:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: generate-vault-cert
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./vault/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault:v1

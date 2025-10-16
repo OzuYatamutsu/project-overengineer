@@ -26,8 +26,7 @@ services:
       STATUS_API_URL: ${STATUS_API_URL}
     depends_on:
       - status-api
-      - vault
-
+  
   status-api:
     build:
       context: .
@@ -42,7 +41,6 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - redis
-      - vault
 
   ocr-worker:
     build:
@@ -60,7 +58,6 @@ services:
       replicas: 2
     depends_on:
       - redis
-      - vault
 
   janitor:
     build:
@@ -76,7 +73,6 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - redis
-      - vault
 
   redis:
     build:
@@ -87,8 +83,6 @@ services:
     environment:
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-    depends_on:
-      - vault
 
   redis-replica:
     build:
@@ -103,7 +97,6 @@ services:
       replicas: 2
     depends_on:
       - redis
-      - vault
 
   redis-sentinel:
     build:
@@ -118,7 +111,6 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - redis
-      - vault
 
   redis-sentinel-replica:
     build:
@@ -134,7 +126,6 @@ services:
     depends_on:
       - redis
       - redis-replica
-      - vault
 
   vault:
     build:

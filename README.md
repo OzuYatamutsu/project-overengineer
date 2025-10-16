@@ -13,8 +13,8 @@ As the name suggests, this project is intentionally overengineered beyond its si
 ## Running
 There are a few ways to launch the service. **Note that the OCR service requires at least 11 GB of memory available (less than this and OCR will fail at request time).**
 
-### Via `docker-compose`
-From the project root, run `vault/generate-vault-cert.sh` to generate certificates required for vault to run. Then, run `docker-compose up`. Access the frontend at `http://localhost:3000`.
+### Via `docker-compose` (in dev)
+From the project root, run `vault/generate-vault-cert.sh` to generate certificates required for vault to run. Then, run `REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker-compose up`. (Replace these values if desired.) Access the frontend at `http://localhost:3000`.
 
 ### Via VS Code (debug)
 Launch configurations are included in `.vscode/launch.json`. Start everything by running the `Start all` task, or start components individually via their individual launch tasks (e.g., `Start FE + Transformer API`). The frontend can be accessed at `http://localhost:3000`. The default value of `REDIS_PASSWORD` in dev is `b4yscx92yksfyv9c`.

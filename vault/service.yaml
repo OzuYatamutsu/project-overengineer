@@ -18,11 +18,10 @@ data:
 
     storage "raft" {
       path    = "/vault/data"
-      node_id = "$(HOSTNAME)"
     }
 
-    api_addr     = "https://$(HOSTNAME).svc-vault.default.svc.cluster.local:8200"
-    cluster_addr = "https://$(HOSTNAME).svc-vault.default.svc.cluster.local:8201"
+    api_addr     = "https://svc-vault.default.svc.cluster.local:8200"
+    cluster_addr = "https://svc-vault.default.svc.cluster.local:8201"
     disable_mlock = true
 
 ---

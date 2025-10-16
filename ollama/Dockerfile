@@ -2,7 +2,6 @@ FROM ollama/ollama:latest
 ENV OLLAMA_MODELS=/home/ollama/.ollama
 
 # Install local vault certificates
-RUN apk add --no-cache ca-certificates 
 COPY vault.crt /usr/local/share/ca-certificates/vault.crt
 RUN update-ca-certificates
 

@@ -6,6 +6,7 @@ ENV NODE_ENV=production
 ENV CI=true
 
 # Install local vault certificates
+RUN apk add --no-cache ca-certificates 
 COPY vault.crt /usr/local/share/ca-certificates/vault.crt
 RUN update-ca-certificates
 

@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/secrify-passwords
 
 jobs:
   ollama-ocr:

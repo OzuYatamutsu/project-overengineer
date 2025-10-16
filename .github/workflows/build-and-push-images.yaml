@@ -28,6 +28,10 @@ jobs:
         env:
           OWNER: '${{ github.repository_owner }}'
 
+      - name: Generate vault certificates
+        run: |
+          /bin/bash vault/generate-vault-cert.sh
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:

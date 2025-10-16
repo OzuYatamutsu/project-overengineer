@@ -2,8 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Generate vault certificate",
+      "type": "shell",
+      "command": "vault/generate-vault-cert.sh",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
       "label": "Build infra dependencies",
       "type": "shell",
+      "dependsOn": "Generate vault certificate",
       "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c docker compose build redis ollama-ocr",
       "problemMatcher": [],
       "group": "build"

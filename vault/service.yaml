@@ -99,7 +99,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: vault
-          image: hashicorp/vault:1.18
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
           args:
             - "server"
           ports:
@@ -121,8 +121,6 @@ spec:
               mountPath: /vault/config
             - name: data
               mountPath: /vault/data
-            - name: certs
-              mountPath: /vault/tls
           readinessProbe:
             httpGet:
               path: /v1/sys/health?standbyok=true
@@ -152,9 +150,6 @@ spec:
             name: vault-config
         - name: data
           emptyDir: {}
-        - name: certs
-          secret:
-            secretName: vault-cert
   volumeClaimTemplates:
     - metadata:
         name: data

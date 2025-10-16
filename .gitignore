@@ -40,3 +40,8 @@ yarn-error.log*
 
 */test-results/*
 ocr-worker/eng.traineddata
+
+# Certificate generated at build time
+vault.crt
+vault.key
+

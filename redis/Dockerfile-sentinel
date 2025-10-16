@@ -6,6 +6,7 @@ ENV REDIS_PORT=6379
 # ENV REDIS_PASSWORD
 
 # Install local vault certificates
+RUN apt-get update && apt-get install -y ca-certificates
 COPY vault.crt /usr/local/share/ca-certificates/vault.crt
 RUN update-ca-certificates
 

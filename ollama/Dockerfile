@@ -1,6 +1,10 @@
 FROM ollama/ollama:latest
 ENV OLLAMA_MODELS=/home/ollama/.ollama
 
+# Install local vault certificates
+COPY vault.crt /usr/local/share/ca-certificates/vault.crt
+RUN update-ca-certificates
+
 # EXPOSE 11434
 RUN useradd -m -u 1002 ollama
 RUN mkdir $OLLAMA_MODELS && chown ollama:ollama $OLLAMA_MODELS

@@ -5,6 +5,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV CI=true
 
+# Install local vault certificates
+COPY vault.crt /usr/local/share/ca-certificates/vault.crt
+RUN update-ca-certificates
+
 COPY shared-lib ./shared-lib
 COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs

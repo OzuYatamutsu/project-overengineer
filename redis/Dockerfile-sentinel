@@ -5,6 +5,10 @@ ENV REDIS_HOST=redis
 ENV REDIS_PORT=6379
 # ENV REDIS_PASSWORD
 
+# Install local vault certificates
+COPY vault.crt /usr/local/share/ca-certificates/vault.crt
+RUN update-ca-certificates
+
 # /tmp/redis-sentinel is where config file is stored at runtime
 # the rest of the filesystem is assumed to be readonly
 RUN mkdir /tmp/redis-sentinel

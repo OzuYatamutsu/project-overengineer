@@ -128,9 +128,10 @@ services:
       - redis-replica
 
   vault:
-    image: hashicorp/vault:1.18
+    build:
+      context: .
+      dockerfile: vault/Dockerfile
     cap_add:
       - IPC_LOCK
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: "root"
-    command: vault server -dev -dev-root-token-id=root -dev-listen-address="0.0.0.0:8200"

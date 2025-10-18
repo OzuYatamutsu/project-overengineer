@@ -1,5 +1,8 @@
 FROM hashicorp/vault:1.18
 
+ENV SKIP_CHOWN "true"
+ENV SKIP_SETCAP "true"
+
 # Install vault certificates and key
 RUN apk add --no-cache ca-certificates 
 COPY vault.crt /usr/local/share/ca-certificates/vault.crt

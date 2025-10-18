@@ -111,10 +111,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: SKIP_CHOWN
-              value: "true"
-            - name: SKIP_SETCAP
-              value: "true"
           volumeMounts:
             - name: config
               mountPath: /vault/config

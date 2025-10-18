@@ -236,7 +236,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: vault-secondary-init
+  name: vault-secondary-init-1  # TODO Generate jobs dynamically
 spec:
   ttlSecondsAfterFinished: 0
   template:
@@ -277,7 +277,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: vault-secondary-init
+  name: vault-secondary-init-2  # TODO Generate jobs dynamically
 spec:
   ttlSecondsAfterFinished: 0
   template:

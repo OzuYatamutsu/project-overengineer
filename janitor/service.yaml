@@ -66,15 +66,8 @@ spec:
               mountPath: /vault/secrets
               readOnly: true
         - name: vault-agent
-          image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
-          args:
-            - "agent"
-            - "-config=/vault/config/vault.hcl"
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault-agent:v1
           env:
-            - name: SKIP_CHOWN
-              value: "true"
-            - name: SKIP_SETCAP
-              value: "true"
             - name: VAULT_ADDR
               value: "http://svc-vault.default.svc.cluster.local:8200"
           resources:

@@ -91,11 +91,15 @@ spec:
               mountPath: /vault/config
             - name: vault-secrets
               mountPath: /vault/secrets
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: vault-agent-config
           configMap:
             name: vault-agent-config
         - name: vault-secrets
+          emptyDir: {}
+        - name: tmp
           emptyDir: {}
       securityContext:
         runAsUser: 1001

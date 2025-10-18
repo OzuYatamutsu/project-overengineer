@@ -226,19 +226,12 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
-            - name: data
-              mountPath: /vault/data
+            - name: tmp
+              mountPath: /tmp
       volumes:
-        - name: data
+        - name: tmp
           emptyDir: {}
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 512Kb
+
 ---
 
 apiVersion: v1

@@ -380,3 +380,42 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault:latest
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault:v1
+
+  vault-init:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: generate-vault-cert
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull vault cert and key
+        uses: actions/download-artifact@v4
+        with:
+          name: vault-certs
+          path: .
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase owner name
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./vault/Dockerfile-vault-init
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault-init:latest
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault-init:v1

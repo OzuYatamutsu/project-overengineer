@@ -1,0 +1,13 @@
+FROM hashicorp/vault:1.18
+
+# This container is used to automate init and unseal of the vault
+# primary at apply time.
+
+# Install vault certificate
+RUN apk add --no-cache curl jq kubectl ca-certificates
+COPY vault.crt /usr/local/share/ca-certificates/vault.crt
+RUN update-ca-certificates
+
+# Run unseal script at runtime
+COPY vault/generate-vault-cert.sh .
+CMD ./generate-vault-cert.sh

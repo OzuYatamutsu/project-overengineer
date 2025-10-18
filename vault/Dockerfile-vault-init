@@ -9,6 +9,8 @@ COPY vault.crt /usr/local/share/ca-certificates/vault.crt
 RUN update-ca-certificates
 
 # Run unseal script at runtime
-USER vault
 COPY vault/unseal-vault.sh .
+RUN chmod +x unseal-vault.sh
+RUN chown vault:vault unseal-vault.sh
+USER vault
 CMD ["./unseal-vault.sh"]

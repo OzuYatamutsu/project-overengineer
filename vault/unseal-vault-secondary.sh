@@ -21,7 +21,7 @@ done
 # Initialize Vault if not already initialized
 if vault status -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify | grep -q 'Sealed.*true'; then
   echo "Retrieving unseal key..."
-  kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 --decode > /tmp/vault-unseal-info.json
+  kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /tmp/vault-unseal-info.json
   UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-unseal-info.json)
   
   echo "Unsealing Vault..."

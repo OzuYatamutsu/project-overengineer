@@ -1,10 +1,10 @@
 FROM hashicorp/vault:1.18
 
 # Should be set to the host's non-FQDN name (e.g., vault-0).
-ENV CONTAINER_NAME
+ENV CONTAINER_NAME ""
 
 # Should be set to either "primary" or "secondary" at runtime.
-ENV HA_ROLE
+ENV HA_ROLE ""
 
 # This container is used to automate init and unseal of the vault
 # primary at apply time.

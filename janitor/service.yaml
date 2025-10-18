@@ -15,7 +15,6 @@ spec:
       containers:
         - name: janitor
           image: ghcr.io/ozuyatamutsu/project-overengineer/janitor:v1
-          imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST
               value: svc-redis-sentinel.default.svc.cluster.local
@@ -67,7 +66,7 @@ spec:
               mountPath: /vault/secrets
               readOnly: true
         - name: vault-agent
-          image: hashicorp/vault:1.18
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
           args:
             - "agent"
             - "-config=/vault/config/vault.hcl"
@@ -89,8 +88,7 @@ spec:
             readOnlyRootFilesystem: true
           volumeMounts:
             - name: vault-agent-config
-              mountPath: /vault/config/vault.hcl
-              subPath: vault.hcl
+              mountPath: /vault/config
             - name: vault-secrets
               mountPath: /vault/secrets
       volumes:

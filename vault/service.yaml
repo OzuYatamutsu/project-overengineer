@@ -37,7 +37,7 @@ data:
 
     vault {
       address = "https://svc-vault.default.svc.cluster.local:8200"
-      ca_cert = "/vault/tls/ca.crt"
+      ca_cert = "/vault/tls/vault.crt"
     }
 
     auto_auth {

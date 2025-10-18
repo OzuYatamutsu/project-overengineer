@@ -12,6 +12,12 @@ until curl -k https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200
   sleep 5
 done
 
+# Make sure key is ready
+until kubectl get secret vault-init-keys; do
+  echo "Waiting for primary to unseal..."
+  sleep 5
+done
+
 # Initialize Vault if not already initialized
 if vault status -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify | grep -q 'Sealed.*true'; then
   echo "Retrieving unseal key..."

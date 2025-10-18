@@ -453,7 +453,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./vault/Dockerfile-vault-init
+          file: ./vault/Dockerfile-vault-agent
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/vault-agent:latest

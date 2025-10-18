@@ -99,8 +99,6 @@ spec:
       containers:
         - name: vault
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
-          args:
-            - "server"
           ports:
             - name: http
               containerPort: 8200

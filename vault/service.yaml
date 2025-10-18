@@ -164,7 +164,6 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: vault-init
-  namespace: default
 
 ---
 
@@ -172,7 +171,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: vault-init-role
-  namespace: default
 rules:
   - apiGroups: [""]
     resources: ["pods"]
@@ -190,11 +188,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: vault-init-binding
-  namespace: default
 subjects:
   - kind: ServiceAccount
     name: vault-init
-    namespace: default
 roleRef:
   kind: Role
   name: vault-init-role
@@ -207,46 +203,28 @@ kind: Job
 metadata:
   name: vault-primary-init
 spec:
+  ttlSecondsAfterFinished: 0
   template:
     spec:
       serviceAccountName: vault-init
       restartPolicy: OnFailure
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 100
+        fsGroup: 100
+        runAsNonRoot: true
       containers:
         - name: vault-primary-init
-          image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
-          command:
-            - /bin/sh
-            - -ec
-            - |
-              apk add --no-cache curl jq kubectl
-
-              # Wait for vault-0 to start
-              until kubectl get pod vault-0 -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep -q True; do
-                echo "Waiting for vault-0 pod to be ready..."
-                sleep 5
-              done
-
-              # Make sure vault-0's vault API is ready
-              until curl -k https://vault-0.svc-vault.default.svc.cluster.local:8200/v1/sys/health; do
-                echo "Waiting for Vault API..."
-                sleep 5
-              done
-
-              # Initialize Vault if not already initialized
-              if ! vault status -address=https://vault-0.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify | grep -q 'Initialized.*true'; then
-                echo "Initializing Vault..."
-                vault operator init -address=https://vault-0.svc-vault.default.svc.cluster.local:8200 -key-shares=1 -key-threshold=1 -format=json -tls-skip-verify > /vault/unseal-info.json
-                UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/unseal-info.json)
-                ROOT_TOKEN=$(jq -r '.root_token' /vault/unseal-info.json)
-
-                echo "Unsealing Vault..."
-                vault operator unseal -address=https://vault-0.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify $UNSEAL_KEY
-
-                echo "Saving credentials to a secret..."
-                kubectl create secret generic vault-init-keys --from-file=/vault/unseal-info.json --dry-run=client -o yaml | kubectl apply -f -
-              else
-                echo "Vault already initialized."
-              fi
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
 
 ---
 

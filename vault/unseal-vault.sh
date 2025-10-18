@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Wait for vault-0 to start
 until kubectl get pod vault-0 -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep -q True; do

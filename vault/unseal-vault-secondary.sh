@@ -27,9 +27,6 @@ if vault status -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster
   echo "Unsealing Vault..."
   vault operator unseal -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify $UNSEAL_KEY
 
-  echo "Saving credentials to a secret..."
-  kubectl create secret generic vault-init-keys --from-file=/tmp/vault-unseal-info.json --dry-run=client -o yaml | kubectl apply -f -
-
   rm -f /tmp/vault-unseal-info.json
   echo "Vault initialization complete."
 else

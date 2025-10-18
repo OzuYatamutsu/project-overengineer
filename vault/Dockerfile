@@ -10,4 +10,4 @@ COPY vault.crt /vault/tls/vault.crt
 COPY vault.key /vault/tls/vault.key
 RUN update-ca-certificates
 
-CMD vault server
+CMD vault server -config=/vault/config/vault.hcl

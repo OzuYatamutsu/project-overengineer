@@ -12,4 +12,4 @@ RUN update-ca-certificates
 WORKDIR /
 COPY vault/unseal-vault.sh .
 RUN chmod +x unseal-vault.sh
-CMD ["./unseal-vault.sh"]
+CMD ["/unseal-vault.sh"]

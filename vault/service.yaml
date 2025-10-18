@@ -212,11 +212,91 @@ spec:
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
           env:
             - name: CONTAINER_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+              value: vault-0
             - name: HA_ROLE
               value: primary
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-secondary-init
+spec:
+  ttlSecondsAfterFinished: 0
+  template:
+    spec:
+      serviceAccountName: vault-init
+      restartPolicy: OnFailure
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 100
+        fsGroup: 100
+        runAsNonRoot: true
+      containers:
+        - name: vault-secondary-init
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
+          env:
+            - name: CONTAINER_NAME
+              value: vault-1
+            - name: HA_ROLE
+              value: secondary
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-secondary-init
+spec:
+  ttlSecondsAfterFinished: 0
+  template:
+    spec:
+      serviceAccountName: vault-init
+      restartPolicy: OnFailure
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 100
+        fsGroup: 100
+        runAsNonRoot: true
+      containers:
+        - name: vault-secondary-init
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
+          env:
+            - name: CONTAINER_NAME
+              value: vault-2
+            - name: HA_ROLE
+              value: secondary
           resources:
             requests:
               cpu: "50m"

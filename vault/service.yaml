@@ -210,6 +210,13 @@ spec:
       containers:
         - name: vault-primary-init
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
+          env:
+            - name: CONTAINER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: HA_ROLE
+              value: primary
           resources:
             requests:
               cpu: "50m"

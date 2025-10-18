@@ -70,8 +70,12 @@ spec:
           image: hashicorp/vault:1.18
           args:
             - "agent"
-            - "-config=/vault/config/agent-config.hcl"
+            - "-config=/vault/config/vault.hcl"
           env:
+            - name: SKIP_CHOWN
+              value: "true"
+            - name: SKIP_SETCAP
+              value: "true"
             - name: VAULT_ADDR
               value: "http://svc-vault.default.svc.cluster.local:8200"
           resources:
@@ -85,7 +89,8 @@ spec:
             readOnlyRootFilesystem: true
           volumeMounts:
             - name: vault-agent-config
-              mountPath: /vault/config
+              mountPath: /vault/config/vault.hcl
+              subPath: vault.hcl
             - name: vault-secrets
               mountPath: /vault/secrets
       volumes:

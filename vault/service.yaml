@@ -31,7 +31,7 @@ kind: ConfigMap
 metadata:
   name: vault-agent-config
 data:
-  config.hcl: |
+  vault.hcl: |
     exit_after_auth = false
     pid_file = "/tmp/vault.pid"
 

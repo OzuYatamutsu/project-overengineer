@@ -10,5 +10,5 @@ RUN update-ca-certificates
 
 # Run unseal script at runtime
 COPY vault/unseal-vault.sh .
-RUN chmod +x /home/vault/unseal-vault.sh
+RUN chmod +x unseal-vault.sh
 CMD ["./unseal-vault.sh"]

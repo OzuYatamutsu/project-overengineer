@@ -123,7 +123,7 @@ spec:
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true
+              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 10
@@ -133,8 +133,8 @@ spec:
               cpu: "50m"
               memory: "64Mi"
             limits:
-              cpu: "1000m"
-              memory: "2Gi"
+              cpu: "250m"
+              memory: "1Gi"
           securityContext:
             readOnlyRootFilesystem: true
       volumes:

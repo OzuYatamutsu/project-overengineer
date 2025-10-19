@@ -21,7 +21,7 @@ done
 # Unseal Vault if not already unsealed
 if vault status -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify | grep -q 'Sealed.*true'; then
   echo "Joining raft cluster..."
-  vault operator raft join -address=https://vault-0.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify
+  vault operator raft join -address=https://svc-vault.default.svc.cluster.local:8200 -tls-skip-verify
 
   echo "Retrieving unseal key..."
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /tmp/vault-unseal-info.json

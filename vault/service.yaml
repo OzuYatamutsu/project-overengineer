@@ -72,7 +72,7 @@ metadata:
   name: vault
 spec:
   serviceName: svc-vault
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: vault

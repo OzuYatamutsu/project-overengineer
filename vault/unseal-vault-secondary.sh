@@ -18,10 +18,10 @@ until kubectl get secret vault-init-keys; do
   sleep 5
 done
 
-# Initialize Vault if not already initialized
+# Unseal Vault if not already unsealed
 if vault status -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify | grep -q 'Sealed.*true'; then
   echo "Joining raft cluster..."
-  vault operator raft join -address=https://svc-vault.default.svc.cluster.local:8200 -tls-skip-verify
+  vault operator raft join -address=https://vault-0.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify
 
   echo "Retrieving unseal key..."
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /tmp/vault-unseal-info.json
@@ -31,7 +31,7 @@ if vault status -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster
   vault operator unseal -address=https://${CONTAINER_NAME}.svc-vault.default.svc.cluster.local:8200 -tls-skip-verify $UNSEAL_KEY
 
   rm -f /tmp/vault-unseal-info.json
-  echo "Vault initialization complete."
+  echo "HA preparation complete."
 else
   echo "Vault already initialized."
 fi

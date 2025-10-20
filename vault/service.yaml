@@ -116,14 +116,14 @@ spec:
               mountPath: /vault/data
           readinessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
+              path: /v1/sys/health?standbyok=true
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
+              path: /v1/sys/health?standbyok=true
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 10

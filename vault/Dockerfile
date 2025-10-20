@@ -11,7 +11,7 @@ COPY vault.key /vault/tls/vault.key
 RUN update-ca-certificates
 
 # Copy unseal script
-COPY vault/unseal-vault.sh /vault/config/unseal-vault.sh
-RUN chmod +x /vault/config/unseal-vault.sh
+COPY vault/unseal-vault.sh /vault/unseal-vault.sh
+RUN chmod +x /vault/unseal-vault.sh
 
 CMD ["vault", "server", "-config=/vault/config/vault.hcl"]

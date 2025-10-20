@@ -106,8 +106,9 @@ spec:
                   - /bin/sh
                   - -c
                   - |
+                    sleep 30
                     echo "Vault pod $(hostname) started. Running post-start job..."
-                    /vault/unseal-vault.sh
+                    /vault/unseal-vault.sh >> /vault/logs/poststart.log 2>&1
           ports:
             - name: http
               containerPort: 8200

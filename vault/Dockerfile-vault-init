@@ -17,11 +17,7 @@ RUN update-ca-certificates
 # Run unseal script at runtime
 WORKDIR /vault
 COPY vault/unseal-vault.sh /vault/unseal-vault.sh
-COPY vault/unseal-vault-primary.sh /vault/unseal-vault-primary.sh
-COPY vault/unseal-vault-secondary.sh /vault/unseal-vault-secondary.sh
 RUN chmod +x /vault/unseal-vault.sh
-RUN chmod +x /vault/unseal-vault-primary.sh
-RUN chmod +x /vault/unseal-vault-secondary.sh
 
 # debug
 RUN ls -rlat /vault

@@ -1,7 +1,7 @@
 FROM hashicorp/vault:1.18
 
-ENV SKIP_CHOWN "true"
-ENV SKIP_SETCAP "true"
+ENV SKIP_CHOWN="true"
+ENV SKIP_SETCAP="true"
 
 # Install vault certificates and key
 RUN apk add --no-cache ca-certificates kubectl jq
@@ -14,4 +14,4 @@ RUN update-ca-certificates
 COPY vault/unseal-vault.sh /vault/config/unseal-vault.sh
 RUN chmod +x /vault/config/unseal-vault.sh
 
-CMD vault server -config=/vault/config/vault.hcl
+CMD ["vault", "server", "-config=/vault/config/vault.hcl"]

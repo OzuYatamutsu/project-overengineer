@@ -7,7 +7,7 @@ ROOT_TOKEN=""
 VAULT_ADDR="https://${HOSTNAME}.svc-vault.default.svc.cluster.local:8200"
 
 echo "Attempting to join raft cluster..."
-vault operator raft join -tls-skip-verify https://svc-vault.default.svc.cluster.local:8200 || true
+vault operator raft join -tls-skip-verify address=https://svc-vault.default.svc.cluster.local:8200 || true
 
 # Check if vault-init-keys secret exists
 if kubectl get secret vault-init-keys >/dev/null 2>&1; then
@@ -45,7 +45,7 @@ else
 fi
 
 echo "Unsealing Vault..."
-vault operator unseal -address="$VAULT_ADDR" -tls-skip-verify "$UNSEAL_KEY"
+vault operator unseal -tls-skip-verify -address="$VAULT_ADDR" "$UNSEAL_KEY"
 
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."

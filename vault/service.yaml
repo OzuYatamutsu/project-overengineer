@@ -71,7 +71,6 @@ kind: StatefulSet
 metadata:
   name: vault
 spec:
-  serviceAccountName: vault-init
   replicas: 1
   selector:
     matchLabels:
@@ -90,7 +89,7 @@ spec:
                   matchLabels:
                     app: vault
                 topologyKey: "kubernetes.io/hostname"
-      serviceAccountName: default
+      serviceAccountName: vault-init
       securityContext:
         runAsUser: 100
         runAsGroup: 100
@@ -126,7 +125,7 @@ spec:
               mountPath: /vault/data
           readinessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true
+              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 5
@@ -136,7 +135,7 @@ spec:
               path: /v1/sys/health?standbyok=true
               port: 8200
               scheme: HTTPS
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             periodSeconds: 30
           resources:
             requests:

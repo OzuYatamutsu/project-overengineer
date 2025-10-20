@@ -71,7 +71,7 @@ kind: StatefulSet
 metadata:
   name: vault
 spec:
-  serviceName: vault-init
+  serviceAccountName: vault-init
   replicas: 1
   selector:
     matchLabels:

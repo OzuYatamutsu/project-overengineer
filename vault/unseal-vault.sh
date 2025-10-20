@@ -12,8 +12,8 @@ vault operator raft join https://svc-vault.default.svc.cluster.local:8200 -tls-s
 # Check if vault-init-keys secret exists
 if kubectl get secret vault-init-keys >/dev/null 2>&1; then
   echo "Found existing unseal key, retrieving..."
-  kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /tmp/vault-unseal-info.json
-  UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-unseal-info.json)
+  kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/config/vault-unseal-info.json
+  UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/config/vault-unseal-info.json)
 else
   echo "No existing unseal key found, checking if this should be the primary..."
   ready=$(kubectl get statefulset vault -o jsonpath='{.status.readyReplicas}' || echo 0)
@@ -23,8 +23,8 @@ else
       echo "Waiting for vault-init-keys secret..."
       sleep 5
     done
-    kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /tmp/vault-unseal-info.json
-    UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-unseal-info.json)
+    kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/config/vault-unseal-info.json
+    UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/config/vault-unseal-info.json)
   else
     echo "This appears to be the first Vault pod. Initializing new cluster..."
     vault operator init \
@@ -32,18 +32,20 @@ else
       -key-shares=1 \
       -key-threshold=1 \
       -format=json \
-      -tls-skip-verify > /tmp/vault-unseal-info.json
+      -tls-skip-verify > /vault/config/vault-unseal-info.json
 
-    UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-unseal-info.json)
-    ROOT_TOKEN=$(jq -r '.root_token' /tmp/vault-unseal-info.json)
+    UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/config/vault-unseal-info.json)
+    ROOT_TOKEN=$(jq -r '.root_token' /vault/config/vault-unseal-info.json)
 
     echo "Saving Vault credentials to Kubernetes secret..."
     kubectl create secret generic vault-init-keys \
-      --from-file=/tmp/vault-unseal-info.json \
+      --from-file=/vault/config/vault-unseal-info.json \
       --dry-run=client -o yaml | kubectl apply -f -
   fi
 fi
 
 echo "Unsealing Vault..."
 vault operator unseal -address="$VAULT_ADDR" -tls-skip-verify "$UNSEAL_KEY"
+
+rm -fv /vault/config/vault-unseal-info.json
 echo "Vault unseal complete."

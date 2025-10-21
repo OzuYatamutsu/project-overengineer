@@ -69,7 +69,7 @@ spec:
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault-agent:v1
           env:
             - name: VAULT_ADDR
-              value: "http://svc-vault.default.svc.cluster.local:8200"
+              value: "https://svc-vault.default.svc.cluster.local:8200"
           resources:
             requests:
               cpu: "50m"

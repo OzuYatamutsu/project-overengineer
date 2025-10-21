@@ -149,6 +149,9 @@ spec:
               mountPath: /vault/config
             - name: data
               mountPath: /vault/data
+            - name: login-token
+              mountPath: /home/vault
+              subPath: .vault-token.tmp
           resources:
             requests:
               cpu: "50m"
@@ -163,6 +166,8 @@ spec:
           configMap:
             name: vault-config
         - name: data
+          emptyDir: {}
+        - name: login-token
           emptyDir: {}
   volumeClaimTemplates:
     - metadata:

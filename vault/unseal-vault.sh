@@ -76,5 +76,7 @@ EOF
   vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bound_service_account_namespaces=default policies=svc-auth ttl=24h
 fi
 
+echo "Done. Sleeping..."
+
 # Idle forever to prevent crash status (TODO: hack)
 tail -f /dev/null

@@ -99,7 +99,6 @@ spec:
       containers:
         - name: vault
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
-          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8200
@@ -140,7 +139,6 @@ spec:
             readOnlyRootFilesystem: true
         - name: vault-init
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
-          imagePullPolicy: Always
           env:
             - name: HOSTNAME
               valueFrom:

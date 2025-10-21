@@ -67,14 +67,13 @@ if [ "$IS_PRIMARY" = true ]; then
   echo "Enabling auth for vault-agent..."
   vault login -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
   vault auth enable -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
-  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_
-TCP_ADDR:443"
+  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"
   vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 svc-auth - <<EOF
   path "internal/data/database/config" {
     capabilities = ["read"]
   }
 EOF
-  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bound_service_account_namespaces=svc-auth policies=svc-auth ttl=24h
+  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bound_service_account_namespaces=default policies=svc-auth ttl=24h
 fi
 
 # Idle forever to prevent crash status (TODO: hack)

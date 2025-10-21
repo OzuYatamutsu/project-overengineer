@@ -6,8 +6,13 @@ ROOT_TOKEN=""
 
 VAULT_ADDR="https://${HOSTNAME}.svc-vault.default.svc.cluster.local:8200"
 
+until curl -k ${VAULT_ADDR}/v1/sys/health; do
+  echo "Waiting for vault API to be ready..."
+  sleep 5
+done
+
 echo "Attempting to join raft cluster..."
-vault operator raft join -tls-skip-verify address=https://svc-vault.default.svc.cluster.local:8200 || true
+vault operator raft join -address="$VAULT_ADDR" -tls-skip-verify || true
 
 # Check if vault-init-keys secret exists
 if kubectl get secret vault-init-keys >/dev/null 2>&1; then
@@ -27,6 +32,7 @@ else
     UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
   else
     echo "This appears to be the first Vault pod. Initializing new cluster..."
+
     vault operator init \
       -address="$VAULT_ADDR" \
       -key-shares=1 \

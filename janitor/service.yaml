@@ -1,14 +1,9 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: svc-auth
-
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: janitor
+  annotations:
+    ignore-check.kube-linter.io/non-existent-service-account: "svc-auth is managed in vault/service.yaml"
 spec:
   replicas: 1
   selector:

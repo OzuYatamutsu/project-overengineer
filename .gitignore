@@ -44,4 +44,7 @@ ocr-worker/eng.traineddata
 # Certificate generated at build time
 vault.crt
 vault.key
-
+vault.csr
+vault-ca.crt
+vault-ca.key
+vault-ca.srl

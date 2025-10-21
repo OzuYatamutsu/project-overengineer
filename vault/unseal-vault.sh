@@ -56,3 +56,6 @@ vault operator unseal -address="$VAULT_ADDR" -tls-skip-verify "$UNSEAL_KEY"
 
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."
+
+# Idle forever to prevent crash status (TODO: hack)
+tail -f /dev/null

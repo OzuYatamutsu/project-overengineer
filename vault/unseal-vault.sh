@@ -44,8 +44,11 @@ else
   fi
 fi
 
+echo "DEBUG: $VAULT_ADDR"
+echo "DEBUG: $UNSEAL_KEY"
+
 echo "Unsealing Vault..."
-vault operator unseal -tls-skip-verify -address="$VAULT_ADDR" "$UNSEAL_KEY"
+vault operator unseal -address="$VAULT_ADDR" -tls-skip-verify "$UNSEAL_KEY"
 
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."

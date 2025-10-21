@@ -180,7 +180,7 @@ rules:
     resources: ["pods"]
     verbs: ["get"]
   - apiGroups: ["apps"]
-    resources: ["statefulset"]
+    resources: ["statefulsets"]
     verbs: ["get"]
   - apiGroups: [""]
     resources: ["pods/exec"]

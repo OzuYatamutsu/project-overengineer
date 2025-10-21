@@ -37,14 +37,14 @@ data:
 
     vault {
       address = "https://svc-vault.default.svc.cluster.local:8200"
-      ca_cert = "/vault/tls/vault.crt"
+      ca_cert = "/usr/local/share/ca-certificates/vault-ca.crt"
     }
 
     auto_auth {
       method "kubernetes" {
         mount_path = "auth/kubernetes"
         config = {
-          role = "vault-init"
+          role = "svc-auth"
         }
       }
 

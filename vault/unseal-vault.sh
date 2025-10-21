@@ -65,7 +65,7 @@ echo "Vault unseal complete."
 
 if [ "$IS_PRIMARY" = true ]; then
   echo "Enabling auth for vault-agent..."
-  vault login -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200
+  vault login -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
   vault auth enable -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
 fi
 

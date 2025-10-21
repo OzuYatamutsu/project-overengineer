@@ -3,8 +3,15 @@ echo "Starting Vault initialization script for pod ${HOSTNAME}..."
 
 UNSEAL_KEY=""
 ROOT_TOKEN=""
-
+IS_PRIMARY=""
 VAULT_ADDR="https://${HOSTNAME}.svc-vault.default.svc.cluster.local:8200"
+
+ready=$(kubectl get statefulset vault -o jsonpath='{.status.readyReplicas}' || echo 0)
+if [ "${ready:-0}" -ge 2 ]; then
+  IS_PRIMARY=false
+else
+  IS_PRIMARY=true
+fi
 
 until curl -k ${VAULT_ADDR}/v1/sys/health; do
   echo "Waiting for vault API to be ready..."
@@ -17,9 +24,8 @@ if kubectl get secret vault-init-keys >/dev/null 2>&1; then
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
   UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
 else
-  echo "No existing unseal key found, checking if this should be the primary..."
-  ready=$(kubectl get statefulset vault -o jsonpath='{.status.readyReplicas}' || echo 0)
-  if [ "${ready:-0}" -ge 2 ]; then
+  echo "No existing unseal key found."
+    if [ "$IS_PRIMARY" = false ]; then
     echo "This looks like a secondary."
     echo "Waiting for primary Vault to become initialized..."
     until kubectl get secret vault-init-keys >/dev/null 2>&1; do
@@ -56,6 +62,12 @@ vault operator unseal -address="$VAULT_ADDR" -tls-skip-verify "$UNSEAL_KEY"
 
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."
+
+if [ "$IS_PRIMARY" = true ]; then
+  echo "Enabling auth for vault-agent..."
+  vault login -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200
+  vault auth enable -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
+fi
 
 # Idle forever to prevent crash status (TODO: hack)
 tail -f /dev/null

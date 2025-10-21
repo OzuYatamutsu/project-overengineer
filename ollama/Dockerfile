@@ -2,7 +2,7 @@ FROM ollama/ollama:latest
 ENV OLLAMA_MODELS=/home/ollama/.ollama
 
 # Install local vault certificates
-COPY vault.crt /usr/local/share/ca-certificates/vault.crt
+COPY vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 RUN update-ca-certificates
 
 # EXPOSE 11434

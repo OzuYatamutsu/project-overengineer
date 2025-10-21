@@ -67,6 +67,15 @@ if [ "$IS_PRIMARY" = true ]; then
   echo "Enabling auth for vault-agent..."
   vault login -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
   vault auth enable -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
+  vault write -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_
+TCP_ADDR:443"
+  vault policy write -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 svc-auth - <<EOF
+  path "internal/data/database/config" {
+    capabilities = ["read"]
+  }
+EOF
+  vault write -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bo
+und_service_account_namespaces=svc-auth policies=svc-auth ttl=24h
 fi
 
 # Idle forever to prevent crash status (TODO: hack)

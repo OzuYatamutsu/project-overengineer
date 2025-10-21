@@ -12,6 +12,7 @@ spec:
       labels:
         app: janitor
     spec:
+      serviceAccountName: svc-auth
       containers:
         - name: janitor
           image: ghcr.io/ozuyatamutsu/project-overengineer/janitor:v1

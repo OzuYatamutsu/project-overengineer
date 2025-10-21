@@ -5,7 +5,7 @@ ENV REDIS_PORT=6379
 
 # Install local vault certificates
 RUN apt-get update && apt-get install -y ca-certificates
-COPY vault.crt /usr/local/share/ca-certificates/vault.crt
+COPY vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 RUN update-ca-certificates
 
 CMD redis-server --bind 0.0.0.0 --port $REDIS_PORT --requirepass $REDIS_PASSWORD

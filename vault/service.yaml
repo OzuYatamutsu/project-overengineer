@@ -71,6 +71,7 @@ kind: StatefulSet
 metadata:
   name: vault
 spec:
+  serviceName: svc-vault
   replicas: 1
   selector:
     matchLabels:
@@ -99,16 +100,6 @@ spec:
         - name: vault
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
           imagePullPolicy: Always
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - /bin/sh
-                  - -c
-                  - |
-                    sleep 30
-                    echo "Vault pod $(hostname) started. Running post-start job..."
-                    /vault/config/unseal-vault.sh >> /vault/logs/poststart.log 2>&1
           ports:
             - name: http
               containerPort: 8200
@@ -133,7 +124,7 @@ spec:
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true
+              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 60
@@ -144,7 +135,29 @@ spec:
               memory: "64Mi"
             limits:
               cpu: "500m"
-              memory: "2Gi"
+              memory: "1Gi"
+          securityContext:
+            readOnlyRootFilesystem: true
+        - name: vault-init
+          image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
+          imagePullPolicy: Always
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: config
+              mountPath: /vault/config
+            - name: data
+              mountPath: /vault/data
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
           securityContext:
             readOnlyRootFilesystem: true
       volumes:

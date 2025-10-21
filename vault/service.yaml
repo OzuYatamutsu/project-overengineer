@@ -98,6 +98,7 @@ spec:
       containers:
         - name: vault
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault:v1
+          imagePullPolicy: Always
           lifecycle:
             postStart:
               exec:
@@ -178,7 +179,7 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get"]
-  - apiGroups: [""]
+  - apiGroups: ["apps"]
     resources: ["statefulset"]
     verbs: ["get"]
   - apiGroups: [""]

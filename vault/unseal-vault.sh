@@ -42,7 +42,7 @@ else
       -key-shares=1 \
       -key-threshold=1 \
       -format=json \
-      -tls-skip-verify > /vault/data/vault-unseal-info.json
+      > /vault/data/vault-unseal-info.json
 
     UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
     ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
@@ -55,27 +55,26 @@ else
 fi
 
 echo "Attempting to join raft cluster..."
-vault operator raft join -address="$VAULT_ADDR" -tls-skip-verify || true
+vault operator raft join -address="$VAULT_ADDR" || true
 
 echo "Unsealing Vault..."
-vault operator unseal -address="$VAULT_ADDR" -tls-skip-verify "$UNSEAL_KEY"
+vault operator unseal -address="$VAULT_ADDR" "$UNSEAL_KEY"
 
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."
 
 if [ "$IS_PRIMARY" = true ]; then
   echo "Enabling auth for vault-agent..."
-  vault login -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
-  vault auth enable -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
-  vault write -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_
+  vault login -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
+  vault auth enable -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
+  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_
 TCP_ADDR:443"
-  vault policy write -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 svc-auth - <<EOF
+  vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 svc-auth - <<EOF
   path "internal/data/database/config" {
     capabilities = ["read"]
   }
 EOF
-  vault write -tls-skip-verify -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bo
-und_service_account_namespaces=svc-auth policies=svc-auth ttl=24h
+  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bound_service_account_namespaces=svc-auth policies=svc-auth ttl=24h
 fi
 
 # Idle forever to prevent crash status (TODO: hack)

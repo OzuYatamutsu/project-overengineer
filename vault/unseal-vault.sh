@@ -67,13 +67,19 @@ if [ "$IS_PRIMARY" = true ]; then
   echo "Enabling auth for vault-agent..."
   vault login -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
   vault auth enable -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
-  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"
-  vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 svc-auth - <<EOF
-  path "internal/data/database/config" {
-    capabilities = ["read"]
+  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token
+  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/vault-agent-injector bound_service_account_names=vault-agent-injector bound_service_account_namespaces=default policies=vault-agent-injector ttl=24h
+  vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 vault-agent-injector - <<EOF
+  path "*" {
+    capabilities = ["create", "read", "update", "patch", "delete", "list"]
   }
 EOF
-  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/svc-auth bound_service_account_names=svc-auth bound_service_account_namespaces=default policies=svc-auth ttl=24h
+  vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 vault-agent-injector - <<EOF
+  path "*" {
+    capabilities = ["create", "read", "update", "patch", "delete", "list"]
+  }
+EOF
+  vault secrets enable -version=2 -path="kv" secret/data/redis/config REDIS_PASSWORD="TEST_PASSWORD" ttl="60s"
 fi
 
 echo "Done. Sleeping..."

@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: janitor
   annotations:
-    ignore-check.kube-linter.io/non-existent-service-account: "svc-auth is managed in vault/service.yaml"
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/role: "vault-agent-injector"
+    ignore-check.kube-linter.io/non-existent-service-account: "vault-agent-injector is managed in vault/service.yaml"
 spec:
   replicas: 1
   selector:
@@ -14,7 +16,7 @@ spec:
       labels:
         app: janitor
     spec:
-      serviceAccountName: svc-auth
+      serviceAccountName: vault-agent-injector
       containers:
         - name: janitor
           image: ghcr.io/ozuyatamutsu/project-overengineer/janitor:v1
@@ -79,7 +81,7 @@ spec:
               memory: "64Mi"
             limits:
               cpu: "200m"
-              memory: "128Mi"
+              memory: "256Mi"
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:

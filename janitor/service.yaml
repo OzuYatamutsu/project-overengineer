@@ -73,8 +73,10 @@ spec:
         - name: vault-agent
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault-agent:v1
           env:
-            - name: VAULT_ADDR
+            - name: AGENT_INJECT_VAULT_ADDR
               value: "https://svc-vault.default.svc.cluster.local:8200"
+            - name: AGENT_INJECT_VAULT_AUTH_PATH
+              value: auth/kubernetes
           resources:
             requests:
               cpu: "50m"

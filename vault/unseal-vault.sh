@@ -63,33 +63,6 @@ vault operator unseal -address="$VAULT_ADDR" "$UNSEAL_KEY"
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."
 
-if [ "$IS_PRIMARY" = true ]; then
-  echo "Enabling auth for vault-agent..."
-  vault login -address=https://svc-vault.default.svc.cluster.local:8200 "$ROOT_TOKEN"
-  vault auth enable -address=https://svc-vault.default.svc.cluster.local:8200 kubernetes
-
-  CA_CERT=$(kubectl get secret vault-agent-token -o go-template='{{ index .data "ca.crt" }}' | base64 -d)
-  TOKEN_REVIEW_JWT=$(kubectl get secret vault-agent-token -o go-template='{{ .data.token }}' | base64 -d)
-
-  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/config kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" kubernetes_ca_cert=$CA_CERT token_reviewer_jwt=$TOKEN_REVIEW_JWT disable_local_ca_jwt="true"
-  vault write -address=https://svc-vault.default.svc.cluster.local:8200 auth/kubernetes/role/vault-agent-injector bound_service_account_names=vault-agent-injector bound_service_account_namespaces=default policies=vault-agent-injector ttl=24h
-  vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 vault-agent-injector - <<EOF
-  path "*" {
-    capabilities = ["create", "read", "update", "patch", "delete", "list"]
-  }
-  path "auth/kubernetes/config/*" {
-    capabilities = ["create", "read", "update", "patch", "delete", "list"]
-  }
-EOF
-  vault policy write -address=https://svc-vault.default.svc.cluster.local:8200 vault-agent-injector - <<EOF
-  path "*" {
-    capabilities = ["create", "read", "update", "patch", "delete", "list"]
-  }
-EOF
-  vault secrets enable -address=https://svc-vault.default.svc.cluster.local:8200 -path secret/ kv
-  vault kv put -address=https://svc-vault.default.svc.cluster.local:8200 secret/data/redis/config REDIS_PASSWORD="TEST_PASSWORD" ttl="60s"
-fi
-
 echo "Done. Sleeping..."
 
 # Idle forever to prevent crash status (TODO: hack)

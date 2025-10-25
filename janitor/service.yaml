@@ -2,10 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: janitor
-  annotations:
-    vault.hashicorp.com/agent-inject: "true"
-    vault.hashicorp.com/role: "vault-agent-injector"
-    ignore-check.kube-linter.io/non-existent-service-account: "vault-agent-injector is managed in vault/service.yaml"
 spec:
   replicas: 1
   selector:
@@ -15,10 +11,6 @@ spec:
     metadata:
       labels:
         app: janitor
-      annotations:
-          vault.hashicorp.com/agent-inject: 'true'
-          vault.hashicorp.com/role: 'devweb-app'
-          vault.hashicorp.com/agent-inject-secret-credentials.txt: 'secret/data/redis/config'
     spec:
       serviceAccountName: vault-agent-injector
       containers:
@@ -70,39 +62,7 @@ spec:
               memory: "128Mi"
           securityContext:
             readOnlyRootFilesystem: true
-          volumeMounts:
-            - name: vault-secrets
-              mountPath: /vault/secrets
-              readOnly: true
-        - name: vault-agent
-          image: ghcr.io/ozuyatamutsu/project-overengineer/vault-agent:v1
-          env:
-            - name: AGENT_INJECT_VAULT_ADDR
-              value: "https://svc-vault.default.svc.cluster.local:8200"
-            - name: AGENT_INJECT_VAULT_AUTH_PATH
-              value: auth/kubernetes
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "200m"
-              memory: "256Mi"
-          securityContext:
-            readOnlyRootFilesystem: true
-          volumeMounts:
-            - name: vault-agent-config
-              mountPath: /vault/config
-            - name: vault-secrets
-              mountPath: /vault/secrets
-            - name: tmp
-              mountPath: /tmp
       volumes:
-        - name: vault-agent-config
-          configMap:
-            name: vault-agent-config
-        - name: vault-secrets
-          emptyDir: {}
         - name: tmp
           emptyDir: {}
       securityContext:

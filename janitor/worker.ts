@@ -1,4 +1,4 @@
-import { getRedis, log } from '@project-overengineer/shared-lib'
+import { getRedis, log, updateEnvFromVault, watchAndUpdateVaultValue } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -64,6 +64,15 @@ setInterval(async () => {
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
+    log("janitor", "startup: pulling fresh config values...")
+    updateEnvFromVault("janitor", "REDIS_HOST")
+    updateEnvFromVault("janitor", "REDIS_PORT")
+    updateEnvFromVault("janitor", "REDIS_PASSWORD")
+    watchAndUpdateVaultValue("janitor", "REDIS_HOST")
+    watchAndUpdateVaultValue("janitor", "REDIS_PORT")
+    watchAndUpdateVaultValue("janitor", "REDIS_PASSWORD")
+    log("janitor", "startup: config values updated.")
+
     // Health check endpoint
     http.createServer(async (req, res) => {
         if (req.url === "/healthz") {
@@ -81,8 +90,8 @@ if (require.main === module) {
             res.end("Not Found")
         }
     }).listen(HEALTH_CHECK_PORT, () => {
-        log("janitor", `/healthz endpoint on port ${HEALTH_CHECK_PORT}`)
+        log("janitor", `startup: /healthz endpoint on port ${HEALTH_CHECK_PORT}`)
     })
 }
 
-log("janitor", `Janitor started.`)
+log("janitor", `startup: janitor started.`)

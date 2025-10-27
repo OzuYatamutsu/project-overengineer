@@ -4,7 +4,7 @@ echo "Starting Vault initialization script for pod ${HOSTNAME}..."
 UNSEAL_KEY=""
 ROOT_TOKEN=""
 IS_PRIMARY=""
-VAULT_ADDR="https://${HOSTNAME}.svc-vault.default.svc.cluster.local:8200"
+VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
 
 ready=$(kubectl get statefulset vault -o jsonpath='{.status.readyReplicas}' || echo 0)
 if [ "${ready:-0}" -ge 2 ]; then
@@ -50,6 +50,24 @@ else
     echo "Saving Vault credentials to Kubernetes secret..."
     kubectl create secret generic vault-init-keys \
       --from-file=/vault/data/vault-unseal-info.json \
+      --dry-run=client -o yaml | kubectl apply -f -
+
+    echo "Enabling config/ kv store..."
+    vault login -address="$VAULT_ADDR" $ROOT_TOKEN
+    vault secrets enable -address="$VAULT_ADDR" -path=config/ kv
+
+    echo "Creating read token..."
+    vault policy write -address="$VAULT_ADDR" read-config - <<EOF
+    path "config/*" {
+      capabilities = ["read", "list"]
+    }
+EOF
+    vault token create -address="$VAULT_ADDR" -policy="read-config" -ttl="1h" -format=json > /vault/data/vault-unseal-info.json
+    RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
+
+    echo "Saving Vault read token to Kubernetes secret..."
+    kubectl create secret generic vault-ro-token \
+      --from-literal=VAULT_RO_TOKEN=$RO_KEY \
       --dry-run=client -o yaml | kubectl apply -f -
   fi
 fi

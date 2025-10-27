@@ -27,6 +27,11 @@ spec:
               value: svc-vault.default.svc.cluster.local
             - name: VAULT_PORT
               value: 8200
+            - name: VAULT_RO_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vault-ro-token
+                  key: token
             - name: REDIS_HOST
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT

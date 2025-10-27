@@ -10,15 +10,15 @@ let vaultClient: vault.client
 export async function getVault(serviceName: string) {
     enforceConfig(serviceName, "VAULT_HOST")
     enforceConfig(serviceName, "VAULT_PORT")
+    enforceConfig(serviceName, "VAULT_RO_TOKEN")
 
     if (!vaultClient) {
         log(serviceName, `opening new vault connection to https://${process.env.VAULT_HOST}:${process.env.VAULT_PORT}`)
 
         vaultClient = vault({
             apiVersion: "v1",
-            endpoint: `https://${process.env.VAULT_HOST}:${process.env.VAULT_PORT}`
-            // token: process.env.VAULT_TOKEN
-            // TODO auth
+            endpoint: `https://${process.env.VAULT_HOST}:${process.env.VAULT_PORT}`,
+            token: process.env.VAULT_RO_TOKEN
         })
     }
     

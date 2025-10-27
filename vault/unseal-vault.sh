@@ -79,7 +79,7 @@ EOF
 
   echo "Saving Vault read token to Kubernetes secret..."
   kubectl create secret generic vault-ro-token \
-    --from-literal=VAULT_RO_TOKEN=$RO_KEY \
+    --from-literal=token=$RO_KEY \
     --dry-run=client -o yaml | kubectl apply -f -
 fi
 

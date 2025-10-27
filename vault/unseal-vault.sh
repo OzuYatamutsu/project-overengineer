@@ -74,7 +74,7 @@ if [ "$IS_PRIMARY" = true ]; then
     capabilities = ["read", "list"]
   }
 EOF
-  vault token create -address="$VAULT_ADDR" -policy="read-config" -ttl="1h" -format=json > /vault/data/vault-unseal-info.json
+  vault token create -address="$VAULT_ADDR" -policy="read-config" -period=1h -format=json > /vault/data/vault-unseal-info.json
   RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
 
   echo "Saving Vault read token to Kubernetes secret..."
@@ -84,6 +84,12 @@ EOF
 fi
 
 echo "Done. Sleeping..."
+sleep 1800
 
-# Idle forever to prevent crash status (TODO: hack)
-tail -f /dev/null
+while true; do
+  echo "Renewing vault read token..."
+  vault token renew -address="$VAULT_ADDR" "$RO_KEY"
+
+  echo "Done. Sleeping..."
+  sleep 1800
+done

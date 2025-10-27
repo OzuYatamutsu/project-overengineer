@@ -51,24 +51,6 @@ else
     kubectl create secret generic vault-init-keys \
       --from-file=/vault/data/vault-unseal-info.json \
       --dry-run=client -o yaml | kubectl apply -f -
-
-    echo "Enabling config/ kv store..."
-    vault login -address="$VAULT_ADDR" $ROOT_TOKEN
-    vault secrets enable -address="$VAULT_ADDR" -path=config/ kv
-
-    echo "Creating read token..."
-    vault policy write -address="$VAULT_ADDR" read-config - <<EOF
-    path "config/*" {
-      capabilities = ["read", "list"]
-    }
-EOF
-    vault token create -address="$VAULT_ADDR" -policy="read-config" -ttl="1h" -format=json > /vault/data/vault-unseal-info.json
-    RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
-
-    echo "Saving Vault read token to Kubernetes secret..."
-    kubectl create secret generic vault-ro-token \
-      --from-literal=VAULT_RO_TOKEN=$RO_KEY \
-      --dry-run=client -o yaml | kubectl apply -f -
   fi
 fi
 
@@ -80,6 +62,26 @@ vault operator unseal -address="$VAULT_ADDR" "$UNSEAL_KEY"
 
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."
+
+if [ "$IS_PRIMARY" = true ]; then
+  echo "Enabling config/ kv store..."
+  vault login -address="$VAULT_ADDR" $ROOT_TOKEN
+  vault secrets enable -address="$VAULT_ADDR" -path=config/ kv
+
+  echo "Creating read token..."
+  vault policy write -address="$VAULT_ADDR" read-config - <<EOF
+  path "config/*" {
+    capabilities = ["read", "list"]
+  }
+EOF
+  vault token create -address="$VAULT_ADDR" -policy="read-config" -ttl="1h" -format=json > /vault/data/vault-unseal-info.json
+  RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
+
+  echo "Saving Vault read token to Kubernetes secret..."
+  kubectl create secret generic vault-ro-token \
+    --from-literal=VAULT_RO_TOKEN=$RO_KEY \
+    --dry-run=client -o yaml | kubectl apply -f -
+fi
 
 echo "Done. Sleeping..."
 

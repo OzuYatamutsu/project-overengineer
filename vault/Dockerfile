@@ -5,10 +5,10 @@ ENV SKIP_SETCAP="true"
 
 # Install vault certificates and key
 RUN apk add --no-cache curl ca-certificates kubectl jq
-COPY vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-COPY vault-ca.crt /vault/tls/vault-ca.crt
-COPY vault.crt /vault/tls/vault.crt
-COPY vault.key /vault/tls/vault.key
+COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
+COPY vault/vault-ca.crt /vault/tls/vault-ca.crt
+COPY vault/vault.crt /vault/tls/vault.crt
+COPY vault/vault.key /vault/tls/vault.key
 RUN update-ca-certificates
 
 # Copy unseal script

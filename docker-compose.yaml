@@ -1,8 +1,8 @@
 services:
   ollama-ocr:
    build:
-     context: ./ollama
-     dockerfile: Dockerfile
+     context: .
+     dockerfile: ./ollama/Dockerfile
    container_name: ollama-ocr
    restart: unless-stopped
    ports:
@@ -76,8 +76,8 @@ services:
 
   redis:
     build:
-      context: ./redis
-      dockerfile: Dockerfile-master
+      context: .
+      dockerfile: redis/Dockerfile-master
     ports:
       - "6379:6379"
     environment:
@@ -86,8 +86,8 @@ services:
 
   redis-replica:
     build:
-      context: ./redis
-      dockerfile: Dockerfile-replica
+      context: .
+      dockerfile: redis/Dockerfile-replica
     environment:
       REDIS_REPLICA_PORT: ${REDIS_REPLICA_PORT:-6379}
       REDIS_HOST: ${REDIS_HOST:-redis}
@@ -100,8 +100,8 @@ services:
 
   redis-sentinel:
     build:
-      context: ./redis
-      dockerfile: Dockerfile-sentinel
+      context: .
+      dockerfile: redis/Dockerfile-sentinel
     ports:
       - "26379:26379"
     environment:
@@ -114,8 +114,8 @@ services:
 
   redis-sentinel-replica:
     build:
-      context: ./redis
-      dockerfile: Dockerfile-sentinel
+      context: .
+      dockerfile: redis/Dockerfile-sentinel
     environment:
       SENTINEL_PORT: ${SENTINEL_PORT}
       REDIS_HOST: ${REDIS_HOST:-redis}

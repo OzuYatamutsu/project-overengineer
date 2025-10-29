@@ -25,7 +25,7 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
     return vaultClient
 }
 
-export async function getValue(serviceName: string, configName: string, insecure=false): Promise<any> {
+export async function getValue(serviceName: string, configName: string, insecure=false): Promise<string> {
     const result = (
         await (await getVault(serviceName, insecure)).read(`${CONFIG_PREFIX}/${configName}`)
     )
@@ -33,7 +33,7 @@ export async function getValue(serviceName: string, configName: string, insecure
     return result.data.data.value
 }
 
-export async function writeValue(serviceName: string, configName: string, value: any, insecure=false): Promise<void> {
+export async function writeValue(serviceName: string, configName: string, value: string, insecure=false): Promise<void> {
     await (await getVault(serviceName, insecure)).write(`${CONFIG_PREFIX}/${configName}`, {data: {"value": value}})
 }
 

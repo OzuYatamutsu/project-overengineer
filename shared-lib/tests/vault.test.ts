@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { updateEnvFromVault, getVault, watchAndUpdateVaultValue, CONFIG_PREFIX } from '../vault'
 
 test('can get a vault object', async () => {
-  expect(await getVault("shared-lib")).toBeTruthy()
+  expect(await getVault("shared-lib", true)).toBeTruthy()
 })
 
 test('can update an env from vault', async () => {
@@ -17,7 +17,7 @@ test('can update an env from vault', async () => {
   expect(process.env[configKey]).toBe(initialValue)
 
   await vaultClient.write(`${CONFIG_PREFIX}/${configKey}`, expectedValue)
-  updateEnvFromVault("shared-lib", configKey)
+  updateEnvFromVault("shared-lib", configKey, true)
 
   expect(process.env[configKey]).toBeTruthy()
   expect(process.env[configKey]).toBe(expectedValue)
@@ -25,5 +25,5 @@ test('can update an env from vault', async () => {
 
 test('can start watching and updating a value from vault', () => {
   // Just test if we can create a background job
-  expect(watchAndUpdateVaultValue("shared-lib", "_TEST_CONFIG_VALUE")).toBeTruthy()
+  expect(watchAndUpdateVaultValue("shared-lib", "_TEST_CONFIG_VALUE", true)).toBeTruthy()
 })

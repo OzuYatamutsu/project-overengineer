@@ -34,7 +34,7 @@ test('can update an env from vault', async () => {
   expect(process.env[configKey]).toBeTruthy()
   expect(process.env[configKey]).toBe(initialValue)
 
-  await vaultClient.write(`${CONFIG_PREFIX}/${configKey}`, {"data": {configKey: expectedValue}})
+  await writeValue("shared-lib", configKey, expectedValue, true)
   updateEnvFromVault("shared-lib", configKey, true)
 
   expect(process.env[configKey]).toBeTruthy()

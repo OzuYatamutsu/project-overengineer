@@ -12,7 +12,6 @@ spec:
       labels:
         app: janitor
     spec:
-      serviceAccountName: vault-agent-injector
       containers:
         - name: janitor
           image: ghcr.io/ozuyatamutsu/project-overengineer/janitor:v1

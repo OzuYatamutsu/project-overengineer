@@ -53,6 +53,8 @@ export async function standardizeImage(rawImageData: Buffer<ArrayBuffer>): Promi
 }
 
 export async function saveJob(job: Job): Promise<void> {
+    _init_vault_if_required()
+
     job.status = JobStatus.WAITING
     await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())
 }

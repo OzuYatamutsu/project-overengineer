@@ -94,6 +94,9 @@ jobs:
         with:
           name: vault-certs
           path: .
+      
+      - name: debug
+        run: ls -R .
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

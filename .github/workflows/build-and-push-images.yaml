@@ -43,7 +43,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: ./ollama
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -86,7 +86,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
       
       - name: debug
         run: ls -R .
@@ -128,7 +128,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -167,7 +167,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -206,7 +206,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: ./redis
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -245,7 +245,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: ./redis
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -284,7 +284,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: ./redis
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -323,7 +323,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -362,7 +362,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -401,7 +401,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -440,7 +440,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vault-certs
-          path: .
+          path: ./vault
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

@@ -30,7 +30,7 @@ export async function getValue(serviceName: string, configName: string, insecure
         await (await getVault(serviceName, insecure)).read(`${CONFIG_PREFIX}/${configName}`)
     )
 
-    return result.data.data[configName]
+    return result.data.data.value
 }
 
 export async function writeValue(serviceName: string, configName: string, value: any, insecure=false): Promise<void> {
@@ -46,6 +46,6 @@ export async function updateEnvFromVault(serviceName: string, configName: string
     process.env[configName] = freshValue
 }
 
-export function watchAndUpdateVaultValue(serviceName: string, configName: string, refreshPeriodMs=60000, insecure=false): void {
-    setInterval(async () => await updateEnvFromVault(serviceName, configName, insecure), refreshPeriodMs)
+export function watchAndUpdateVaultValue(serviceName: string, configName: string, refreshPeriodMs=60000, insecure=false): NodeJS.Timeout {
+    return setInterval(async () => await updateEnvFromVault(serviceName, configName, insecure), refreshPeriodMs)
 }

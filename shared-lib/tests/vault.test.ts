@@ -34,7 +34,7 @@ test('can update an env from vault', async () => {
   expect(process.env[configKey]).toBe(initialValue)
 
   await writeValue("shared-lib", configKey, expectedValue, true)
-  updateEnvFromVault("shared-lib", configKey, true)
+  await updateEnvFromVault("shared-lib", configKey, true)
 
   expect(process.env[configKey]).toBeTruthy()
   expect(process.env[configKey]).toBe(expectedValue)
@@ -42,5 +42,5 @@ test('can update an env from vault', async () => {
 
 test('can start watching and updating a value from vault', () => {
   // Just test if we can create a background job
-  expect(watchAndUpdateVaultValue("shared-lib", "_TEST_CONFIG_VALUE", true)).toBeTruthy()
+  expect(watchAndUpdateVaultValue("shared-lib", "_TEST_CONFIG_VALUE", 60000, true)).toBeTruthy()
 })

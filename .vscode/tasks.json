@@ -12,7 +12,7 @@
       "label": "Build infra dependencies",
       "type": "shell",
       "dependsOn": "Generate vault certificate",
-      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=localhost VAULT_PORT=8200 VAULT_RO_TOKEN=root docker compose build redis ollama-ocr vault",
+      "command": "docker compose build redis ollama-ocr vault",
       "problemMatcher": [],
       "group": "build"
     },
@@ -20,7 +20,7 @@
       "label": "Start infra dependencies",
       "type": "shell",
       "dependsOn": "Build infra dependencies",
-      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=localhost VAULT_PORT=8200 VAULT_RO_TOKEN=root docker compose up redis ollama-ocr vault -d --remove-orphans",
+      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=localhost VAULT_PORT=8200 VAULT_RO_TOKEN=root docker compose up redis ollama-ocr vault --remove-orphans",
       "problemMatcher": [],
       "group": "build"
     },

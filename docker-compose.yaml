@@ -131,8 +131,8 @@ services:
     build:
       context: .
       dockerfile: vault/Dockerfile
+    ports:
+      - "8200:8200"
     cap_add:
       - IPC_LOCK
     command: server -dev -dev-listen-address="0.0.0.0:8200" -dev-root-token-id="root"
-    environment:
-      VAULT_DEV_ROOT_TOKEN_ID: "root"

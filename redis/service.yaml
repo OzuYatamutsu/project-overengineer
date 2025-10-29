@@ -18,11 +18,9 @@ spec:
           env:
             - name: REDIS_PORT
               value: "6379"
+            # TODO
             - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: REDIS_PASSWORD
+              value: "b4yscx92yksfyv9c"
           readinessProbe:
             exec:
               command:
@@ -102,11 +100,9 @@ spec:
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            # TODO
             - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: REDIS_PASSWORD
+              value: "b4yscx92yksfyv9c"
           readinessProbe:
             exec:
               command:
@@ -187,11 +183,9 @@ spec:
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            # TODO
             - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: REDIS_PASSWORD
+              value: "b4yscx92yksfyv9c"
           readinessProbe:
             tcpSocket:
               port: 26379

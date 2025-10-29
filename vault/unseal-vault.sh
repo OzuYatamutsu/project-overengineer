@@ -81,6 +81,11 @@ EOF
   kubectl create secret generic vault-ro-token \
     --from-literal=token=$RO_KEY \
     --dry-run=client -o yaml | kubectl apply -f -
+  
+  echo "Inserting Redis config..."  # TODO
+  vault kv put -address="$VAULT_ADDR" secret/data/REDIS_HOST value="svc-redis-master.default.svc.cluster.local"
+  vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PORT value="6379"
+  vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="b4yscx92yksfyv9c"  # TODO
 fi
 
 echo "Done. Sleeping..."

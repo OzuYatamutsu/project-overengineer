@@ -18,13 +18,6 @@ jobs:
       - name: Build certificate
         run: vault/generate-vault-cert.sh
 
-      - name: Move certificates
-        run: |
-          mv vault/vault.crt .
-          mv vault/vault.key .
-          mv vault/vault-ca.crt .
-          mv vault/vault-ca.key .
-
       - name: Upload vault cert and key
         uses: actions/upload-artifact@v4
         with:

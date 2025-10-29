@@ -25,10 +25,20 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
     return vaultClient
 }
 
-export async function updateEnvFromVault(serviceName: string, configName: string, insecure=false): Promise<void> {
-    const freshValue = (
+export async function getValue(serviceName: string, configName: string, insecure=false): Promise<any> {
+    const result = (
         await (await getVault(serviceName, insecure)).read(`${CONFIG_PREFIX}/${configName}`)
     )[configName]
+
+    return result
+}
+
+export async function writeValue(serviceName: string, configName: string, value: any, insecure=false): Promise<void> {
+    (await getVault(serviceName, insecure)).write(`${CONFIG_PREFIX}/${configName}`, {"data": {configName: value}})
+}
+
+export async function updateEnvFromVault(serviceName: string, configName: string, insecure=false): Promise<void> {
+    const freshValue = await getValue(serviceName, configName, insecure)
 
     if (freshValue != process.env[configName]) {
         log(serviceName, `updating config value from vault: ${configName}`)

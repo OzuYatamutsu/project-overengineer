@@ -82,7 +82,10 @@
       "env": {
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
-        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"

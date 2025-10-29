@@ -23,10 +23,10 @@ jobs:
         with:
           name: vault-certs
           path: |
-            vault.crt
-            vault.key
-            vault-ca.crt
-            vault-ca.key
+            vault/vault.crt
+            vault/vault.key
+            vault/vault-ca.crt
+            vault/vault-ca.key
 
   ollama-ocr:
     runs-on: ubuntu-latest

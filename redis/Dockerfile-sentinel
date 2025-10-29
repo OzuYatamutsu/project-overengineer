@@ -13,7 +13,7 @@ RUN update-ca-certificates
 # /tmp/redis-sentinel is where config file is stored at runtime
 # the rest of the filesystem is assumed to be readonly
 RUN mkdir /tmp/redis-sentinel
-COPY start-sentinel.sh /tmp/start-sentinel.sh
+COPY redis/start-sentinel.sh /tmp/start-sentinel.sh
 RUN chmod +x /tmp/start-sentinel.sh
 
 ENTRYPOINT ["/tmp/start-sentinel.sh"]

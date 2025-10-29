@@ -263,6 +263,14 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
+      vault:
+        image: hashicorp/vault:1.18
+        ports:
+          - 8200:8200
+        options: --cap-add=IPC_LOCK
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: root
+          VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
     needs: lint-shared-lib
     steps:
       - name: Checkout code
@@ -281,7 +289,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: shared-lib
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=vault VAULT_PORT=8200 VAULT_RO_TOKEN=root pnpm test
       
       - name: Upload test report
         if: failure()

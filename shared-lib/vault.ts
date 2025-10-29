@@ -3,11 +3,11 @@ import vault from "node-vault"
 import { enforceConfig } from "./verify"
 import { log } from "./logging"
 
-const CONFIG_PREFIX = ""
+export const CONFIG_PREFIX = "config"
 
 let vaultClient: vault.client
 
-export async function getVault(serviceName: string) {
+export async function getVault(serviceName: string): Promise<vault.client> {
     enforceConfig(serviceName, "VAULT_HOST")
     enforceConfig(serviceName, "VAULT_PORT")
     enforceConfig(serviceName, "VAULT_RO_TOKEN")
@@ -21,12 +21,12 @@ export async function getVault(serviceName: string) {
             token: process.env.VAULT_RO_TOKEN
         })
     }
-    
+
     return vaultClient
 }
 
 export async function updateEnvFromVault(serviceName: string, configName: string): Promise<void> {
-    const freshValue = await (await getVault(serviceName)).read(`config/${configName}`)
+    const freshValue = await (await getVault(serviceName)).read(`${CONFIG_PREFIX}/${configName}`)
 
     if (freshValue != process.env[configName]) {
         log(serviceName, `updating config value from vault: ${configName}`)

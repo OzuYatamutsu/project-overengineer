@@ -27,7 +27,6 @@ test('can update an env from vault', async () => {
   const initialValue = "VALUE1"
   const expectedValue = "VALUE2"
   const configKey = "_TEST_CONFIG_VALUE3"
-  const vaultClient = await getVault("shared-lib")
 
   process.env[configKey] = initialValue
 

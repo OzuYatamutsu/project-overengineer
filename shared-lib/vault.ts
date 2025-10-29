@@ -28,13 +28,13 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
 export async function getValue(serviceName: string, configName: string, insecure=false): Promise<any> {
     const result = (
         await (await getVault(serviceName, insecure)).read(`${CONFIG_PREFIX}/${configName}`)
-    )[configName]
+    )
 
-    return result
+    return result.data.data[configName]
 }
 
 export async function writeValue(serviceName: string, configName: string, value: any, insecure=false): Promise<void> {
-    (await getVault(serviceName, insecure)).write(`${CONFIG_PREFIX}/${configName}`, {"data": {configName: value}})
+    await (await getVault(serviceName, insecure)).write(`${CONFIG_PREFIX}/${configName}`, {data: {"value": value}})
 }
 
 export async function updateEnvFromVault(serviceName: string, configName: string, insecure=false): Promise<void> {

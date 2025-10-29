@@ -21,8 +21,6 @@ spec:
               value: svc-redis-sentinel.default.svc.cluster.local
             - name: SENTINEL_PORT
               value: "26379"
-            # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD (not specified here)
-            # are pulled from vault in-cluster at runtime, and refreshed regularly.
             - name: VAULT_HOST
               value: svc-vault.default.svc.cluster.local
             - name: VAULT_PORT
@@ -32,6 +30,8 @@ spec:
                 secretKeyRef:
                   name: vault-ro-token
                   key: token
+            # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD (not specified here)
+            # are pulled from vault in-cluster at runtime, and refreshed regularly.
             - name: REDIS_HOST
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT

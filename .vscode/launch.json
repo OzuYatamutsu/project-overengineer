@@ -13,7 +13,10 @@
         "NODE_OPTIONS": "--inspect",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
-        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -31,7 +34,10 @@
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "b4yscx92yksfyv9c",
-        "STATUS_API_PORT": "3001"
+        "STATUS_API_PORT": "3001",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -49,6 +55,9 @@
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -66,7 +75,10 @@
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "b4yscx92yksfyv9c",
-        "STATUS_API_PORT": "3001"
+        "STATUS_API_PORT": "3001",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -101,7 +113,10 @@
       "env": {
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
-        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -118,7 +133,10 @@
         "STATUS_API_PORT": "3001",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
-        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -134,7 +152,10 @@
       "env": {
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
-        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -150,7 +171,10 @@
       "env": {
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",
-        "REDIS_PASSWORD": "b4yscx92yksfyv9c"
+        "REDIS_PASSWORD": "b4yscx92yksfyv9c",
+        "VAULT_HOST": "localhost",
+        "VAULT_PORT": "8200",
+        "VAULT_RO_TOKEN": "root"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"

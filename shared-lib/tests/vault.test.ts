@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { updateEnvFromVault, getVault, watchAndUpdateVaultValue, getValue, writeValue, CONFIG_PREFIX } from '../vault'
+import { updateEnvFromVault, getVault, watchAndUpdateVaultValue, getValue, writeValue, pullAndWatchVaultConfigValues } from '../vault'
 
 test('can get a vault object', async () => {
   expect(await getVault("shared-lib", true)).toBeTruthy()
@@ -43,4 +43,9 @@ test('can update an env from vault', async () => {
 test('can start watching and updating a value from vault', () => {
   // Just test if we can create a background job
   expect(watchAndUpdateVaultValue("shared-lib", "_TEST_CONFIG_VALUE", 60000, true)).toBeTruthy()
+})
+
+test('can connect and pull default config values on start', async () => {
+  await pullAndWatchVaultConfigValues("shared-lib", true)
+  expect(true).toBeTruthy()
 })

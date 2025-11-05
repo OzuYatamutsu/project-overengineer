@@ -32,6 +32,15 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
             endpoint: endpoint,
             token: process.env.VAULT_RO_TOKEN
         })
+
+        try {
+            await vaultClient.health()
+        }
+        
+        catch (err) {
+            log(serviceName, `unable to establish vault client connection! err: ${err}`)
+        }
+
     }
 
     return vaultClient

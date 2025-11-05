@@ -4,7 +4,7 @@ import { log } from "./logging"
 
 export const CONFIG_PREFIX = "secret/data"
 
-let vaultClient: vault.client
+let vaultClient: vault.client 
 
 export async function getVault(serviceName: string, insecure=false): Promise<vault.client> {
     enforceConfig(serviceName, "VAULT_HOST")
@@ -12,7 +12,19 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
     enforceConfig(serviceName, "VAULT_RO_TOKEN")
 
     const endpoint = `${insecure ? 'http' : 'https'}://${process.env.VAULT_HOST}:${process.env.VAULT_PORT}`
-    if (!vaultClient) {
+    let shouldReconnect = false
+
+    if (vaultClient) {
+        try {
+            await vaultClient.health()
+        }
+
+        catch (err) {
+            log(serviceName, "vault client connection issue, reestablishing connection")
+            shouldReconnect = true
+        }
+    }
+    if (!vaultClient || shouldReconnect) {
         log(serviceName, `opening new vault connection to ${endpoint}`)
 
         vaultClient = vault({

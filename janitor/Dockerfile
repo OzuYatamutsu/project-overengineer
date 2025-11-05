@@ -8,7 +8,6 @@ ENV CI=true
 # Install local vault certificates
 RUN apk add --no-cache ca-certificates 
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-COPY vault/vault.crt /usr/local/share/ca-certificates/vault.crt
 RUN update-ca-certificates
 
 COPY shared-lib ./shared-lib

@@ -15,7 +15,6 @@ spec:
       containers:
         - name: janitor
           image: ghcr.io/ozuyatamutsu/project-overengineer/janitor:v1
-          imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST
               value: svc-redis-sentinel.default.svc.cluster.local

@@ -27,6 +27,7 @@ jobs:
             vault/vault.key
             vault/vault-ca.crt
             vault/vault-ca.key
+            vault/vault-chain.pem
 
   ollama-ocr:
     runs-on: ubuntu-latest

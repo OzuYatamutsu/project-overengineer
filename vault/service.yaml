@@ -12,8 +12,7 @@ data:
     listener "tcp" {
       address     = "0.0.0.0:8200"
       cluster_address = "0.0.0.0:8201"
-      tls_client_ca_file = "/usr/local/share/ca-certificates/vault-ca.crt"
-      tls_cert_file     = "/vault/tls/vault.crt"
+      tls_cert_file     = "/vault/tls/vault-chain.pem"
       tls_key_file      = "/vault/tls/vault.key"
     }
 

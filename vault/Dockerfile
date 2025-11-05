@@ -9,6 +9,7 @@ COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 COPY vault/vault-ca.crt /vault/tls/vault-ca.crt
 COPY vault/vault.crt /vault/tls/vault.crt
 COPY vault/vault.key /vault/tls/vault.key
+COPY vault/vault-chain.pem /vault/tls/vault-chain.pem
 RUN update-ca-certificates
 
 # Copy unseal script

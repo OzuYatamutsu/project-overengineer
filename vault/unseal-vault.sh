@@ -15,7 +15,7 @@ fi
 
 until curl -k ${VAULT_ADDR}/v1/sys/health; do
   echo "Waiting for vault API to be ready..."
-  sleep 5
+  sleep 30
 done
 
 # Check if vault-init-keys secret exists
@@ -23,6 +23,7 @@ if kubectl get secret vault-init-keys >/dev/null 2>&1; then
   echo "Found existing unseal key, retrieving..."
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
   UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
+  ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
 else
   echo "No existing unseal key found."
     if [ "$IS_PRIMARY" = false ]; then

@@ -4,6 +4,7 @@ FROM base AS deps
 WORKDIR /app
 ENV NODE_ENV=production
 ENV CI=true
+ENV NODE_OPTIONS=--use-openssl-ca
 
 # Install local vault certificates
 RUN apk add --no-cache ca-certificates 

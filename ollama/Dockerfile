@@ -1,5 +1,6 @@
 FROM ollama/ollama:latest
 ENV OLLAMA_MODELS=/home/ollama/.ollama
+ENV NODE_OPTIONS=--use-openssl-ca
 
 # Install local vault certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt

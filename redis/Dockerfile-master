@@ -2,6 +2,7 @@ FROM redis:7
 
 ENV REDIS_PORT=6379
 # ENV REDIS_PASSWORD
+ENV NODE_OPTIONS=--use-openssl-ca
 
 # Install local vault certificates
 RUN apt-get update && apt-get install -y ca-certificates

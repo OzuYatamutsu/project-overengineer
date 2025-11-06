@@ -15,7 +15,7 @@ RUN update-ca-certificates --fresh --verbose
 # DEBUG
 RUN apk add --no-cache openssl
 RUN cat /usr/local/share/ca-certificates/vault-ca.crt
-RUN cat /etc/ssl/certs/ca-certificates.crt
+RUN tail -n20 /etc/ssl/certs/ca-certificates.crt
 # RUN THE BELOW ON CONTAINER START
 # RUN openssl s_client -connect svc-vault.default.svc.cluster.local:8200 -CAfile /usr/local/share/ca-certificates/vault-ca.crt
 

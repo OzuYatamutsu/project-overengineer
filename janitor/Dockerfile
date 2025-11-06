@@ -10,6 +10,11 @@ RUN apk add --no-cache ca-certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 RUN update-ca-certificates
 
+# DEBUG
+RUN apk add --no-cache openssl
+RUN grep "vault" /etc/ssl/certs/ca-certificates.crt
+# RUN openssl s_client -connect svc-vault.default.svc.cluster.local:8200 -CAfile /usr/local/share/ca-certificates/vault-ca.crt
+
 COPY shared-lib ./shared-lib
 COPY package.json pnpm-workspace.yaml ./
 RUN addgroup --system --gid 1001 nodejs

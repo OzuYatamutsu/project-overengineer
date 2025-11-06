@@ -4,6 +4,7 @@ FROM base AS deps
 WORKDIR /app
 ENV NODE_ENV=production
 ENV CI=true
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/vault-ca.crt
 
 # Install local vault certificates
 RUN apk add --no-cache ca-certificates 

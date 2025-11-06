@@ -20,7 +20,7 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
         }
 
         catch (err) {
-            log(serviceName, "vault client connection issue, reestablishing connection")
+            log(serviceName, `vault client connection issue, reestablishing connection: ${err}`)
             shouldReconnect = true
         }
     }

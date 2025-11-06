@@ -17,3 +17,5 @@ cat vault/vault.crt vault/vault-ca.crt > vault/vault-chain.pem
 # Verify
 openssl x509 -in vault/vault.crt -noout -text
 openssl x509 -in vault/vault-chain.pem -noout -text
+openssl verify -CAfile vault/vault-ca.crt vault/vault.crt
+openssl verify -CAfile vault/vault-ca.crt vault/vault-chain.pem

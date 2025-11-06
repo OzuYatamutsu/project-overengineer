@@ -10,8 +10,7 @@ RUN apk add --no-cache ca-certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 
 # TEST
-# RUN update-ca-certificates --verbose
-RUN cat /usr/local/share/ca-certificates/vault-ca.crt >> /etc/ssl/certs/ca-certificates.crt
+RUN update-ca-certificates --fresh --verbose
 
 # DEBUG
 RUN apk add --no-cache openssl

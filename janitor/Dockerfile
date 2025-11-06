@@ -12,6 +12,7 @@ RUN update-ca-certificates --verbose
 
 # DEBUG
 RUN apk add --no-cache openssl
+RUN cat /usr/local/share/ca-certificates/vault-ca.crt
 RUN cat /etc/ssl/certs/ca-certificates.crt
 RUN grep "vault" /etc/ssl/certs/ca-certificates.crt
 # RUN THE BELOW ON CONTAINER START

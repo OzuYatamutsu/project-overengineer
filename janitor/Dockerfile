@@ -8,11 +8,13 @@ ENV CI=true
 # Install local vault certificates
 RUN apk add --no-cache ca-certificates 
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-RUN update-ca-certificates
+RUN update-ca-certificates --verbose
 
 # DEBUG
 RUN apk add --no-cache openssl
+RUN cat /etc/ssl/certs/ca-certificates.crt
 RUN grep "vault" /etc/ssl/certs/ca-certificates.crt
+# RUN THE BELOW ON CONTAINER START
 # RUN openssl s_client -connect svc-vault.default.svc.cluster.local:8200 -CAfile /usr/local/share/ca-certificates/vault-ca.crt
 
 COPY shared-lib ./shared-lib

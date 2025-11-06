@@ -12,7 +12,7 @@ ENV HA_ROLE=""
 # Install vault certificate
 RUN apk add --no-cache curl jq kubectl ca-certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-RUN update-ca-certificates
+RUN update-ca-certificates --verbose
 
 # Run unseal script at runtime
 WORKDIR /vault

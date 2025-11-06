@@ -8,7 +8,7 @@ ENV CI=true
 # Install local vault certificates
 RUN apk add --no-cache ca-certificates 
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-RUN update-ca-certificates
+RUN update-ca-certificates --verbose
 
 COPY shared-lib ./shared-lib
 COPY package.json pnpm-workspace.yaml ./

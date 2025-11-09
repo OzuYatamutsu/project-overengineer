@@ -46,6 +46,10 @@ test('can start watching and updating a value from vault', () => {
 })
 
 test('can connect and pull default config values on start', async () => {
+  await writeValue("shared-lib", "REDIS_HOST", "DUMMY_VALUE", true)
+  await writeValue("shared-lib", "REDIS_PORT", "DUMMY_VALUE", true)
+  await writeValue("shared-lib", "REDIS_PASSWORD", "DUMMY_VALUE", true)
+
   await pullAndWatchVaultConfigValues("shared-lib", true)
   expect(true).toBeTruthy()
 })

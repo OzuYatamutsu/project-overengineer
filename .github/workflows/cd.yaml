@@ -41,6 +41,8 @@ jobs:
 
       - name: Wait for apply (max 90s/service)
         run: |
+          echo '[waiting for vault]'
+          kubectl rollout status statefulset/vault --timeout=90s
           echo '[waiting for redis-master]'
           kubectl rollout status statefulset/redis-master --timeout=90s
           echo '[waiting for redis-replica]'

@@ -17,6 +17,12 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Deploy vault
+        run: kubectl apply -f vault/service.yaml
+      
+      - name: Wait 30s
+        run: sleep 30
 
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml

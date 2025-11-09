@@ -51,7 +51,7 @@ export async function getValue(serviceName: string, configName: string, insecure
         await (await getVault(serviceName, insecure)).read(`${CONFIG_PREFIX}/${configName}`)
     )
 
-    return result.data.data.value
+    return result.data.value
 }
 
 export async function writeValue(serviceName: string, configName: string, value: string, insecure=false): Promise<void> {

@@ -51,7 +51,7 @@ export async function getValue(serviceName: string, configName: string, insecure
         await (await getVault(serviceName, insecure)).read(`${CONFIG_PREFIX}/${configName}`)
     )
 
-    if (!result.data.value) {
+    if (result.data.value) {
         return result.data.value
     }
     return result.data.data.value

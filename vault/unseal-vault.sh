@@ -44,8 +44,8 @@ else
 
     vault operator init \
       -address="$VAULT_ADDR" \
-      -key-shares=1 \
-      -key-threshold=1 \
+      -key-shares=3 \
+      -key-threshold=2 \
       -format=json \
       > /vault/data/vault-unseal-info.json
 

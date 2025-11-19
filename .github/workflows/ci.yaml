@@ -185,7 +185,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: status-api
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c STATUS_API_PORT=3001 VAULT_HOST=vault pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c STATUS_API_PORT=3001 VAULT_HOST=vault _VAULT_INSECURE_MODE=true pnpm test
       
       - name: Upload test report
         if: failure()

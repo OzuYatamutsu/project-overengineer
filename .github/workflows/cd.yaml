@@ -63,6 +63,7 @@ jobs:
           echo '[vault logs]'
           kubectl logs --all-containers --selector=app=vault
           kubectl logs --all-containers --selector=app=vault --previous || true
+          kubectl logs vault-0 -c vault-init || true
           echo '[redis-master logs]'
           kubectl logs --all-containers --selector=app=redis-master
           kubectl logs --all-containers --selector=app=redis-master --previous || true

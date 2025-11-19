@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 echo "Starting Vault initialization script for pod ${HOSTNAME}..."
 
 UNSEAL_KEY=""

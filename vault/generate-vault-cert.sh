@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 # Generates the CA, key and certificate used for services to authenticate against vault.
 # Run this from the project root, before building the container.
 

@@ -125,8 +125,6 @@ spec:
         - name: config
           configMap:
             name: vault-config
-        - name: data
-          emptyDir: {}
         - name: login-token
           emptyDir: {}
   volumeClaimTemplates:

@@ -97,9 +97,13 @@ echo "Done. Sleeping..."
 sleep 1800
 
 while true; do
-  echo "Renewing vault read token..."
-  vault token renew -address="$VAULT_ADDR" "$RO_KEY"
+  if [ "$IS_PRIMARY" = true ]; then
+    echo "Renewing vault read token..."
+    vault token renew -address="$VAULT_ADDR" "$RO_KEY"
 
-  echo "Done. Sleeping..."
-  sleep 1800
+    echo "Done. Sleeping..."
+    sleep 1800
+  else
+    sleep 1800
+  fi
 done

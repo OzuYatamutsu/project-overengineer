@@ -64,7 +64,7 @@ export async function writeValue(serviceName: string, configName: string, value:
 export async function updateEnvFromVault(serviceName: string, configName: string, insecure=false): Promise<void> {
     const freshValue = await getValue(serviceName, configName, insecure)
 
-    if (freshValue != process.env[configName]) {
+    if (freshValue !== process.env[configName]) {
         log(serviceName, `updating config value from vault: ${configName}`)
     }
     process.env[configName] = freshValue

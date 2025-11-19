@@ -25,6 +25,7 @@ if kubectl get secret vault-init-keys >/dev/null 2>&1; then
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
   UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
   ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
+  RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
 else
   echo "No existing unseal key found."
     if [ "$IS_PRIMARY" = false ]; then

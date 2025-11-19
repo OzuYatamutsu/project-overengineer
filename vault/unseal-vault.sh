@@ -37,6 +37,8 @@ else
     done
     kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
     UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
+    ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
+    RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
   else
     echo "This appears to be the first Vault pod. Initializing new cluster..."
 

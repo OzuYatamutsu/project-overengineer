@@ -52,9 +52,9 @@ export async function getValue(serviceName: string, configName: string, insecure
     )
 
     if (result.data.value) {
-        return result.data.value
+        return result.data.value  // kv v2
     }
-    return result.data.data.value
+    return result.data.data.value  // kv v1
 }
 
 export async function writeValue(serviceName: string, configName: string, value: string, insecure=false): Promise<void> {

@@ -16,10 +16,10 @@ const MAX_DIMENSIONS_Y_PX = 1000
 const IMAGE_QUALITY_PERCENT = 100
 let _vault_inited = false
 
-function _init_vault_if_required(): void {
+async function _init_vault_if_required(): Promise<void> {
     if (_vault_inited) return
 
-    pullAndWatchVaultConfigValues("project-overengineer-fe")
+    await pullAndWatchVaultConfigValues("project-overengineer-fe")
 
     _vault_inited = true
 }
@@ -46,7 +46,7 @@ export async function standardizeImage(rawImageData: Buffer<ArrayBuffer>): Promi
 }
 
 export async function saveJob(job: Job): Promise<void> {
-    _init_vault_if_required()
+    await _init_vault_if_required()
 
     job.status = JobStatus.WAITING
     await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())

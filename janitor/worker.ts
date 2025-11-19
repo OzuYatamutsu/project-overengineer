@@ -64,26 +64,26 @@ setInterval(async () => {
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
-    pullAndWatchVaultConfigValues("janitor")
+    pullAndWatchVaultConfigValues("janitor").then(() => {
+        // Health check endpoint
+        http.createServer(async (req, res) => {
+            if (req.url === "/healthz") {
+                const result = await _healthz()
 
-    // Health check endpoint
-    http.createServer(async (req, res) => {
-        if (req.url === "/healthz") {
-            const result = await _healthz()
-
-            res.writeHead(
-                result ? 200 : 500,
-                { "Content-Type": "text/plain" }
-            )
-            res.end(
-                result ? "OK" : "ERROR"
-            )
-        } else {
-            res.writeHead(404, { "Content-Type": "text/plain" })
-            res.end("Not Found")
-        }
-    }).listen(HEALTH_CHECK_PORT, () => {
-        log("janitor", `startup: /healthz endpoint on port ${HEALTH_CHECK_PORT}`)
+                res.writeHead(
+                    result ? 200 : 500,
+                    { "Content-Type": "text/plain" }
+                )
+                res.end(
+                    result ? "OK" : "ERROR"
+                )
+            } else {
+                res.writeHead(404, { "Content-Type": "text/plain" })
+                res.end("Not Found")
+            }
+        }).listen(HEALTH_CHECK_PORT, () => {
+            log("janitor", `startup: /healthz endpoint on port ${HEALTH_CHECK_PORT}`)
+        })
     })
 }
 

@@ -7,6 +7,6 @@ ENV NODE_OPTIONS=--use-openssl-ca
 # Install local vault certificates
 RUN apt-get update && apt-get install -y ca-certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-RUN update-ca-certificates --verbose
+RUN update-ca-certificates --fresh --verbose
 
 CMD redis-server --bind 0.0.0.0 --port $REDIS_PORT --requirepass $REDIS_PASSWORD

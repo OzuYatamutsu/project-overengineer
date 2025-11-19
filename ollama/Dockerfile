@@ -4,7 +4,7 @@ ENV NODE_OPTIONS=--use-openssl-ca
 
 # Install local vault certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-RUN update-ca-certificates --verbose
+RUN update-ca-certificates --fresh --verbose
 
 # EXPOSE 11434
 RUN useradd -m -u 1002 ollama

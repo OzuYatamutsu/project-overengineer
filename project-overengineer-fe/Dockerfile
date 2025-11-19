@@ -9,7 +9,7 @@ ENV NODE_OPTIONS=--use-openssl-ca
 # Install local vault certificates
 RUN apk add --no-cache ca-certificates 
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
-RUN update-ca-certificates --verbose
+RUN update-ca-certificates --fresh --verbose
 
 COPY shared-lib ./shared-lib
 COPY package.json pnpm-workspace.yaml ./

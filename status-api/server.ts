@@ -6,7 +6,7 @@ import { JobStatus, JobUpdate, rateLimit, getRedis, log, pullAndWatchVaultConfig
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) ?? 3001
 const POLLING_PERIOD_MSECS = 2000
-const _VAULT_INSECURE_MODE = !!process.env["_VAULT_INSECURE_MODE"]
+const _SKIP_VAULT_UNIT_TESTING = !!process.env["_SKIP_VAULT_UNIT_TESTING"]
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
@@ -95,9 +95,17 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 })
 
 if (require.main === module) {
-    pullAndWatchVaultConfigValues("status-api", _VAULT_INSECURE_MODE).then(() => {
+    if (!_SKIP_VAULT_UNIT_TESTING) {
         server.listen(port, async () => {
             log("status-api", `Status WS API listening on port ${port}`)
         })
-    })
+    }
+
+    else {
+        pullAndWatchVaultConfigValues("status-api").then(() => {
+            server.listen(port, async () => {
+                log("status-api", `Status WS API listening on port ${port}`)
+            })
+        })
+    }
 }

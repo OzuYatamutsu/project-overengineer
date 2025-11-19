@@ -138,7 +138,7 @@
         "VAULT_HOST": "localhost",
         "VAULT_PORT": "8200",
         "VAULT_RO_TOKEN": "root",
-        "_VAULT_INSECURE_MODE": "true"
+        "_SKIP_VAULT_UNIT_TESTING": "true"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"

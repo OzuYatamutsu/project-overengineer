@@ -21,8 +21,8 @@ jobs:
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
       
-      - name: Wait 60s
-        run: sleep 60
+      - name: Wait for vault apply (max 90s)
+        run: kubectl rollout status statefulset/vault --timeout=90s
 
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml

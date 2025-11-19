@@ -14,12 +14,13 @@ import { IncomingMessage } from 'http'
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
 const IMAGE_QUALITY_PERCENT = 100
+const _VAULT_INSECURE_MODE = !!process.env["_VAULT_INSECURE_MODE"]
 let _vault_inited = false
 
 async function _init_vault_if_required(): Promise<void> {
     if (_vault_inited) return
 
-    await pullAndWatchVaultConfigValues("project-overengineer-fe")
+    await pullAndWatchVaultConfigValues("project-overengineer-fe", _VAULT_INSECURE_MODE)
 
     _vault_inited = true
 }

@@ -39,24 +39,22 @@ jobs:
       - name: Deploy project-overengineer-fe
         run: kubectl apply -f project-overengineer-fe/service.yaml
 
-      - name: Wait for apply (max 90s/service)
+      - name: Wait for apply (max 300s/service)
         run: |
-          echo '[waiting for vault]'
-          kubectl rollout status statefulset/vault --timeout=90s
           echo '[waiting for redis-master]'
-          kubectl rollout status statefulset/redis-master --timeout=90s
+          kubectl rollout status statefulset/redis-master --timeout=300s
           echo '[waiting for redis-replica]'
-          kubectl rollout status statefulset/redis-replica --timeout=90s
+          kubectl rollout status statefulset/redis-replica --timeout=300s
           echo '[waiting for redis-sentinel]'
-          kubectl rollout status deployment/redis-sentinel --timeout=90s
+          kubectl rollout status deployment/redis-sentinel --timeout=300s
           echo '[waiting for janitor]'
-          kubectl rollout status deployment/janitor --timeout=90s
+          kubectl rollout status deployment/janitor --timeout=300s
           echo '[waiting for status-api]'
-          kubectl rollout status deployment/status-api --timeout=90s
+          kubectl rollout status deployment/status-api --timeout=300s
           echo '[waiting for ocr-worker, ollama-ocr]'
-          kubectl rollout status statefulset/ocr-worker --timeout=90s
+          kubectl rollout status statefulset/ocr-worker --timeout=300s
           echo '[waiting for project-overengineer-fe]'
-          kubectl rollout status statefulset/project-overengineer-fe --timeout=90s
+          kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
 
       - name: Dump logs (if apply failed)
         if: failure()

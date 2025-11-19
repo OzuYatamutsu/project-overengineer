@@ -1,7 +1,7 @@
 import express from 'express'
 import { WebSocketServer, WebSocket, RawData } from "ws"
 import http from 'http'
-import { JobStatus, JobUpdate, rateLimit, getRedis, log, updateEnvFromVault, watchAndUpdateVaultValue } from '@project-overengineer/shared-lib'
+import { JobStatus, JobUpdate, rateLimit, getRedis, log, pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) ?? 3001
@@ -94,14 +94,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 })
 
 if (require.main === module) {
-    log("status-api", "startup: pulling fresh config values...")
-    updateEnvFromVault("status-api", "REDIS_HOST")
-    updateEnvFromVault("status-api", "REDIS_PORT")
-    updateEnvFromVault("status-api", "REDIS_PASSWORD")
-    watchAndUpdateVaultValue("status-api", "REDIS_HOST")
-    watchAndUpdateVaultValue("status-api", "REDIS_PORT")
-    watchAndUpdateVaultValue("status-api", "REDIS_PASSWORD")
-    log("status-api", "startup: config values updated.")
+    pullAndWatchVaultConfigValues("status-api")
 
     server.listen(port, async () => {
         log("status-api", `Status WS API listening on port ${port}`)

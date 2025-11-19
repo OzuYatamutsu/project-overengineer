@@ -5,7 +5,7 @@ import { fileTypeFromBuffer } from 'file-type'
 import { Job } from '@project-overengineer/shared-lib/job'
 import { JobStatus } from '@project-overengineer/shared-lib/job-status'
 import { getRedis } from '@project-overengineer/shared-lib/redis'
-import { updateEnvFromVault, watchAndUpdateVaultValue } from '@project-overengineer/shared-lib/vault'
+import { pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib/vault'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
 
@@ -19,14 +19,7 @@ let _vault_inited = false
 function _init_vault_if_required(): void {
     if (_vault_inited) return
 
-    log("project-overengineer-fe", "startup: pulling fresh config values...")
-    updateEnvFromVault("project-overengineer-fe", "REDIS_HOST")
-    updateEnvFromVault("project-overengineer-fe", "REDIS_PORT")
-    updateEnvFromVault("project-overengineer-fe", "REDIS_PASSWORD")
-    watchAndUpdateVaultValue("project-overengineer-fe", "REDIS_HOST")
-    watchAndUpdateVaultValue("project-overengineer-fe", "REDIS_PORT")
-    watchAndUpdateVaultValue("project-overengineer-fe", "REDIS_PASSWORD")
-    log("project-overengineer-fe", "startup: config values updated.")
+    pullAndWatchVaultConfigValues("project-overengineer-fe")
 
     _vault_inited = true
 }

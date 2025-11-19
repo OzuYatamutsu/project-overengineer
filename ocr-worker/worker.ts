@@ -1,4 +1,4 @@
-import { Job, JobStatus, WorkerState, getRedis, log, updateEnvFromVault, watchAndUpdateVaultValue } from '@project-overengineer/shared-lib'
+import { Job, JobStatus, WorkerState, getRedis, log, pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
@@ -133,14 +133,7 @@ setInterval(async () => {
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
-    log("ocr-worker", "startup: pulling fresh config values...")
-    updateEnvFromVault("ocr-worker", "REDIS_HOST")
-    updateEnvFromVault("ocr-worker", "REDIS_PORT")
-    updateEnvFromVault("ocr-worker", "REDIS_PASSWORD")
-    watchAndUpdateVaultValue("ocr-worker", "REDIS_HOST")
-    watchAndUpdateVaultValue("ocr-worker", "REDIS_PORT")
-    watchAndUpdateVaultValue("ocr-worker", "REDIS_PASSWORD")
-    log("ocr-worker", "startup: config values updated.")
+    pullAndWatchVaultConfigValues("ocr-worker")
 
     // Health check endpoint
     http.createServer(async (req, res) => {

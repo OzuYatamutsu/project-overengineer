@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - feature/secrify-passwords
   workflow_run:
     workflows: ["Build and Push Images"]
     types:

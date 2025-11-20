@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint *.ts",
     "build": "tsc",
-    "test": "TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
+    "test": "TS_NODE_TRANSPILE_ONLY=1 pnpm build && playwright test -c playwright.config.ts"
   },
   "dependencies": {
     "express": "^5.1.0",

@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint *.ts",
-    "test": "TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
+    "test": "TS_NODE_TRANSPILE_ONLY=1 pnpm build && playwright test -c playwright.config.ts"
   },
   "dependencies": {
     "@project-overengineer/shared-lib": "workspace:*",

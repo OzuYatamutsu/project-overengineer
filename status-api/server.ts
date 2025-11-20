@@ -95,7 +95,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 })
 
 if (require.main === module) {
-    if (!_SKIP_VAULT_UNIT_TESTING) {
+    if (_SKIP_VAULT_UNIT_TESTING) {
         server.listen(port, async () => {
             log("status-api", `Status WS API listening on port ${port}`)
         })

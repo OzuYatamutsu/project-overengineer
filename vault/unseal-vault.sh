@@ -28,7 +28,7 @@ if kubectl get secret vault-init-keys >/dev/null 2>&1; then
   RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
 else
   echo "No existing unseal key found."
-    if [ "$IS_PRIMARY" = false ]; then
+  if [ "$IS_PRIMARY" = false ]; then
     echo "This looks like a secondary."
     echo "Waiting for primary Vault to become initialized..."
     until kubectl get secret vault-init-keys >/dev/null 2>&1; do

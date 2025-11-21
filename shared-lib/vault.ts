@@ -74,15 +74,18 @@ export function watchAndUpdateVaultValue(serviceName: string, configName: string
     return setInterval(async () => await updateEnvFromVault(serviceName, configName, insecure), refreshPeriodMs)
 }
 
-export async function pullAndWatchVaultConfigValues(serviceName: string, insecure=false): Promise<void> {
+export async function pullAndWatchVaultConfigValues(serviceName: string, insecure=false): Promise<NodeJS.Timeout[]> {
     log(serviceName, "startup: pulling fresh config values...")
     await updateEnvFromVault(serviceName, "REDIS_HOST", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PORT", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PASSWORD", insecure)
     log(serviceName, "startup: config values updated.")
     log(serviceName, "startup: starting config update job...")
-    watchAndUpdateVaultValue(serviceName, "REDIS_HOST", 60000, insecure)
-    watchAndUpdateVaultValue(serviceName, "REDIS_PORT", 60000, insecure)
-    watchAndUpdateVaultValue(serviceName, "REDIS_PASSWORD", 60000, insecure)
+    const bgJobs = [
+        watchAndUpdateVaultValue(serviceName, "REDIS_HOST", 60000, insecure),
+        watchAndUpdateVaultValue(serviceName, "REDIS_PORT", 60000, insecure),
+        watchAndUpdateVaultValue(serviceName, "REDIS_PASSWORD", 60000, insecure)
+    ]
     log(serviceName, "startup: started config update job.")
+    return bgJobs
 }

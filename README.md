@@ -19,6 +19,9 @@ From the project root, run `vault/generate-vault-cert.sh` to generate certificat
 ### Via VS Code (debug)
 Launch configurations are included in `.vscode/launch.json`. Start everything by running the `Start all` task, or start components individually via their individual launch tasks (e.g., `Start FE + Transformer API`). The frontend can be accessed at `http://localhost:3000`. The default value of `REDIS_PASSWORD` in dev is `b4yscx92yksfyv9c`.
 
+### Via local kubernetes cluster
+After starting a local cluster, run the `deploy-local-kube-cluster.sh` script in the project root.
+
 ### Config vars
 Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. The value for `REDIS_PASSWORD` must be explicitly provided on startup.
 

@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "TS_NODE_TRANSPILE_ONLY=1 pnpm build && playwright test -c playwright.config.ts"
+    "test": "pnpm build && TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {
     "@project-overengineer/shared-lib": "workspace:*",

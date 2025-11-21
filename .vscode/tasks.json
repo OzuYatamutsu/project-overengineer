@@ -12,7 +12,7 @@
       "label": "Start infra dependencies",
       "type": "shell",
       "dependsOn": "Generate vault certificate",
-      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=localhost VAULT_PORT=8200 VAULT_RO_TOKEN=root docker compose up redis ollama-ocr vault --remove-orphans",
+      "command": "REDIS_HOST=localhost REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=localhost VAULT_PORT=8200 VAULT_RO_TOKEN=root docker compose up redis vault --remove-orphans",
       "isBackground": true,
       "problemMatcher": [
         {
@@ -46,6 +46,30 @@
       },
       "problemMatcher": [],
       "group": "build"
-    }
+    },
+    {
+      "label": "Start ocr-core",
+      "type": "shell",
+      "dependsOn": "Start infra dependencies",
+      "command": "docker compose up ollama-ocr --remove-orphans",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "starting runner",
+          }
+        }
+      ]
+    },
   ]
 }

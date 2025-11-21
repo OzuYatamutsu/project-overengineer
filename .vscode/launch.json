@@ -160,7 +160,7 @@
         "VAULT_RO_TOKEN": "root",
         "_SKIP_VAULT_UNIT_TESTING": "true"
       },
-      "preLaunchTask": "Start infra dependencies",
+      "preLaunchTask": "Start ocr-core",
       "postDebugTask": "Stop infra dependencies"
     },
     {

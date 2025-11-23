@@ -17,8 +17,10 @@ RUN update-ca-certificates --fresh --verbose
 # Run unseal script at runtime
 WORKDIR /vault
 COPY vault/init.sh /vault/init.sh
+COPY vault/generate-pw.sh /vault/generate-pw.sh
 COPY vault/unseal-vault.sh /vault/unseal-vault.sh
 RUN chmod +x /vault/init.sh
+RUN chmod +x /vault/generate-pw.sh
 RUN chmod +x /vault/unseal-vault.sh
 
 ENTRYPOINT ["/vault/init.sh"]

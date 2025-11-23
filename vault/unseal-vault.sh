@@ -87,10 +87,12 @@ EOF
     --from-literal=token=$RO_KEY \
     --dry-run=client -o yaml | kubectl apply -f -
   
-  echo "Inserting Redis config..."  # TODO
+  echo "Inserting Redis config..."
+  INITIAL_REDIS_PASSWORD=$(kubectl get secret initial-redis-password -o jsonpath='{.data.password}' | base64 -d)
+
   vault kv put -address="$VAULT_ADDR" secret/data/REDIS_HOST value="svc-redis-master.default.svc.cluster.local"
   vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PORT value="6379"
-  vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="b4yscx92yksfyv9c"  # TODO
+  vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="$INITIAL_REDIS_PASSWORD"
 fi
 
 echo "Done. Sleeping..."

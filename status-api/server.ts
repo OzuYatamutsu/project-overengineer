@@ -38,8 +38,6 @@ export async function _healthz(): Promise<boolean> {
 
     } catch (err) {
         log("status-api", `/healthz: failed, can't ping redis: ${err}`)
-        // TODO
-        log("status-api", `DEBUG: ${process.env.REDIS_PASSWORD}`)
         return false
     }
 

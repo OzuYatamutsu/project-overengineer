@@ -35,7 +35,7 @@ Configuration is injected at runtime via environment variables, which can be ove
 | -------------------- | ---------------------------------------------------------------------------------------------------- | ------------------ |
 | `REDIS_HOST`         | The hostname of the Redis master host.                                                               | `redis`            |
 | `REDIS_PORT`         | The port number of the Redis master host.                                                            | `6379`             |
-| `REDIS_PASSWORD` (secret)     | The password of the Redis master host.     | (unset) |
+| `REDIS_PASSWORD`     | (secret) The password of the Redis master host.     | (unset) |
 | `REDIS_REPLICA_PORT` | The port number of the Redis replica host.                                                           | `6379`             |
 | `SENTINEL_HOST`      | The hostname of the Redis Sentinel host. Unset to connect directly to Redis instead of via Sentinel. | (unset)   |
 | `SENTINEL_PORT`      | The port number of the Redis Sentinel host.                                                          | (unset)            |

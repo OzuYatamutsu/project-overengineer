@@ -87,6 +87,11 @@ EOF
     --from-literal=token=$RO_KEY \
     --dry-run=client -o yaml | kubectl apply -f -
   
+  until kubectl get secret initial-redis-password >/dev/null 2>&1; do
+    echo "Waiting for Redis config..."
+    sleep 2
+  done
+
   echo "Inserting Redis config..."
   INITIAL_REDIS_PASSWORD=$(kubectl get secret initial-redis-password -o jsonpath='{.data.password}' | base64 -d)
 

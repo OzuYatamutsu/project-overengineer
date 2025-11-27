@@ -34,6 +34,8 @@ export async function _healthz(): Promise<boolean> {
         }
     } catch (err) {
         log("janitor", `/healthz: failed, can't ping redis: ${err}`)
+        // TODO
+        log("janitor", `DEBUG: ${process.env.REDIS_PASSWORD}`)
         return false
     }
 

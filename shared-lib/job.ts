@@ -1,5 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
+import CryptoJS from 'crypto-js'
 import { JobStatus } from './job-status'
+
+const _encryptMagicString = 'U2F'
 
 export class Job {
     public id: string
@@ -8,6 +11,7 @@ export class Job {
     public result: string
     public createUtime: number
     public progress: number
+    public isEncrypted: boolean
 
     constructor(imageDataBase64: string) {
         this.id = uuidv4()
@@ -16,6 +20,23 @@ export class Job {
         this.result = ""
         this.createUtime = (new Date()).getTime() / 1000
         this.progress = 0
+        this.isEncrypted = false
+    }
+
+    encrypt(key: string): void {
+        this.imageDataBase64 = CryptoJS.AES.encrypt(
+            this.imageDataBase64, key
+        ).toString()
+
+        this.isEncrypted = true
+    }
+
+    decrypt(key: string): void {
+        this.imageDataBase64 = CryptoJS.AES.decrypt(
+            this.imageDataBase64, key
+        ).toString(CryptoJS.enc.Utf8)
+
+        this.isEncrypted = false
     }
 
     static fromRedisObject(redisObject: Record<string, string>): Job {
@@ -24,6 +45,7 @@ export class Job {
         job.status = redisObject.status as JobStatus
         job.createUtime = Number(redisObject.createUtime)
         job.progress = Number(redisObject.progress)
+        job.isEncrypted = redisObject.imageDataBase64.startsWith(_encryptMagicString)
 
         return job
     }
@@ -35,7 +57,7 @@ export class Job {
             imageDataBase64: this.imageDataBase64,
             result: this.result,
             createUtime: this.createUtime.toString(),
-            progress: this.progress.toString()
+            progress: this.progress.toString(),
         }
     }
 }

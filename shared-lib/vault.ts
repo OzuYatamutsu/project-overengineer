@@ -89,3 +89,7 @@ export async function pullAndWatchVaultConfigValues(serviceName: string, insecur
     log(serviceName, "startup: started config update job.")
     return bgJobs
 }
+
+export async function getImageEncryptionKey(serviceName: string, insecure=false): Promise<string> {
+    return await getValue(serviceName, "IMAGE_KEY", insecure)
+}

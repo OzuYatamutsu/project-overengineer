@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/encrypt-image-data
 
 jobs:
   generate-vault-cert:

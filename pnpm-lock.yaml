@@ -152,6 +152,9 @@ importers:
       '@playwright/test':
         specifier: ^1.55.0
         version: 1.55.0
+      '@types/crypto-js':
+        specifier: ^4.2.2
+        version: 4.2.2
       '@types/node':
         specifier: ^24.10.1
         version: 24.10.1
@@ -544,6 +547,9 @@ packages:
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
+
+  '@types/crypto-js@4.2.2':
+    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
 
   '@types/express-serve-static-core@5.0.7':
     resolution: {integrity: sha512-R+33OsgWw7rOhD1emjU7dzCDHucJrgJXMA5PYCzJxVil0dsyx5iBEPHqpPfiKNJQb7lZ1vxwoLR4Z87bBUpeGQ==}
@@ -2992,6 +2998,8 @@ snapshots:
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 24.10.1
+
+  '@types/crypto-js@4.2.2': {}
 
   '@types/express-serve-static-core@5.0.7':
     dependencies:

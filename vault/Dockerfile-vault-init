@@ -25,5 +25,5 @@ RUN chmod +x /vault/init.sh
 RUN chmod +x /vault/set-primary-state.sh
 RUN chmod +x /vault/generate-pw.sh
 RUN chmod +x /vault/unseal-vault.sh
-RUN chmox +x /vault/renew-keys.sh
+RUN chmod +x /vault/renew-keys.sh
 ENTRYPOINT ["/vault/init.sh"]

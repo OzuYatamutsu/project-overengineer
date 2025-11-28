@@ -4,15 +4,8 @@ echo "Starting Vault initialization script for pod ${HOSTNAME}..."
 
 UNSEAL_KEY=""
 ROOT_TOKEN=""
-IS_PRIMARY=""
+IS_PRIMARY="${IS_PRIMARY}"
 VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
-
-ready=$(kubectl get statefulset vault -o jsonpath='{.status.readyReplicas}' || echo 0)
-if [ "${ready:-0}" -ge 2 ]; then
-  IS_PRIMARY=false
-else
-  IS_PRIMARY=true
-fi
 
 until curl -k ${VAULT_ADDR}/v1/sys/health; do
   echo "Waiting for vault API to be ready..."
@@ -100,21 +93,4 @@ EOF
   vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="$INITIAL_REDIS_PASSWORD"
 fi
 
-echo "Done. Sleeping..."
-sleep 1800
-
-while true; do
-  if [ "$IS_PRIMARY" = true ]; then
-    echo "Renewing vault read token..."
-    vault token renew -address="$VAULT_ADDR" "$RO_KEY"
-
-    echo "Generating image encryption key..."
-    vault kv put -address="$VAULT_ADDR" secret/data/IMAGE_KEY value="$(LC_ALL=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32)"
-    echo "Image encryption key saved."
-
-    echo "Done. Sleeping..."
-    sleep 1800
-  else
-    sleep 1800
-  fi
-done
+echo "Done."

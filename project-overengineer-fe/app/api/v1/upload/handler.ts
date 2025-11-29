@@ -14,12 +14,12 @@ import { IncomingMessage } from 'http'
 const MAX_DIMENSIONS_X_PX = 1000
 const MAX_DIMENSIONS_Y_PX = 1000
 const IMAGE_QUALITY_PERCENT = 100
-const _SKIP_VAULT_UNIT_TESTING = !!process.env["_SKIP_VAULT_UNIT_TESTING"]
+const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 let _vault_inited = false
 
 async function _init_vault_if_required(): Promise<void> {
     if (_vault_inited) return
-    if (_SKIP_VAULT_UNIT_TESTING) return
+    if (_IS_UNIT_TESTING) return
 
     await pullAndWatchVaultConfigValues("project-overengineer-fe")
 
@@ -51,7 +51,7 @@ export async function saveJob(job: Job): Promise<void> {
     await _init_vault_if_required()
 
     job.status = JobStatus.WAITING
-    job.encrypt(await getImageEncryptionKey("project-overengineer-fe"))
+    job.encrypt(await getImageEncryptionKey("project-overengineer-fe", _IS_UNIT_TESTING))
     await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())
 }
 

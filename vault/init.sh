@@ -2,7 +2,7 @@
 set -e
 
 /bin/sh /vault/set-primary-state.sh  # Generates state.sh
-source state.sh
+source /vault/state.sh
 
 /bin/sh /vault/generate-pw.sh
 /bin/sh /vault/unseal-vault.sh

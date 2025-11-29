@@ -12,4 +12,4 @@ else
   IS_PRIMARY=true
 fi
 
-echo "IS_PRIMARY=$IS_PRIMARY" > state.sh
+echo "IS_PRIMARY=$IS_PRIMARY" > /vault/state.sh

@@ -1,4 +1,7 @@
-import { Job, JobStatus, WorkerState, getRedis, log, pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib'
+import { 
+    Job, JobStatus, WorkerState, getRedis, log,
+    pullAndWatchVaultConfigValues, getImageEncryptionKey
+} from '@project-overengineer/shared-lib'
 import http from "http"
 
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
@@ -22,6 +25,8 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 
 export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
+    const decryptedJob = Job.fromRedisObject(job.serialize())
+    decryptedJob.decrypt(await getImageEncryptionKey("ocr-worker"))
 
     log("ocr-worker", `Job ${job.id} sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
@@ -35,7 +40,7 @@ export async function processJob(job: Job): Promise<Job> {
                 "What is the total amount shown on the receipt?",
                 "Do not respond with any text not on the receipt."
            ].join(" "),
-           images: [job.imageDataBase64],
+           images: [decryptedJob.imageDataBase64],
            stream: false
        })
     })

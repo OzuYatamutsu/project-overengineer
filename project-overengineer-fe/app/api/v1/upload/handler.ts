@@ -51,7 +51,7 @@ export async function saveJob(job: Job): Promise<void> {
     await _init_vault_if_required()
 
     job.status = JobStatus.WAITING
-    job.encrypt(await getImageEncryptionKey("project-overengineer-fe", _IS_UNIT_TESTING))
+    job.encrypt(await getImageEncryptionKey("project-overengineer-fe"))
     await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())
 }
 

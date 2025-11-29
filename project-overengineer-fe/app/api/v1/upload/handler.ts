@@ -5,7 +5,7 @@ import { fileTypeFromBuffer } from 'file-type'
 import { Job } from '@project-overengineer/shared-lib/job'
 import { JobStatus } from '@project-overengineer/shared-lib/job-status'
 import { getRedis } from '@project-overengineer/shared-lib/redis'
-import { pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib/vault'
+import { pullAndWatchVaultConfigValues, getImageEncryptionKey } from '@project-overengineer/shared-lib/vault'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
 
@@ -51,6 +51,7 @@ export async function saveJob(job: Job): Promise<void> {
     await _init_vault_if_required()
 
     job.status = JobStatus.WAITING
+    job.encrypt(await getImageEncryptionKey("project-overengineer-fe"))
     await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())
 }
 

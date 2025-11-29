@@ -17,6 +17,12 @@ jobs:
     
       - name: Build certificate
         run: vault/generate-vault-cert.sh
+      
+      - name: Encrypt vault keyfile
+        run: echo TODO  # TODO
+
+      - name: Encrypt vault CA keyfile
+        run: echo TODO  # TODO
 
       - name: Upload vault cert and key
         uses: actions/upload-artifact@v4
@@ -74,7 +80,7 @@ jobs:
       contents: read
       packages: write
     needs: generate-vault-cert
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -357,6 +363,12 @@ jobs:
         with:
           name: vault-certs
           path: ./vault
+
+      - name: Decrypt vault key
+        run: echo TODO  # TODO
+
+      - name: Decrypt vault CA key
+        run: echo TODO  # TODO
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

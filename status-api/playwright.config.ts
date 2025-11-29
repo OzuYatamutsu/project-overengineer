@@ -13,7 +13,7 @@ export default defineConfig({
       VAULT_HOST: process.env.VAULT_HOST || 'localhost',
       VAULT_PORT: process.env.VAULT_PORT || '8200',
       VAULT_RO_TOKEN: process.env.VAULT_RO_TOKEN || 'root',
-      _SKIP_VAULT_UNIT_TESTING: process.env._SKIP_VAULT_UNIT_TESTING || 'true',
+      _IS_UNIT_TESTING: process.env._IS_UNIT_TESTING || 'true',
     },
     stdout: 'pipe',
     stderr: 'pipe'

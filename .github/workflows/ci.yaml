@@ -141,7 +141,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: project-overengineer-fe
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=vault _SKIP_VAULT_UNIT_TESTING=true pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c VAULT_HOST=vault _IS_UNIT_TESTING=true pnpm test
       
       - name: Upload test report
         if: failure()
@@ -185,7 +185,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: status-api
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c STATUS_API_PORT=3001 VAULT_HOST=vault _SKIP_VAULT_UNIT_TESTING=true pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c STATUS_API_PORT=3001 VAULT_HOST=vault _IS_UNIT_TESTING=true pnpm test
       
       - name: Upload test report
         if: failure()
@@ -225,7 +225,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: ocr-worker
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 _IS_UNIT_TESTING=true pnpm test
       
       - name: Upload test report
         if: failure()

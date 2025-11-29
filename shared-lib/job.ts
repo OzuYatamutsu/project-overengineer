@@ -24,6 +24,8 @@ export class Job {
     }
 
     encrypt(key: string): void {
+        if (this.isEncrypted) return;
+
         this.imageDataBase64 = CryptoJS.AES.encrypt(
             this.imageDataBase64, key
         ).toString()
@@ -32,6 +34,8 @@ export class Job {
     }
 
     decrypt(key: string): void {
+        if (!this.isEncrypted) return;
+
         this.imageDataBase64 = CryptoJS.AES.decrypt(
             this.imageDataBase64, key
         ).toString(CryptoJS.enc.Utf8)

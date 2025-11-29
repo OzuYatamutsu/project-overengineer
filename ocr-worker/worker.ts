@@ -12,7 +12,6 @@ const HEALTH_CHECK_PORT = (
     ? Number(process.env.HEALTH_CHECK_PORT)
     : 3002
 )
-const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 
 // Used to update progress bar. Update on each successful job.
 let estimatedTimeSecs: number = 200.0
@@ -27,7 +26,7 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
     const decryptedJob = Job.fromRedisObject(job.serialize())
-    decryptedJob.decrypt(await getImageEncryptionKey("ocr-worker", _IS_UNIT_TESTING))
+    decryptedJob.decrypt(await getImageEncryptionKey("ocr-worker"))
 
     log("ocr-worker", `Job ${job.id} sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {

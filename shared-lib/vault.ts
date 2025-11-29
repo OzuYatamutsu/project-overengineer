@@ -3,6 +3,8 @@ import { enforceConfig } from "./verify"
 import { log } from "./logging"
 
 export const CONFIG_PREFIX = "secret/data"
+const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
+const _UNIT_TESTING_ENCRYPTION_KEY = "BB34B427-74EE-4C4A-BED6-F958345EF455"
 
 let vaultClient: vault.client 
 
@@ -91,5 +93,9 @@ export async function pullAndWatchVaultConfigValues(serviceName: string, insecur
 }
 
 export async function getImageEncryptionKey(serviceName: string, insecure=false): Promise<string> {
+    if (_IS_UNIT_TESTING) {
+        // return dummy value for unit tests
+        return _UNIT_TESTING_ENCRYPTION_KEY
+    }
     return await getValue(serviceName, "IMAGE_KEY", insecure)
 }

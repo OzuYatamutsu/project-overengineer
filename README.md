@@ -28,6 +28,8 @@ You can modify the password at runtime by changing the values in vault (under th
 and restarting only the affected infrastructure. (e.g., in the case of Redis, the Redis service needs to be
 restarted, but client services will pull the updated password from vault automatically without a restart).
 
+Access the service on `http://localhost:3000` by running `kubectl port-forward service/svc-project-overengineer-fe 3000:3000` after cluster build.
+
 ### Config vars
 Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. The value for `REDIS_PASSWORD` must be explicitly provided on startup.
 

@@ -18,9 +18,13 @@ jobs:
         run: vault/generate-vault-cert.sh
       
       - name: Encrypt vault keyfile
+        env:
+          CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
         run: openssl enc -aes-256-cbc -salt -pbkdf2 -in vault/vault.key -out vault/vault.key.enc -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Encrypt vault CA keyfile
+        env:
+          CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
         run: openssl enc -aes-256-cbc -salt -pbkdf2 -in vault/vault-ca.key -out vault/vault-ca.key.enc -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Upload vault cert and key
@@ -364,9 +368,13 @@ jobs:
           path: ./vault
 
       - name: Decrypt vault key
+        env:
+          CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
         run: openssl enc -d -aes-256-cbc -salt -pbkdf2 -in vault/vault.key.enc -out vault/vault.key -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Decrypt vault CA key
+        env:
+          CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
         run: openssl enc -d -aes-256-cbc -salt -pbkdf2 -in vault/vault-ca.key.enc -out vault/vault-ca.key -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Log in to GHCR

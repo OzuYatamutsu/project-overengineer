@@ -14,7 +14,7 @@ else
 fi
 
 # Then run all other init scripts
-IS_PRIMARY=$IS_PRIMARY /bin/sh /vault/generate-pw.sh
+/bin/sh /vault/generate-pw.sh
 IS_PRIMARY=$IS_PRIMARY /bin/sh /vault/unseal-vault.sh
 if [ "$IS_PRIMARY" = true ]; then
   IS_PRIMARY=$IS_PRIMARY /bin/sh /vault/renew-keys.sh

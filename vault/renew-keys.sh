@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
 
 while true; do
   echo "Renewing vault read token..."

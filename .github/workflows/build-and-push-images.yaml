@@ -364,6 +364,9 @@ jobs:
           name: vault-certs
           path: ./vault
 
+      - name: debug
+        run: ls -alR .
+
       - name: Decrypt vault key
         run: openssl enc -d -aes-256-cbc -salt -pbkdf2 -in vault/vault.key -out vault/vault.key -pass pass:${CI_ENCRYPTION_KEY}
 

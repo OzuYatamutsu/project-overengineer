@@ -51,7 +51,7 @@ export class Job {
         job.createUtime = Number(redisObject.createUtime)
         job.progress = Number(redisObject.progress)
         job.isEncrypted = redisObject.isEncrypted !== undefined 
-            ? redisObject.isEncrypted == "true"
+            ? redisObject.isEncrypted === "true"
             : redisObject.imageDataBase64.startsWith(_encryptMagicString)
 
         return job

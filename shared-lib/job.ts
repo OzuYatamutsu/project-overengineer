@@ -49,7 +49,9 @@ export class Job {
         job.status = redisObject.status as JobStatus
         job.createUtime = Number(redisObject.createUtime)
         job.progress = Number(redisObject.progress)
-        job.isEncrypted = redisObject.imageDataBase64.startsWith(_encryptMagicString)
+        job.isEncrypted = redisObject.isEncrypted !== undefined 
+            ? redisObject.isEncrypted == "true"
+            : redisObject.imageDataBase64.startsWith(_encryptMagicString)
 
         return job
     }
@@ -62,6 +64,7 @@ export class Job {
             result: this.result,
             createUtime: this.createUtime.toString(),
             progress: this.progress.toString(),
+            isEncrypted: this.isEncrypted.toString()
         }
     }
 }

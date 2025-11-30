@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
+ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
+
+vault login -address="$VAULT_ADDR" $ROOT_TOKEN
 
 while true; do
   echo "Renewing vault read token..."

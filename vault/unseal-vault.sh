@@ -64,7 +64,7 @@ echo "Vault unseal complete."
 if [ "$IS_PRIMARY" = true ]; then
   echo "Enabling secret/ kv store..."
   vault login -address="$VAULT_ADDR" $ROOT_TOKEN
-  vault secrets enable -address="$VAULT_ADDR" -path=secret/ kv
+  vault secrets enable -address="$VAULT_ADDR" -path=secret/kv
 
   echo "Creating read token..."
   vault policy write -address="$VAULT_ADDR" read-config - <<EOF

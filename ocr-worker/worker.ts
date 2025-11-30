@@ -25,8 +25,7 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 
 export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
-    const decryptedJob = Job.fromRedisObject(job.serialize())
-    decryptedJob.decrypt(await getImageEncryptionKey("ocr-worker"))
+    job.decrypt(await getImageEncryptionKey("ocr-worker"))
 
     log("ocr-worker", `Job ${job.id} sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
@@ -57,7 +56,8 @@ export async function processJob(job: Job): Promise<Job> {
 
     const data = await jobResult.json()
     job.result = data.response?.trim() ?? "No text was found in the image!"
-    return job 
+    job.encrypt(await getImageEncryptionKey("ocr-worker"))
+    return job
 }
 
 async function commit(job: Job): Promise<void> {

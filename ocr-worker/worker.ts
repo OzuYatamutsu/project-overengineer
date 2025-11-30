@@ -39,7 +39,7 @@ export async function processJob(job: Job): Promise<Job> {
                 "What is the total amount shown on the receipt?",
                 "Do not respond with any text not on the receipt."
            ].join(" "),
-           images: [decryptedJob.imageDataBase64],
+           images: [job.imageDataBase64],
            stream: false
        })
     })

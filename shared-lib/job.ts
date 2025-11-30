@@ -47,6 +47,7 @@ export class Job {
         const job = new Job(redisObject.imageDataBase64)
         job.id = redisObject.id
         job.status = redisObject.status as JobStatus
+        job.result = redisObject.result || ""
         job.createUtime = Number(redisObject.createUtime)
         job.progress = Number(redisObject.progress)
         job.isEncrypted = redisObject.isEncrypted !== undefined 

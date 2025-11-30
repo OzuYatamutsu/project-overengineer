@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/fix-insecure-certificate
 
 jobs:
   generate-vault-cert:
@@ -18,10 +19,10 @@ jobs:
         run: vault/generate-vault-cert.sh
       
       - name: Encrypt vault keyfile
-        run: echo TODO  # TODO
+        run: openssl enc -aes-256-cbc -salt -pbkdf2 -in vault/vault.key -out vault/vault.key -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Encrypt vault CA keyfile
-        run: echo TODO  # TODO
+        run: openssl enc -aes-256-cbc -salt -pbkdf2 -in vault/vault-ca.key -out vault/vault-ca.key -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Upload vault cert and key
         uses: actions/upload-artifact@v4
@@ -364,10 +365,10 @@ jobs:
           path: ./vault
 
       - name: Decrypt vault key
-        run: echo TODO  # TODO
+        run: openssl enc -d -aes-256-cbc -salt -pbkdf2 -in vault/vault.key -out vault/vault.key -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Decrypt vault CA key
-        run: echo TODO  # TODO
+        run: openssl enc -d -aes-256-cbc -salt -pbkdf2 -in vault/vault-ca.key -out vault/vault-ca.key -pass pass:${CI_ENCRYPTION_KEY}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

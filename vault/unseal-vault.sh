@@ -6,6 +6,7 @@ UNSEAL_KEY=""
 ROOT_TOKEN=""
 IS_PRIMARY="${IS_PRIMARY}"
 VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
+PREVIOUSLY_INITED=false
 
 until curl -k ${VAULT_ADDR}/v1/sys/health; do
   echo "Waiting for vault API to be ready..."
@@ -14,6 +15,7 @@ done
 
 # Check if vault-init-keys secret exists
 if kubectl get secret vault-init-keys >/dev/null 2>&1; then
+  PREVIOUSLY_INITED=true
   echo "Found existing unseal key, retrieving..."
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
   UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
@@ -61,9 +63,9 @@ vault operator unseal -address="$VAULT_ADDR" "$UNSEAL_KEY"
 rm -fv /vault/data/vault-unseal-info.json
 echo "Vault unseal complete."
 
-if [ "$IS_PRIMARY" = true ]; then
+if [ "$IS_PRIMARY" = true ] && [ "$PREVIOUSLY_INITED" = false ]; then
   echo "Enabling secret/ kv store..."
-  vault login -address="$VAULT_ADDR" $ROOT_TOKEN
+  vault login -address="$VAULT_ADDR" "$ROOT_TOKEN"
   vault secrets enable -address="$VAULT_ADDR" -path=secret/ kv
 
   echo "Creating read token..."

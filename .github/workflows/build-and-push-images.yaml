@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - bugfix/cluster-rebuild-idempotency
 
 jobs:
   generate-vault-cert:

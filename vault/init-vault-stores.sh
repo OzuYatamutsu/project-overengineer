@@ -32,4 +32,10 @@ vault kv put -address="$VAULT_ADDR" secret/data/REDIS_HOST value="svc-redis-mast
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PORT value="6379"
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="$INITIAL_REDIS_PASSWORD"
 
-echo "Done."
+echo "Enabling transit/ store..."
+vault secrets enable transit
+
+echo "Generating and storing new JWT signing token..."
+vault write transit/keys/jwt-signer type=ed25519
+
+echo "Done initing vault stores."

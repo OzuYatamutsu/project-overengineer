@@ -36,6 +36,6 @@ echo "Enabling transit/ store..."
 vault secrets enable -address="$VAULT_ADDR" transit
 
 echo "Generating and storing new JWT signing token..."
-vault write transit/keys/jwt-signer type=ed25519
+vault write -address="$VAULT_ADDR" transit/keys/jwt-signer type=ed25519
 
 echo "Done initing vault stores."

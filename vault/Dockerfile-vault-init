@@ -19,9 +19,11 @@ WORKDIR /vault
 COPY vault/init.sh /vault/init.sh
 COPY vault/generate-pw.sh /vault/generate-pw.sh
 COPY vault/unseal-vault.sh /vault/unseal-vault.sh
+COPY vault/init-vault-stores.sh /vault/init-vault-stores.sh
 COPY vault/renew-keys.sh /vault/renew-keys.sh
 RUN chmod +x /vault/init.sh
 RUN chmod +x /vault/generate-pw.sh
 RUN chmod +x /vault/unseal-vault.sh
+RUN chmod +x /vault/init-vault-stores.sh
 RUN chmod +x /vault/renew-keys.sh
 ENTRYPOINT ["/vault/init.sh"]

@@ -33,7 +33,7 @@ vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PORT value="6379"
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="$INITIAL_REDIS_PASSWORD"
 
 echo "Enabling transit/ store..."
-vault secrets enable transit
+vault secrets enable -address="$VAULT_ADDR" transit
 
 echo "Generating and storing new JWT signing token..."
 vault write transit/keys/jwt-signer type=ed25519

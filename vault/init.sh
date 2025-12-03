@@ -21,11 +21,11 @@ if kubectl get secret vault-init-keys >/dev/null 2>&1; then
 else
   echo "Didn't find existing unseal key, will init a new cluster."
   PREVIOUSLY_INITED=false
-end
+fi
 
 # Then run all other init scripts
 /bin/sh /vault/generate-pw.sh
-IS_PRIMARY=$IS_PRIMARY $PREVIOUSLY_INITED /bin/sh /vault/unseal-vault.sh
+IS_PRIMARY=$IS_PRIMARY PREVIOUSLY_INITED=$PREVIOUSLY_INITED /bin/sh /vault/unseal-vault.sh
 if [ "$IS_PRIMARY" = true ] && [ "$PREVIOUSLY_INITED" = false ]; then
   /bin/sh /vault/init-vault-stores.sh
 fi

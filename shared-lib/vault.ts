@@ -104,6 +104,6 @@ export async function generateJwt(jobId: string): Promise<string> {
     return ""  // TODO
 }
 
-export async function verifyJwt(jwt: string): Promise<boolean> {
+export async function verifyJwt(jwt: string, jobId: string): Promise<boolean> {
     return false  // TODO
 }

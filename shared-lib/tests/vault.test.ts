@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test'
 import { updateEnvFromVault, getVault, watchAndUpdateVaultValue,
   getValue, writeValue, pullAndWatchVaultConfigValues,
-  getImageEncryptionKey } from '../vault'
+  getImageEncryptionKey, generateJwt, verifyJwt } from '../vault'
+import { randomUUID } from 'crypto'
 
 test('can get a vault object', async () => {
   expect(await getVault("shared-lib", true)).toBeTruthy()
@@ -54,4 +55,12 @@ test('can connect and pull default config values on start', async () => {
   const bgJobs = await pullAndWatchVaultConfigValues("shared-lib", true)
   expect(true).toBeTruthy()
   bgJobs.forEach((jobId) => clearInterval(jobId))
+})
+test('can generate a verifiable jwt from vault', async () => {
+  const testJobId = randomUUID()
+
+  const jwt = await generateJwt(testJobId)
+
+  expect(jwt).toBeTruthy()
+  expect(verifyJwt(jwt, testJobId)).toBe(true)
 })

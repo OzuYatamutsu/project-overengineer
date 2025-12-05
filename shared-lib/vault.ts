@@ -3,8 +3,10 @@ import { enforceConfig } from "./verify"
 import { log } from "./logging"
 
 export const CONFIG_PREFIX = "secret/data"
+export const JWT_KEY_NAME = "transit/keys/jwt-signer"
 const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 const _UNIT_TESTING_ENCRYPTION_KEY = "BB34B427-74EE-4C4A-BED6-F958345EF455"
+const jwtValidTimeSec = 900
 
 let vaultClient: vault.client 
 
@@ -100,8 +102,26 @@ export async function getImageEncryptionKey(serviceName: string, insecure=false)
     return await getValue(serviceName, "IMAGE_KEY", insecure)
 }
 
-export async function generateJwt(jobId: string): Promise<string> {
-    return ""  // TODO
+export async function generateJwt(serviceName: string, jobId: string, insecure=false): Promise<string> {
+    // Compose the JWT
+    const jwtHeader = {"alg": "EdDSA", "typ": "JWT"}
+    const jwtPayload = {"jobId": jobId, "exp": Math.floor(Date.now() / 1000) + jwtValidTimeSec}
+
+    let jwt = (
+        Buffer.from(JSON.stringify(jwtHeader)).toString("base64url")
+        + "."
+        + Buffer.from(JSON.stringify(jwtPayload)).toString("base64url")
+    )
+
+    // Connect to vault to generate a signature
+    const signature = (await (await getVault(serviceName, insecure)).write(JWT_KEY_NAME, {
+        input: Buffer.from(jwt).toString("base64")
+    }))["data"]["signature"].replace("vault:ed25519://", "")
+
+    // Complete the JWT
+    jwt += `.${Buffer.from(signature).toString("base64url")}`
+
+    return jwt
 }
 
 export async function verifyJwt(jwt: string, jobId: string): Promise<boolean> {

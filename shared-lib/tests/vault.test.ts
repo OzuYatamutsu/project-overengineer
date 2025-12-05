@@ -59,8 +59,8 @@ test('can connect and pull default config values on start', async () => {
 test('can generate a verifiable jwt from vault', async () => {
   const testJobId = randomUUID()
 
-  const jwt = await generateJwt(testJobId)
+  const jwt = await generateJwt("shared-lib", testJobId, true)
 
   expect(jwt).toBeTruthy()
-  expect(verifyJwt(jwt, testJobId)).toBe(true)
+  expect(verifyJwt("shared-lib", jwt, testJobId, true)).toBe(true)
 })

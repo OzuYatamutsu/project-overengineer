@@ -124,6 +124,13 @@ export async function generateJwt(serviceName: string, jobId: string, insecure=f
     return jwt
 }
 
-export async function verifyJwt(jwt: string, jobId: string): Promise<boolean> {
+export async function verifyJwt(serviceName: string, jwt: string, jobId: string, insecure=false): Promise<boolean> {
+    // given: <base64urlencoded-header>.<base64urlencoded-payload>.<base64urlencoded-signature>
+    // extract: <base64urlencoded-signature>
+    // convert this to base64: <base64encoded-signature>
+    // const sigBase64Url = Buffer.from(sigBase64!, "base64").toString("base64url");
+    // take: <base64urlencoded-header>.<base64urlencoded-payload> and base64 encode the concatenation (like in generate step)
+    // validate against vault: vault write -format=json transit/verify/jwt-signer input=base64(<base64urlencoded-header>.<base64urlencoded-payload>) signature="vault:ed25519:${<base64encoded-signature>}"
+    // we expect the following response payload: {"data":{"valid":true}}
     return false  // TODO
 }

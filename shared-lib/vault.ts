@@ -99,3 +99,11 @@ export async function getImageEncryptionKey(serviceName: string, insecure=false)
     }
     return await getValue(serviceName, "IMAGE_KEY", insecure)
 }
+
+export async function generateJwt(jobId: string): Promise<string> {
+    return ""  // TODO
+}
+
+export async function verifyJwt(jwt: string): Promise<boolean> {
+    return false  // TODO
+}

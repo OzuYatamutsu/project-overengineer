@@ -60,7 +60,7 @@ test('can generate a verifiable jwt from vault', async () => {
   // Init transit engine and insert jwt signing key
   await (await (await getVault("shared-lib", true)).request({
     method: "POST",
-    path: "/v1/sys/mounts/transit",
+    path: "/sys/mounts/transit",
     json: {
       type: "transit",
     },

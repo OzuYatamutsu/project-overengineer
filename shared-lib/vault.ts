@@ -120,8 +120,8 @@ export async function generateJwt(serviceName: string, jobId: string, insecure=f
             input: Buffer.from(jwt).toString("base64")
         }))["data"]["signature"].replace("vault:v1:", "")
 
-        // Complete the JWT
-        jwt += `.${Buffer.from(signature).toString("base64url")}`
+        // Complete the JWT (vault returns base64, but signature is binary)
+        jwt += `.${Buffer.from(signature, "base64").toString("base64url")}`
     } catch (error) {
         log(serviceName, `error signing JWT: ${error}`)
         throw(error)
@@ -134,10 +134,10 @@ export async function verifyJwt(serviceName: string, jwt: string, jobId: string,
     // Decompose the JWT
     const jwtHeaderBase64url = jwt.split(".")[0]
     const jwtPayloadBase64url = jwt.split(".")[1]
-    const jwtSignature = Buffer.from(jwt.split(".")[2], "base64url").toString("utf8")
+    const jwtSignature: Buffer = Buffer.from(jwt.split(".")[2], "base64url")
 
     // Verify the JWT grants access to the specified job
-    if (JSON.parse(Buffer.from(jwtPayloadBase64url).toString("utf8")).jobId !== jobId) {
+    if (JSON.parse(Buffer.from(jwtPayloadBase64url, "base64url").toString("utf8")).jobId !== jobId) {
         return false
     }
 
@@ -149,7 +149,7 @@ export async function verifyJwt(serviceName: string, jwt: string, jobId: string,
                 + "."
                 + jwtPayloadBase64url
             ).toString("base64"),
-            signature: `vault:ed25519:${Buffer.from(jwtSignature).toString("base64")}`
+            signature: `vault:ed25519:${jwtSignature.toString("base64")}`
         }))["data"]["valid"]
     } catch (error) {
         log(serviceName, `error verifying JWT: ${error}`)

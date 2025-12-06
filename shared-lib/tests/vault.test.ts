@@ -57,8 +57,19 @@ test('can connect and pull default config values on start', async () => {
   bgJobs.forEach((jobId) => clearInterval(jobId))
 })
 test('can generate a verifiable jwt from vault', async () => {
-  const testJobId = randomUUID()
+  // Init transit engine and insert jwt signing key
+  await (await (await getVault("shared-lib", true)).request({
+    method: "POST",
+    path: "/v1/sys/mounts/transit",
+    json: {
+      type: "transit",
+    },
+  }))
+  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
+    type: "ed25519"
+  })
 
+  const testJobId = randomUUID()
   const jwt = await generateJwt("shared-lib", testJobId, true)
 
   expect(jwt).toBeTruthy()

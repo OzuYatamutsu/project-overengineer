@@ -4,6 +4,7 @@ import { log } from "./logging"
 
 export const CONFIG_PREFIX = "secret/data"
 export const JWT_KEY_NAME = "transit/keys/jwt-signer"
+export const JWT_VERIFY_KEY_NAME = "transit/verify/jwt-signer"
 const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 const _UNIT_TESTING_ENCRYPTION_KEY = "BB34B427-74EE-4C4A-BED6-F958345EF455"
 const jwtValidTimeSec = 900
@@ -114,23 +115,44 @@ export async function generateJwt(serviceName: string, jobId: string, insecure=f
     )
 
     // Connect to vault to generate a signature
-    const signature = (await (await getVault(serviceName, insecure)).write(JWT_KEY_NAME, {
-        input: Buffer.from(jwt).toString("base64")
-    }))["data"]["signature"].replace("vault:ed25519://", "")
+    try {
+        const signature: string = (await (await getVault(serviceName, insecure)).write(JWT_KEY_NAME, {
+            input: Buffer.from(jwt).toString("base64")
+        }))["data"]["signature"].replace("vault:ed25519://", "")
 
-    // Complete the JWT
-    jwt += `.${Buffer.from(signature).toString("base64url")}`
+        // Complete the JWT
+        jwt += `.${Buffer.from(signature).toString("base64url")}`
+    } catch (error) {
+        log(serviceName, `error signing JWT: ${error}`)
+        throw(error)
+    }
 
     return jwt
 }
 
 export async function verifyJwt(serviceName: string, jwt: string, jobId: string, insecure=false): Promise<boolean> {
-    // given: <base64urlencoded-header>.<base64urlencoded-payload>.<base64urlencoded-signature>
-    // extract: <base64urlencoded-signature>
-    // convert this to base64: <base64encoded-signature>
-    // const sigBase64Url = Buffer.from(sigBase64!, "base64").toString("base64url");
-    // take: <base64urlencoded-header>.<base64urlencoded-payload> and base64 encode the concatenation (like in generate step)
-    // validate against vault: vault write -format=json transit/verify/jwt-signer input=base64(<base64urlencoded-header>.<base64urlencoded-payload>) signature="vault:ed25519:${<base64encoded-signature>}"
-    // we expect the following response payload: {"data":{"valid":true}}
-    return false  // TODO
+    // Decompose the JWT
+    const jwtHeaderBase64url = jwt.split(".")[0]
+    const jwtPayloadBase64url = jwt.split(".")[1]
+    const jwtSignature = Buffer.from(jwt.split(".")[2], "base64url").toString("utf8")
+
+    // Verify the JWT grants access to the specified job
+    if (JSON.parse(Buffer.from(jwtPayloadBase64url).toString("utf8")).jobId !== jobId) {
+        return false
+    }
+
+    // Connect to vault to validate the signature
+    try {
+        return (await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {
+            input: Buffer.from(
+                jwtHeaderBase64url
+                + "."
+                + jwtPayloadBase64url
+            ).toString("base64"),
+            signature: `vault:ed25519:${Buffer.from(jwtSignature).toString("base64")}`
+        }))["data"]["valid"]
+    } catch (error) {
+        log(serviceName, `error verifying JWT: ${error}`)
+        throw(error)
+    }
 }

@@ -75,3 +75,44 @@ test('can generate a verifiable jwt from vault', async () => {
   expect(jwt).toBeTruthy()
   expect(verifyJwt("shared-lib", jwt, testJobId, true)).toBe(true)
 })
+test('will reject a faulty jwt from vault due to incorrect job id', async () => {
+  // Init transit engine and insert jwt signing key
+  await (await (await getVault("shared-lib", true)).request({
+    method: "POST",
+    path: "/sys/mounts/transit",
+    json: {
+      type: "transit",
+    },
+  }))
+  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
+    type: "ed25519"
+  })
+
+  const testJobId = randomUUID()
+  const faultyJobId = randomUUID()
+  const jwt = await generateJwt("shared-lib", testJobId, true)
+
+  expect(jwt).toBeTruthy()
+  expect(verifyJwt("shared-lib", jwt, faultyJobId, true)).toBe(false)
+})
+test('will reject a faulty jwt from vault due to incorrect signature', async () => {
+  // Init transit engine and insert jwt signing key
+  await (await (await getVault("shared-lib", true)).request({
+    method: "POST",
+    path: "/sys/mounts/transit",
+    json: {
+      type: "transit",
+    },
+  }))
+  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
+    type: "ed25519"
+  })
+
+  const testJobId = randomUUID()
+  let jwt = await generateJwt("shared-lib", testJobId, true)
+  const signature = Buffer.from(jwt.split(".")[2], "base64url").toString("utf8")
+  jwt = jwt.replace(jwt.split(".")[2], Buffer.from(signature + "BAD").toString("base64url"))
+
+  expect(jwt).toBeTruthy()
+  expect(verifyJwt("shared-lib", jwt, testJobId, true)).toBe(false)
+})

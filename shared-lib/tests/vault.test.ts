@@ -20,6 +20,11 @@ test.beforeAll(async () => {
 test('can get a vault object', async () => {
   expect(await getVault("shared-lib", true)).toBeTruthy()
 })
+test('can reuse vault objects', async () => {
+  const instance1 = await getVault("shared-lib", true)
+  const instance2 = await getVault("shared-lib", true)
+  expect(instance1).toEqual(instance2)
+})
 test('can write a value to vault', async () => {
   const configKey = "_TEST_CONFIG_VALUE1"
   const value = "VALUE"

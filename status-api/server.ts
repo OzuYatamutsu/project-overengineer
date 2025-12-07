@@ -79,7 +79,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
     ws.on('message', (data: RawData) => {
         const message = JSON.parse(data.toString())
-        const jobId = message.jobId
+        const jobId = message.job.jobId
         const jwt = message.jwt
 
         log("status-api", `${req.socket.remoteAddress}: Monitor status for job ${jobId}`)

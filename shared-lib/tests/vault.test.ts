@@ -6,13 +6,19 @@ import { randomUUID } from 'crypto'
 
 test.beforeAll(async () => {
   // Init transit engine and insert jwt signing key
-  await (await (await getVault("shared-lib", true)).request({
-    method: "POST",
-    path: "/sys/mounts/transit",
-    json: {
-      type: "transit",
-    },
-  }))
+  try {
+    await (await (await getVault("shared-lib", true)).request({
+      method: "POST",
+      path: "/sys/mounts/transit",
+      json: {
+        type: "transit",
+      },
+    }))
+  } catch (err) {
+    if (!String(err).includes("path is already in use")) {
+      throw(err)
+    }
+  }
   await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
     type: "ed25519"
   })

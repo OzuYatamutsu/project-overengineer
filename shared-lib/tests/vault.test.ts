@@ -82,7 +82,7 @@ test('can generate a jwt from vault', async () => {
 test('can verify a jwt from vault', async () => {
   const testJobId = randomUUID()
   const jwt = await generateJwt("shared-lib", testJobId, true)
-  expect(verifyJwt("shared-lib", jwt, testJobId, true)).toBe(true)
+  expect(await verifyJwt("shared-lib", jwt, testJobId, true)).toBe(true)
 })
 test('will reject a faulty jwt from vault due to incorrect job id', async () => {
   const testJobId = randomUUID()
@@ -90,7 +90,7 @@ test('will reject a faulty jwt from vault due to incorrect job id', async () => 
   const jwt = await generateJwt("shared-lib", testJobId, true)
 
   expect(jwt).toBeTruthy()
-  expect(verifyJwt("shared-lib", jwt, faultyJobId, true)).toBe(false)
+  expect(await verifyJwt("shared-lib", jwt, faultyJobId, true)).toBe(false)
 })
 test('will reject a faulty jwt from vault due to incorrect signature', async () => {
   const testJobId = randomUUID()
@@ -99,5 +99,5 @@ test('will reject a faulty jwt from vault due to incorrect signature', async () 
   jwt = jwt.replace(jwt.split(".")[2], Buffer.from(signature + "BAD").toString("base64url"))
 
   expect(jwt).toBeTruthy()
-  expect(verifyJwt("shared-lib", jwt, testJobId, true)).toBe(false)
+  expect(await verifyJwt("shared-lib", jwt, testJobId, true)).toBe(false)
 })

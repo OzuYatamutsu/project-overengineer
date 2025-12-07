@@ -7,6 +7,7 @@ export const JWT_KEY_NAME = "transit/sign/jwt-signer"
 export const JWT_VERIFY_KEY_NAME = "transit/verify/jwt-signer"
 const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 const _UNIT_TESTING_ENCRYPTION_KEY = "BB34B427-74EE-4C4A-BED6-F958345EF455"
+const _SIGNATURE_PREFIX = "vault:v1:"
 const jwtValidTimeSec = 900
 
 let vaultClient: vault.client 
@@ -118,7 +119,7 @@ export async function generateJwt(serviceName: string, jobId: string, insecure=f
     try {
         const signature: string = (await (await getVault(serviceName, insecure)).write(JWT_KEY_NAME, {
             input: Buffer.from(jwt).toString("base64")
-        }))["data"]["signature"].replace("vault:v1:", "")
+        }))["data"]["signature"].replace(_SIGNATURE_PREFIX, "")
 
         // Complete the JWT (vault returns base64, but signature is binary)
         jwt += `.${Buffer.from(signature, "base64").toString("base64url")}`
@@ -149,7 +150,7 @@ export async function verifyJwt(serviceName: string, jwt: string, jobId: string,
                 + "."
                 + jwtPayloadBase64url
             ).toString("base64"),
-            signature: `vault:ed25519:${jwtSignature.toString("base64")}`
+            signature: `${_SIGNATURE_PREFIX}${jwtSignature.toString("base64")}`
         }))["data"]["valid"]
     } catch (error) {
         log(serviceName, `error verifying JWT: ${error}`)

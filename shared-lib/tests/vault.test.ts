@@ -69,38 +69,17 @@ test('can connect and pull default config values on start', async () => {
   expect(true).toBeTruthy()
   bgJobs.forEach((jobId) => clearInterval(jobId))
 })
-test('can generate a verifiable jwt from vault', async () => {
-  // Init transit engine and insert jwt signing key
-  await (await (await getVault("shared-lib", true)).request({
-    method: "POST",
-    path: "/sys/mounts/transit",
-    json: {
-      type: "transit",
-    },
-  }))
-  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
-    type: "ed25519"
-  })
-
+test('can generate a jwt from vault', async () => {
   const testJobId = randomUUID()
   const jwt = await generateJwt("shared-lib", testJobId, true)
-
   expect(jwt).toBeTruthy()
+})
+test('can verify a jwt from vault', async () => {
+  const testJobId = randomUUID()
+  const jwt = await generateJwt("shared-lib", testJobId, true)
   expect(verifyJwt("shared-lib", jwt, testJobId, true)).toBe(true)
 })
 test('will reject a faulty jwt from vault due to incorrect job id', async () => {
-  // Init transit engine and insert jwt signing key
-  await (await (await getVault("shared-lib", true)).request({
-    method: "POST",
-    path: "/sys/mounts/transit",
-    json: {
-      type: "transit",
-    },
-  }))
-  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
-    type: "ed25519"
-  })
-
   const testJobId = randomUUID()
   const faultyJobId = randomUUID()
   const jwt = await generateJwt("shared-lib", testJobId, true)
@@ -109,18 +88,6 @@ test('will reject a faulty jwt from vault due to incorrect job id', async () => 
   expect(verifyJwt("shared-lib", jwt, faultyJobId, true)).toBe(false)
 })
 test('will reject a faulty jwt from vault due to incorrect signature', async () => {
-  // Init transit engine and insert jwt signing key
-  await (await (await getVault("shared-lib", true)).request({
-    method: "POST",
-    path: "/sys/mounts/transit",
-    json: {
-      type: "transit",
-    },
-  }))
-  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
-    type: "ed25519"
-  })
-
   const testJobId = randomUUID()
   let jwt = await generateJwt("shared-lib", testJobId, true)
   const signature = Buffer.from(jwt.split(".")[2], "base64url").toString("utf8")

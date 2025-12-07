@@ -1,7 +1,7 @@
 import express from 'express'
 import { WebSocketServer, WebSocket, RawData } from "ws"
 import http from 'http'
-import { JobStatus, JobUpdate, rateLimit, getRedis, log, pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib'
+import { JobStatus, JobUpdate, rateLimit, getRedis, log, pullAndWatchVaultConfigValues, verifyJwt } from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) ?? 3001
@@ -17,7 +17,10 @@ app.use(express.json());
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-async function getJobState(jobId: string): Promise<JobUpdate> {
+async function getJobState(jobId: string, jwt: string): Promise<JobUpdate> {
+    if (!(await verifyJwt("status-api", jwt, jobId, _IS_UNIT_TESTING))) {
+        throw new Error(`error getting job state for id ${jobId}; jwt failed validation`)
+    }
     return new JobUpdate(
         jobId,
         await getRedis("status-api").hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
@@ -77,11 +80,12 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     ws.on('message', (data: RawData) => {
         const message = JSON.parse(data.toString())
         const jobId = message.jobId
+        const jwt = message.jwt
 
         log("status-api", `${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
 
         setInterval(async () => {
-            const jobState = await getJobState(jobId)
+            const jobState = await getJobState(jobId, jwt)
             ws.send(jobState.serialize())
             if (jobState.status == JobStatus.DONE) {
                 ws.close()

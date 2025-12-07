@@ -10,10 +10,18 @@ import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
 // Don't import from base level, it will pull in ioredis,
 // which is not compatible with use client
 import { log } from '@project-overengineer/shared-lib/logging'
+import { generateJwt } from '@project-overengineer/shared-lib/vault'
+
+const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
   onResetAction: () => void
+}
+
+type TransformerUploadResponse = {
+  jobId: string,
+  jwt: string
 }
 
 export default function Uploader({ onResultAction, onResetAction }: UploaderProps) {
@@ -47,10 +55,10 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     }
 
     try {
-      const jobId = await uploadToTransformer(file)
+      const { jobId, jwt } = await uploadToTransformer(file)
       log("project-overengineer-fe", `Uploaded new job with ID: ${jobId}`)
 
-      monitorProgress(jobId)
+      monitorProgress(jobId, jwt)
       toast.success(`Upload complete.`)
     } catch (error) {
       if (error instanceof Error) {
@@ -83,27 +91,37 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     setPreview(URL.createObjectURL(file))
   }
 
-  async function uploadToTransformer(imageData: File): Promise<string> {
+  async function uploadToTransformer(imageData: File): Promise<TransformerUploadResponse> {
     const response = await fetch('/api/v1/upload', {
         method: 'POST',
         body: imageData
       })
 
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`)
-      }
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.status}`)
+    }
 
-      // Expect a job ID to query status API
-      const responseData = await response.json()
+    // Expect a job ID to query status API
+    const responseData = await response.json()
 
-      if (!responseData.jobId) {
-        throw new Error(`Unexpected empty response!`)
-      }
+    if (!responseData.jobId) {
+      throw new Error(`Unexpected empty response!`)
+    }
 
-      return responseData.jobId
+    // We need a JWT too
+    const jwt = await generateJwt(
+      "project-overengineer-fe",
+      responseData.jobId,
+      _IS_UNIT_TESTING
+    )
+
+    return {
+      jobId: responseData.jobId,
+      jwt: jwt
+    }
   }
 
-  function monitorProgress(jobId: string): void {
+  function monitorProgress(jobId: string, jwt: string): void {
     // Open websocket to status API
     const ws = new WebSocket(
       process.env.STATUS_API_URL ?? 'ws://localhost:3001'
@@ -111,9 +129,12 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     setWs(ws)
 
     ws.onopen = () => {
-      ws.send(new JobUpdate(
-        jobId, JobStatus.NEW, "", 0
-      ).serialize())
+      ws.send(JSON.stringify({
+        job: new JobUpdate(
+          jobId, JobStatus.NEW, "", 0
+        ),
+        jwt: jwt
+      }))
 
       setTimeout(() => toast.success("Processing job..."), 3500)
     }

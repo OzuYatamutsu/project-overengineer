@@ -4,6 +4,19 @@ import { updateEnvFromVault, getVault, watchAndUpdateVaultValue,
   getImageEncryptionKey, generateJwt, verifyJwt } from '../vault'
 import { randomUUID } from 'crypto'
 
+test.beforeAll(async () => {
+  // Init transit engine and insert jwt signing key
+  await (await (await getVault("shared-lib", true)).request({
+    method: "POST",
+    path: "/sys/mounts/transit",
+    json: {
+      type: "transit",
+    },
+  }))
+  await (await getVault("shared-lib", true)).write("transit/keys/jwt-signer", {
+    type: "ed25519"
+  })
+})
 test('can get a vault object', async () => {
   expect(await getVault("shared-lib", true)).toBeTruthy()
 })

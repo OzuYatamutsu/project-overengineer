@@ -9,46 +9,16 @@ const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 const _UNIT_TESTING_ENCRYPTION_KEY = "BB34B427-74EE-4C4A-BED6-F958345EF455"
 const jwtValidTimeSec = 900
 
-let vaultClient: vault.client 
-
 export async function getVault(serviceName: string, insecure=false): Promise<vault.client> {
     enforceConfig(serviceName, "VAULT_HOST")
     enforceConfig(serviceName, "VAULT_PORT")
     enforceConfig(serviceName, "VAULT_RO_TOKEN")
 
-    const endpoint = `${insecure ? 'http' : 'https'}://${process.env.VAULT_HOST}:${process.env.VAULT_PORT}`
-    let shouldReconnect = false
-
-    if (vaultClient) {
-        try {
-            await vaultClient.health()
-        }
-
-        catch (err) {
-            log(serviceName, `vault client connection issue, reestablishing connection: ${err}`)
-            shouldReconnect = true
-        }
-    }
-    if (!vaultClient || shouldReconnect) {
-        log(serviceName, `opening new vault connection to ${endpoint}`)
-
-        vaultClient = vault({
-            apiVersion: "v1",
-            endpoint: endpoint,
-            token: process.env.VAULT_RO_TOKEN
-        })
-
-        try {
-            await vaultClient.health()
-        }
-        
-        catch (err) {
-            log(serviceName, `unable to establish vault client connection! err: ${err}`)
-        }
-
-    }
-
-    return vaultClient
+    return vault({
+        apiVersion: "v1",
+        endpoint: `${insecure ? 'http' : 'https'}://${process.env.VAULT_HOST}:${process.env.VAULT_PORT}`,
+        token: process.env.VAULT_RO_TOKEN
+    })
 }
 
 export async function getValue(serviceName: string, configName: string, insecure=false): Promise<string> {
@@ -143,7 +113,23 @@ export async function verifyJwt(serviceName: string, jwt: string, jobId: string,
 
     // Connect to vault to validate the signature
     try {
-        return (await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {
+        console.log("test1")
+        let _test3 = await getVault(serviceName, insecure)
+        console.log("test2")
+        let _test2 = (await (await getVault(serviceName, insecure)).write(exports.JWT_VERIFY_KEY_NAME, {
+            input: "",
+            signature: ""
+        }))
+        console.log("test3")
+        let _test = (await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {  // TODO not working, why?
+            input: Buffer.from(
+                jwtHeaderBase64url
+                + "."
+                + jwtPayloadBase64url
+            ).toString("base64"),
+            signature: `vault:ed25519:${jwtSignature.toString("base64")}`
+        }))
+        return (await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {  // TODO not working, why?
             input: Buffer.from(
                 jwtHeaderBase64url
                 + "."

@@ -18,7 +18,7 @@ if [ "$PREVIOUSLY_INITED" = true ]; then
   kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
   UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
   ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
-  RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
+  VAULT_TOKEN=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
 else
   if [ "$IS_PRIMARY" = false ]; then
     echo "This looks like a secondary."
@@ -30,7 +30,7 @@ else
     kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d > /vault/data/vault-unseal-info.json
     UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/vault-unseal-info.json)
     ROOT_TOKEN=$(jq -r '.root_token' /vault/data/vault-unseal-info.json)
-    RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
+    VAULT_TOKEN=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
   else
     echo "This looks like an uninited primary. Initializing new cluster..."
 

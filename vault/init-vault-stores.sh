@@ -8,17 +8,23 @@ vault login -address="$VAULT_ADDR" "$ROOT_TOKEN"
 vault secrets enable -address="$VAULT_ADDR" -path=secret/ kv
 
 echo "Creating read token..."
-vault policy write -address="$VAULT_ADDR" read-config - <<EOF
+vault policy write -address="$VAULT_ADDR" jwt-and-config-ro - <<EOF
 path "secret/*" {
   capabilities = ["read", "list"]
 }
+path "transit/sign/jwt-signer" {
+  capabilities = ["update"]
+}
+path "transit/verify/jwt-signer" {
+  capabilities = ["update"]
+}
 EOF
-vault token create -address="$VAULT_ADDR" -policy="read-config" -period=1h -format=json > /vault/data/vault-unseal-info.json
-RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
+vault token create -address="$VAULT_ADDR" -policy="jwt-and-config-ro" -period=1h -format=json > /vault/data/vault-unseal-info.json
+VAULT_TOKEN=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
 
 echo "Saving Vault read token to Kubernetes secret..."
-kubectl create secret generic vault-ro-token \
-  --from-literal=token=$RO_KEY \
+kubectl create secret generic vault-token \
+  --from-literal=token=$VAULT_TOKEN \
   --dry-run=client -o yaml | kubectl apply -f -
 
 until kubectl get secret initial-redis-password >/dev/null 2>&1; do

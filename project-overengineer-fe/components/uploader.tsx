@@ -10,9 +10,11 @@ import { MAX_FILE_SIZE_MB } from '@project-overengineer/shared-lib/constants'
 // Don't import from base level, it will pull in ioredis,
 // which is not compatible with use client
 import { log } from '@project-overengineer/shared-lib/logging'
-import { generateJwt } from '@project-overengineer/shared-lib/vault'
+// TODO: this doesn't work, because this is a clientside component,
+// and generateJwt is a serverside method.
+// import { generateJwt } from '@project-overengineer/shared-lib/vault'
 
-const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
+// const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 
 type UploaderProps = {
   onResultAction: (hasResult: boolean) => void
@@ -109,11 +111,13 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     }
 
     // We need a JWT too
+    /*
     const jwt = await generateJwt(
       "project-overengineer-fe",
       responseData.jobId,
       _IS_UNIT_TESTING
-    )
+    )*/
+    const jwt = "TEST"  // TODO
 
     return {
       jobId: responseData.jobId,

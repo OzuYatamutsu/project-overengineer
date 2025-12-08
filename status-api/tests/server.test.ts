@@ -11,7 +11,10 @@ test('WebSocket API should respond to queries for job status', async () => {
   // Send dummy job to ws server
   await new Promise<void>((resolve, reject) => {
     ws.on('open', () => {
-      ws.send(JSON.stringify({ jobId }))
+      ws.send(JSON.stringify({
+        job: {jobId: jobId},
+        jwt: ""
+      }))
     })
 
     ws.on('message', (data: RawData) => {

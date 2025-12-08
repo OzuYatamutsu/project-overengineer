@@ -132,33 +132,43 @@ export async function generateJwt(serviceName: string, jobId: string, insecure=f
 }
 
 export async function verifyJwt(serviceName: string, jwt: string, jobId: string, insecure=false): Promise<boolean> {
+    // Validate JWT format
+    if (jwt.split(".").length != 3) {
+        throw new Error(`malformed jwt: ${jwt}`)
+    }
+
     // Decompose the JWT
     const jwtHeaderBase64url = jwt.split(".")[0]
-    const jwtPayloadBase64url = jwt.split(".")[1]
+    const jwtPayload: string = Buffer.from(jwt.split(".")[1], "base64url").toString("utf8")
     const jwtSignature: Buffer = Buffer.from(jwt.split(".")[2], "base64url")
-
-    // Verify the JWT grants access to the specified job
-    if (JSON.parse(Buffer.from(jwtPayloadBase64url, "base64url").toString("utf8")).jobId !== jobId) {
-        return false
-    }
-
-    // Verify the JWT isn't expired
-    if (JSON.parse(Buffer.from(jwtPayloadBase64url, "base64url").toString("utf8")).exp < Math.floor(Date.now() / 1000)) {
-        return false
-    }
 
     // Connect to vault to validate the signature
     try {
-        return (await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {
+        if (!(await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {
             input: Buffer.from(
                 jwtHeaderBase64url
                 + "."
-                + jwtPayloadBase64url
+                + Buffer.from(jwtPayload).toString("base64url")
             ).toString("base64"),
             signature: `${_SIGNATURE_PREFIX}${jwtSignature.toString("base64")}`
-        }))["data"]["valid"]
+        }))["data"]["valid"]) {
+            return false
+        }
     } catch (error) {
         log(serviceName, `error verifying JWT: ${error}`)
         throw(error)
     }
+
+    // Verify the JWT grants access to the specified job
+    if (JSON.parse(jwtPayload).jobId !== jobId) {
+        return false
+    }
+
+    // Verify the JWT isn't expired
+    if (JSON.parse(jwtPayload).exp < Math.floor(Date.now() / 1000)) {
+        return false
+    }
+
+    // All validations pass!
+    return true
 }

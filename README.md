@@ -42,8 +42,8 @@ Configuration is injected at runtime via environment variables, which can be ove
 | `SENTINEL_HOST`      | The hostname of the Redis Sentinel host. Unset to connect directly to Redis instead of via Sentinel. | (unset)   |
 | `SENTINEL_PORT`      | The port number of the Redis Sentinel host.                                                          | (unset)            |
 | `STATUS_API_PORT`    | The port number the Status API should listen on.                                                     | `3001`             |
-| `VAULT_HOST`         | The hostname of the Vault host host.                                                               | `vault`            |
-| `VAULT_PORT`         | The port number of the Vault host host.                                                            | `8200`             |
+| `VAULT_HOST`         | The hostname of the Vault host.       | `vault`            |
+| `VAULT_PORT`         | The port number of the Vault host.    | `8200`             |
 
 ## Base architecture
 
@@ -179,7 +179,7 @@ graph LR
 
 Components are protected by overlapping layers of access control based on whether they are exposed to the user or internal only.
 
-- When a job is initially created, a JSON Web Token (JWT) is issued scoped to the individual job, stored in Redis, with a 15 minute expiry time. This token serves as a bearer token for all future requests against the Status API while the job and token are active.
+- When a job is initially created, a JSON Web Token (JWT) is issued by Vault, scoped to the individual job, with a 15 minute expiry time. This token serves as a bearer token for all future requests against the Status API while the job and token are active.
 - The Transformer API and Status API are the only two public-facing components; all other components accept internal traffic only, enforced by a separate private overlay network.
 - Internal encrypted traffic is protected via mTLS for service-to-service authentication, with a [Caddy](https://caddyserver.com/) sidecar forwarding terminated traffic to the service worker process.
 - Caddy's certificates are managed via the PKI functionality within an instance of [HashiCorp Vault](https://www.hashicorp.com/en/products/vault), allowing for automated rotation of mTLS certificates.

@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
 ROOT_TOKEN=$(kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d | jq -r '.root_token')
 
@@ -17,12 +18,12 @@ RO_KEY=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)
 
 echo "Saving Vault read token to Kubernetes secret..."
 kubectl create secret generic vault-ro-token \
---from-literal=token=$RO_KEY \
---dry-run=client -o yaml | kubectl apply -f -
+  --from-literal=token=$RO_KEY \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 until kubectl get secret initial-redis-password >/dev/null 2>&1; do
-echo "Waiting for Redis config..."
-sleep 2
+  echo "Waiting for Redis config..."
+  sleep 2
 done
 
 echo "Inserting Redis config..."

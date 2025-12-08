@@ -79,8 +79,13 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
     ws.on('message', (data: RawData) => {
         const message = JSON.parse(data.toString())
-        const jobId = message.job.jobId
-        const jwt = message.jwt
+        const jobId = message.job?.jobId ?? undefined
+        const jwt = message.jwt ?? undefined
+
+        if (jobId === undefined || jwt === undefined) {
+            log("status-api", `${req.socket.remoteAddress}: rejecting malformed api request`)
+            ws.close()
+        }
 
         log("status-api", `${req.socket.remoteAddress}: Monitor status for job ${jobId}`)
 

@@ -142,6 +142,11 @@ export async function verifyJwt(serviceName: string, jwt: string, jobId: string,
         return false
     }
 
+    // Verify the JWT isn't expired
+    if (JSON.parse(Buffer.from(jwtPayloadBase64url, "base64url").toString("utf8")).exp < Math.floor(Date.now() / 1000)) {
+        return false
+    }
+
     // Connect to vault to validate the signature
     try {
         return (await (await getVault(serviceName, insecure)).write(JWT_VERIFY_KEY_NAME, {

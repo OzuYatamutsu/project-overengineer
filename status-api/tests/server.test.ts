@@ -1,19 +1,40 @@
 import { JobUpdate } from '@project-overengineer/shared-lib/job-status'
+import { getVault, generateJwt } from '@project-overengineer/shared-lib/vault'
 import { test, expect } from '@playwright/test'
 import { WebSocket, RawData } from 'ws'
 import { _healthz, port } from '../server';
 
+test.beforeAll(async () => {
+  // Init transit engine and insert jwt signing key
+  try {
+    await (await (await getVault("status-api", true)).request({
+      method: "POST",
+      path: "/sys/mounts/transit",
+      json: {
+        type: "transit",
+      },
+    }))
+  } catch (err) {
+    if (!String(err).includes("path is already in use")) {
+      throw(err)
+    }
+  }
+  await (await getVault("status-api", true)).write("transit/keys/jwt-signer", {
+    type: "ed25519"
+  })
+})
 test('WebSocket API should respond to queries for job status', async () => {
   const jobId = '2cfdbca8-245d-4fe1-a3f5-b4dffe0a8a6b'
+  const jwt = await generateJwt("status-api", jobId, true)
   const messages: JobUpdate[] = []
   const ws = new WebSocket(`ws://localhost:${port}`)
-
+  
   // Send dummy job to ws server
   await new Promise<void>((resolve, reject) => {
     ws.on('open', () => {
       ws.send(JSON.stringify({
         job: {jobId: jobId},
-        jwt: ""
+        jwt: jwt
       }))
     })
 

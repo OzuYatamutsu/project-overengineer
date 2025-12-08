@@ -16,11 +16,11 @@ check_rollout() {
 kubectl apply -f vault/service.yaml
 kubectl rollout status statefulset/vault --timeout=90s
 timeout=60
-while ! kubectl get secret vault-ro-token >/dev/null 2>&1; do
+while ! kubectl get secret vault-token >/dev/null 2>&1; do
     sleep 1
     timeout=$((timeout-1))
     if [ "$timeout" -le 0 ]; then
-        echo "ERROR: vault-ro-token secret not found (normally created at runtime)." >&2
+        echo "ERROR: vault-token secret not found (normally created at runtime)." >&2
         echo "Check logs for vault service, vault-init sidecar." >&2
         exit 1
     fi

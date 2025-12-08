@@ -39,7 +39,7 @@ spec:
             - name: VAULT_RO_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: vault-ro-token
+                  name: vault-token
                   key: token
             # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD (not specified here)
             # are pulled from vault in-cluster at runtime, and refreshed regularly.

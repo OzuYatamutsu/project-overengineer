@@ -18,6 +18,12 @@ path "transit/sign/jwt-signer" {
 path "transit/verify/jwt-signer" {
   capabilities = ["update"]
 }
+path "pki/issue/svc-role" {
+  capabilities = ["create","update"]
+}
+path "pki/roles/svc-role" {
+  capabilities = ["read"]
+}
 EOF
 vault token create -address="$VAULT_ADDR" -policy="jwt-and-config-ro" -period=1h -format=json > /vault/data/vault-unseal-info.json
 VAULT_TOKEN=$(jq -r '.auth.client_token' /vault/data/vault-unseal-info.json)

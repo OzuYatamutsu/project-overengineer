@@ -14,6 +14,11 @@ RUN apk add --no-cache curl jq kubectl ca-certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 RUN update-ca-certificates --fresh --verbose
 
+# Include CA files for use by vault PKI
+COPY vault/vault-ca.crt /vault/tls/vault-ca.crt
+COPY vault/vault-ca.key /vault/tls/vault-ca.key
+RUN cat /vault/tls/vault-ca.key /vault/tls/vault-ca.crt > /vault/tls/vault-ca.pem
+
 # Run unseal script at runtime
 WORKDIR /vault
 COPY vault/init.sh /vault/init.sh

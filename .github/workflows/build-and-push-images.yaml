@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/mtls
 
 jobs:
   generate-vault-cert:

@@ -32,7 +32,7 @@ metadata:
   name: vault
 spec:
   serviceName: svc-vault
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: vault
@@ -76,14 +76,14 @@ spec:
               mountPath: /vault/data
           readinessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
+              path: /v1/sys/health?standbyok=true
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /v1/sys/health?standbyok=true&uninitcode=200&sealedcode=200
+              path: /v1/sys/health?standbyok=true
               port: 8200
               scheme: HTTPS
             initialDelaySeconds: 60
@@ -99,6 +99,7 @@ spec:
             readOnlyRootFilesystem: true
         - name: vault-init
           image: ghcr.io/ozuyatamutsu/project-overengineer/vault-init:v1
+          imagePullPolicy: Always
           env:
             - name: HOSTNAME
               valueFrom:

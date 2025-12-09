@@ -5,10 +5,10 @@ echo "Starting Vault initialization script for pod ${HOSTNAME}..."
 UNSEAL_KEY=""
 ROOT_TOKEN=""
 IS_PRIMARY="${IS_PRIMARY}"
-VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
+VAULT_ADDR="https://${HOSTNAME}:8200"
 PREVIOUSLY_INITED=${PREVIOUSLY_INITED}
 
-until curl -k ${VAULT_ADDR}/v1/sys/health; do
+until curl -k $VAULT_ADDR; do
   echo "Waiting for vault API to be ready..."
   sleep 30
 done

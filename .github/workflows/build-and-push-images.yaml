@@ -417,6 +417,11 @@ jobs:
           name: vault-certs
           path: ./vault
 
+      - name: Decrypt vault CA key
+        env:
+          CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
+        run: openssl enc -d -aes-256-cbc -salt -pbkdf2 -in vault/vault-ca.key.enc -out vault/vault-ca.key -pass pass:${CI_ENCRYPTION_KEY}
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:

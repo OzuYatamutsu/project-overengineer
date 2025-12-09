@@ -45,4 +45,21 @@ vault secrets enable -address="$VAULT_ADDR" transit
 echo "Generating and storing new JWT signing token..."
 vault write -address="$VAULT_ADDR" transit/keys/jwt-signer type=ed25519
 
+echo "Enabling pki/ store..."
+vault secrets enable -address="$VAULT_ADDR" pki
+
+echo "Importing CA..."
+vault write -address="$VAULT_ADDR" pki/config/ca pem_bundle=@/vault/tls/vault-ca.pem
+
+echo "Configuring CRL locations..."
+vault write -address="$VAULT_ADDR" pki/config/urls \
+  issuing_certificates="${VAULT_ADDR}/v1/pki/ca" \
+  crl_distribution_points="${VAULT_ADDR}/v1/pki/crl"
+
+echo "Creating certificate role..."
+vault write -address="$VAULT_ADDR" pki/roles/project-overengineer \
+    allowed_domains=svc.cluster.local \
+    allow_subdomains=true \
+    max_ttl=24h
+
 echo "Done initing vault stores."

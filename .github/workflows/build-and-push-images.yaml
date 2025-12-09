@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - feature/mtls
+      - feature/vault-ha
 
 jobs:
   generate-vault-cert:

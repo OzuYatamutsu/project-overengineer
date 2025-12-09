@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
+VAULT_ADDR="https://${HOSTNAME}:8200"
 ROOT_TOKEN=$(kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d | jq -r '.root_token')
 
 echo "Enabling secret/ kv store..."

@@ -3,15 +3,6 @@ set -e
 IS_PRIMARY=""
 PREVIOUSLY_INITED=false
 
-echo "Checking if primary init already in progress..."
-if [ "$HOSTNAME" != "vault-0" ]; then
-  echo "Primary init may be in progress on another pod. Waiting..."
-
-  until curl -s -k https://vault-0:8200/v1/sys/health | grep -q '"initialized":true'; do
-    sleep 5
-  done
-fi
-
 # First, determine primary state
 echo "Setting primary state..."
 ready=$(kubectl get statefulset vault -o jsonpath='{.status.readyReplicas}' || echo 0)

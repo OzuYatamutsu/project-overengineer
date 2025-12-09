@@ -2,6 +2,7 @@
 set -e
 IS_PRIMARY=""
 PREVIOUSLY_INITED=false
+VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
 
 if curl -k ${VAULT_ADDR}/v1/sys/health; then
   echo "Primary init may be in progress on another pod. Waiting..."

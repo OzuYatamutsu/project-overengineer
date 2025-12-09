@@ -4,9 +4,12 @@ IS_PRIMARY=""
 PREVIOUSLY_INITED=false
 
 echo "Checking if primary init already in progress..."
-if curl -k https://vault-0:8200/v1/sys/health; then
+if [ "$HOSTNAME" != "vault-0" ]; then
   echo "Primary init may be in progress on another pod. Waiting..."
-  sleep 30
+
+  until curl -s -k https://vault-0:8200/v1/sys/health | grep -q '"initialized":true'; do
+    sleep 5
+  done
 fi
 
 # First, determine primary state

@@ -1,9 +1,12 @@
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
+import { globalIgnores } from "eslint/config";
 import js from "@eslint/js";
 
 export default [
   js.configs.recommended,
+
+  globalIgnores([".next/"]),
 
   {
     files: ["**/*.ts", "**/*.tsx"],

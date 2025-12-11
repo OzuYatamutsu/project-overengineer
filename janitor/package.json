@@ -4,7 +4,7 @@
   "description": "A service which cleans up completed and stalled jobs.",
   "main": "worker.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only worker.ts",
+    "dev": "tsx watch worker.ts",
     "build": "tsc",
     "start": "node dist/worker.js",
     "lint": "eslint *.ts",
@@ -20,7 +20,7 @@
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9.39.1",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }

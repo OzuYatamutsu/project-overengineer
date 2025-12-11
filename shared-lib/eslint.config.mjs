@@ -12,7 +12,8 @@ export default [
       parser: tsparser,
       sourceType: "module",
       globals: {
-        ...globals.node
+        ...globals.node,
+        NodeJS: "readonly"
       }
     },
     plugins: {

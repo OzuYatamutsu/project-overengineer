@@ -13,7 +13,7 @@ import { log } from '@project-overengineer/shared-lib/logging'
 import { createJwt } from '@/app/actions'
 
 type UploaderProps = {
-  onResultAction: (hasResult: boolean) => void
+  onResultAction: (_hasResult: boolean) => void
   onResetAction: () => void
 }
 
@@ -259,7 +259,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
             <span className="sr-only">Photo upload</span>
           </div>
           {preview && (
-            // eslint-disable-next-line @next/next/no-img-element -- We want a simple preview here, no <Image> needed
+             
             <img
               src={preview}
               alt="Preview"

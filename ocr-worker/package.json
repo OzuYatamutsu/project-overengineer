@@ -4,9 +4,9 @@
   "description": "An OCR service worker that parses images into structured text",
   "main": "worker.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only worker.ts",
+    "dev": "tsx watch worker.ts",
     "build": "tsc && cp tests/test-image.base64 dist/tests",
-    "start": "node dist/server.js",
+    "start": "node dist/worker.js",
     "lint": "eslint *.ts",
     "test": "pnpm build && TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
@@ -21,7 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9.39.1",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }

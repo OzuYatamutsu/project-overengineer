@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@next/eslint-plugin-next": "^16.0.8",
     "@playwright/test": "^1.54.1",
     "@types/ms": "^0.7.34",
     "@types/node": "^24.10.1",
@@ -30,6 +31,8 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "^15.3.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "file-type": "^21.0.0",
     "globals": "^16.5.0",
     "postcss": "^8.5.6",

@@ -4,7 +4,7 @@ import http from 'http'
 import { JobStatus, JobUpdate, rateLimit, getRedis, log, pullAndWatchVaultConfigValues, verifyJwt } from '@project-overengineer/shared-lib'
 
 const app = express();
-export const port = Number(process.env.STATUS_API_PORT) ?? 3001
+export const port = Number(process.env.STATUS_API_PORT) || 3001
 const POLLING_PERIOD_MSECS = 2000
 const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 
@@ -25,7 +25,7 @@ async function getJobState(jobId: string, jwt: string): Promise<JobUpdate> {
         jobId,
         await getRedis("status-api").hget(`job:${jobId}`, 'status') as JobStatus ?? JobStatus.PROCESSING,
         await getRedis("status-api").hget(`job:${jobId}`, 'result') ?? "",
-        Number(await getRedis("status-api").hget(`job:${jobId}`, 'progress')) ?? null
+        Number(await getRedis("status-api").hget(`job:${jobId}`, 'progress')) || 0
     )
 }
 

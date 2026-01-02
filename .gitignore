@@ -52,3 +52,4 @@ vault-ca.srl
 # Terraform/OpenTofu
 */.terraform/*
 .terraform*
+*.tfstate

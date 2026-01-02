@@ -48,3 +48,7 @@ vault.csr
 vault-ca.crt
 vault-ca.key
 vault-ca.srl
+
+# Terraform/OpenTofu
+*/.terraform/*
+.terraform*

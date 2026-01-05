@@ -65,7 +65,7 @@ resource "oci_containerengine_node_pool" "staging" {
     size = 1
 
     placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
       subnet_id           = oci_core_subnet.staging.id
     }
   }

@@ -19,6 +19,10 @@ resource "oci_core_vcn" "internal" {
   display_name   = "project-overengineer-vcn"
 }
 
+data "oci_identity_availability_domains" "ads" {
+  compartment_id = oci_core_vcn.internal.compartment_id
+}
+
 resource "oci_core_subnet" "staging" {
   vcn_id                     = oci_core_vcn.internal.id
   cidr_block                 = "172.16.0.0/24"
@@ -41,21 +45,28 @@ resource "oci_containerengine_cluster" "oke" {
 }
 
 resource "oci_containerengine_node_pool" "staging" {
-  cluster_id          = oci_containerengine_cluster.oke.id
-  name                = "staging-pool"
-  compartment_id      = oci_core_vcn.internal.compartment_id
-  kubernetes_version  = oci_containerengine_cluster.oke.kubernetes_version
-  node_shape          = "VM.Standard.A1.Flex"
-  quantity_per_subnet = 1
-  subnet_ids          = [oci_core_subnet.staging.id]
-
-  node_source_details {
-    source_type = "image"
-    image_id    = "ocid1.image.oc1.ca-toronto-1.aaaaaaaat7k6c5lxdfydhcj64y5klm75yc4zu2xf7fbqevk64k3y7cjaaxzq"
-  }
+  cluster_id         = oci_containerengine_cluster.oke.id
+  name               = "staging-pool"
+  compartment_id     = oci_core_vcn.internal.compartment_id
+  kubernetes_version = oci_containerengine_cluster.oke.kubernetes_version
+  node_shape         = "VM.Standard.A1.Flex"
 
   node_shape_config {
     ocpus         = 1
     memory_in_gbs = 6
+  }
+
+  node_source_details {
+    source_type = "image"
+    image_id    = "ocid1.image.oc1.ca-toronto-1.aaaaaaaagf2r7kqcwfx2sawdye556lvyzkbqvznmb5ax63nr6bulimuuyhna"
+  }
+
+  node_config_details {
+    size = 1
+
+    placement_configs {
+      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+      subnet_id           = oci_core_subnet.staging.id
+    }
   }
 }

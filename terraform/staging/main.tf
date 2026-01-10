@@ -5,7 +5,19 @@ terraform {
       version = ">= 4.13.0, < 6.0.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "my-staging-terraform-state-bucket"
+    key            = "staging/terraform.tfstate"
+    region         = "us-east-2"
+    dynamodb_table = "terraform-state-locks-staging"
+    encrypt        = true
+  }
+
+  required_version = ">= 1.0.0"
 }
+
+
 
 provider "aws" {
   region = "us-east-2"
@@ -18,7 +30,7 @@ data "aws_availability_zones" "available" {
   }
 }
 
-# https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/ 
+# https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
@@ -27,7 +39,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
 
-  name = "internal"
+  name = "internal-staging"
 
   cidr = "10.0.0.0/16"
   azs  = slice(data.aws_availability_zones.available.names, 0, 2)
@@ -52,7 +64,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.8.5"
 
-  cluster_name    = "project-overengineer"
+  cluster_name    = "project-overengineer-staging"
   cluster_version = "1.32"
 
   cluster_endpoint_public_access           = true
@@ -69,7 +81,6 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
-
   }
 
   eks_managed_node_groups = {

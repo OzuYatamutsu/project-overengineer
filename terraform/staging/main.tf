@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "my-staging-terraform-state-bucket"
+    bucket         = "terraform-state-bucket-staging"
     key            = "staging/terraform.tfstate"
     region         = "us-east-2"
     dynamodb_table = "terraform-state-locks-staging"

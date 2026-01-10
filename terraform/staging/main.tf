@@ -1,72 +1,16 @@
 terraform {
   required_providers {
-    oci = {
-      source = "oracle/oci"
+    aws = {
+      source = "hashicorp/aws"
+      version = "~> 6.0"
     }
   }
 }
 
-provider "oci" {
-  region              = "ca-toronto-1"
-  auth                = "SecurityToken"
-  config_file_profile = "tf-project-overengineer"
+provider "aws" {
+  region              = "us-east-2"
 }
 
-resource "oci_core_vcn" "internal" {
-  dns_label      = "internal"
-  cidr_block     = "172.16.0.0/24"
-  compartment_id = "ocid1.tenancy.oc1..aaaaaaaasz4c4v6umng7swqlgy5leajulguixsgloinsvcciub2hrsqp2jya"
-  display_name   = "project-overengineer-vcn"
-}
-
-data "oci_identity_availability_domains" "ads" {
-  compartment_id = oci_core_vcn.internal.compartment_id
-}
-
-resource "oci_core_subnet" "staging" {
-  vcn_id                     = oci_core_vcn.internal.id
-  cidr_block                 = "172.16.0.0/24"
-  compartment_id             = "ocid1.tenancy.oc1..aaaaaaaasz4c4v6umng7swqlgy5leajulguixsgloinsvcciub2hrsqp2jya"
-  display_name               = "project-overengineer-subnet-1"
-  prohibit_public_ip_on_vnic = false
-  dns_label                  = "staging"
-}
-
-resource "oci_containerengine_cluster" "oke" {
-  name               = "staging"
-  compartment_id     = oci_core_vcn.internal.compartment_id
-  vcn_id             = oci_core_vcn.internal.id
-  kubernetes_version = "v1.34.1"
-
-  endpoint_config {
-    is_public_ip_enabled = true
-    subnet_id            = oci_core_subnet.staging.id
-  }
-}
-
-resource "oci_containerengine_node_pool" "staging" {
-  cluster_id         = oci_containerengine_cluster.oke.id
-  name               = "staging-pool"
-  compartment_id     = oci_core_vcn.internal.compartment_id
-  kubernetes_version = oci_containerengine_cluster.oke.kubernetes_version
-  node_shape         = "VM.Standard.A1.Flex"
-
-  node_shape_config {
-    ocpus         = 1
-    memory_in_gbs = 2
-  }
-
-  node_source_details {
-    source_type = "image"
-    image_id    = "ocid1.image.oc1.ca-toronto-1.aaaaaaaagf2r7kqcwfx2sawdye556lvyzkbqvznmb5ax63nr6bulimuuyhna"
-  }
-
-  node_config_details {
-    size = 1
-
-    placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-      subnet_id           = oci_core_subnet.staging.id
-    }
-  }
+resource "aws_vpc" "internal" {
+  cidr_block     = "10.0.0.0/16"
 }

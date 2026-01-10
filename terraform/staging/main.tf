@@ -23,10 +23,6 @@ data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
-resource "aws_vpc" "internal" {
-  cidr_block = "10.0.0.0/16"
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
@@ -34,10 +30,10 @@ module "vpc" {
   name = "internal"
 
   cidr = "10.0.0.0/16"
-  azs  = slice(data.aws_availability_zones.available.names, 0, 1)
+  azs  = slice(data.aws_availability_zones.available.names, 0, 2)
 
-  private_subnets = ["10.0.1.0/24"]
-  public_subnets  = ["10.0.4.0/24"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24"]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
@@ -57,7 +53,7 @@ module "eks" {
   version = "20.8.5"
 
   cluster_name    = "project-overengineer"
-  cluster_version = "1.31"
+  cluster_version = "1.32"
 
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true

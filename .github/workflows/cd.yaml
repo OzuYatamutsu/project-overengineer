@@ -2,6 +2,10 @@ name: Deploy
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy-test:
     runs-on: ubuntu-latest
@@ -12,6 +16,100 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Deploy vault
+        run: kubectl apply -f vault/service.yaml
+      
+      - name: Wait for vault apply (max 90s)
+        run: kubectl rollout status statefulset/vault --timeout=90s
+
+      - name: Deploy redis-master, redis-replica, redis-sentinel
+        run: kubectl apply -f redis/service.yaml
+      
+      - name: Deploy janitor
+        run: kubectl apply -f janitor/service.yaml
+      
+      - name: Deploy status-api
+        run: kubectl apply -f status-api/service.yaml
+
+      - name: Deploy ocr-worker, ollama-ocr
+        run: kubectl apply -f ocr-worker/service.yaml
+
+      - name: Deploy project-overengineer-fe
+        run: kubectl apply -f project-overengineer-fe/service.yaml
+
+      - name: Wait for apply (max 300s/service)
+        run: |
+          echo '[waiting for redis-master]'
+          kubectl rollout status statefulset/redis-master --timeout=300s
+          echo '[waiting for redis-replica]'
+          kubectl rollout status statefulset/redis-replica --timeout=300s
+          echo '[waiting for redis-sentinel]'
+          kubectl rollout status deployment/redis-sentinel --timeout=300s
+          echo '[waiting for janitor]'
+          kubectl rollout status deployment/janitor --timeout=300s
+          echo '[waiting for status-api]'
+          kubectl rollout status deployment/status-api --timeout=300s
+          echo '[waiting for ocr-worker, ollama-ocr]'
+          kubectl rollout status statefulset/ocr-worker --timeout=300s
+          echo '[waiting for project-overengineer-fe]'
+          kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
+
+      - name: Dump logs (if apply failed)
+        if: failure()
+        run: |
+          echo 'Dumping logs...'
+          echo '[vault logs]'
+          kubectl logs --all-containers --selector=app=vault
+          kubectl logs --all-containers --selector=app=vault --previous || true
+          kubectl logs vault-0 -c vault-init || true
+          echo '[redis-master logs]'
+          kubectl logs --all-containers --selector=app=redis-master
+          kubectl logs --all-containers --selector=app=redis-master --previous || true
+          echo '[redis-replica logs]'
+          kubectl logs --all-containers --selector=app=redis-replica
+          kubectl logs --all-containers --selector=app=redis-replica --previous || true
+          echo '[redis-sentinel logs]'
+          kubectl logs --all-containers --selector=app=redis-sentinel
+          kubectl logs --all-containers --selector=app=redis-sentinel --previous || true
+          echo '[janitor logs]'
+          kubectl logs --all-containers --selector=app=janitor
+          kubectl logs --all-containers --selector=app=janitor --previous || true
+          echo '[status-api logs]'
+          kubectl logs --all-containers --selector=app=status-api
+          kubectl logs --all-containers --selector=app=status-api --previous || true
+          echo '[ocr-worker, ollama-ocr logs]'
+          kubectl logs --all-containers --selector=app=ocr-worker
+          kubectl logs --all-containers --selector=app=ocr-worker --previous || true
+          echo '[project-overengineer-fe logs]'
+          kubectl logs --all-containers --selector=app=project-overengineer-fe
+          kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::024071421233:role/github-actions-eks-staging
+          aws-region: us-east-2
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name project-overengineer-staging \
+            --region us-east-2
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
       

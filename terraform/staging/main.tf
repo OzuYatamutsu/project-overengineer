@@ -6,14 +6,6 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "terraform-state-bucket-staging"
-    key            = "staging/terraform.tfstate"
-    region         = "us-east-2"
-    dynamodb_table = "terraform-state-locks-staging"
-    encrypt        = true
-  }
-
   required_version = ">= 1.0.0"
 }
 

@@ -118,7 +118,7 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
+    ami_type = "AL2023_x86_64_STANDARD"
   }
 
   eks_managed_node_groups = {
@@ -144,6 +144,18 @@ module "eks" {
           access_scope = {
             type = "cluster"
           }
+        }
+      }
+    }
+
+    root_dashboard = {
+      principal_arn = "arn:aws:iam::024071421233:root"
+      type          = "STANDARD"
+
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = { type = "cluster" }
         }
       }
     }

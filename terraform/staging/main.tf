@@ -33,6 +33,54 @@ data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+# GitHub OIDC Provider
+resource "aws_iam_openid_connect_provider" "github" {
+  url = "https://token.actions.githubusercontent.com"
+
+  client_id_list = ["sts.amazonaws.com"]
+
+  thumbprint_list = [
+    "6938fd4d98bab03faadb97b34396831e3780aea1"
+  ]
+}
+
+# IAM Role for GitHub Actions to access EKS
+resource "aws_iam_role" "github_actions_eks" {
+  name = "github-actions-eks-staging"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.github.arn
+      }
+      Condition = {
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+        }
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/feature/staging-deploy"
+        }
+      }
+    }]
+  })
+}
+
+# Allow GitHub Actions to auth against EKS
+resource "aws_iam_role_policy_attachment" "eks_access" {
+  role       = aws_iam_role.github_actions_eks.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
+
+# Allow GitHub Actions to generate kubeconfig and access EKS resources
+resource "aws_iam_role_policy_attachment" "eks_describe" {
+  role       = aws_iam_role.github_actions_eks.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+}
+
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
@@ -90,6 +138,22 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 2
+    }
+  }
+
+  access_entries = {
+    github_ci = {
+      principal_arn = aws_iam_role.github_actions_eks.arn
+      type          = "STANDARD"
+
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
     }
   }
 }

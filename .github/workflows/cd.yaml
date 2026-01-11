@@ -104,6 +104,9 @@ jobs:
             --name project-overengineer-staging \
             --region us-east-2
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
       

@@ -107,6 +107,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Apply default storage class to AWS
+        run: kubectl apply -f k8s-aws-default-sc.yaml
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 

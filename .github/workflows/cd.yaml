@@ -89,7 +89,7 @@ jobs:
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.14.5
+          terraform_version: 1.14.3
 
       - name: Terraform init
         run: terraform init

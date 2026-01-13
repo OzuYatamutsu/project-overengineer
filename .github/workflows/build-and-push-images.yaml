@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/staging-deploy
 
 jobs:
   generate-vault-cert:
@@ -75,7 +76,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v1
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v2
 
   project-overengineer-fe:
     runs-on: ubuntu-latest
@@ -192,7 +193,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v1
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v2
 
   redis-master:
     runs-on: ubuntu-latest

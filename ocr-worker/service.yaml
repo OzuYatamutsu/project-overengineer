@@ -23,7 +23,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: ocr-worker
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v1
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v2
           imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST
@@ -45,6 +45,8 @@ spec:
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: IS_LITE
+              value: "true"  # set to "false" to use a larger but more accurate OCR model
           readinessProbe:
             httpGet:
               path: /healthz
@@ -73,7 +75,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
         - name: ollama-ocr    # sidecar
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v1
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v2
           env:
           - name: OLLAMA_KEEP_ALIVE
             value: "2m"
@@ -99,8 +101,8 @@ spec:
             - containerPort: 11434
           resources:
             requests:
-              cpu: "1000m"
-              memory: "1Gi"
+              cpu: "500m"
+              memory: "512Mi"
             limits:
               cpu: "6000m"
               memory: "8Gi"

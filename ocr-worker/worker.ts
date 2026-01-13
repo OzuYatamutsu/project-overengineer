@@ -7,6 +7,8 @@ import http from "http"
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
 const POLLING_PERIOD_MSECS = 1000
 const UPDATE_INTERVAL_MSECS = 5000
+const IS_LITE = process.env.LITE_MODE === "true"
+const MODEL_NAME = IS_LITE ? "moondream:1.8b": "ibm/granite3.3-vision:2b-q8_0"
 const HEALTH_CHECK_PORT = (
     process.env.HEALTH_CHECK_PORT
     ? Number(process.env.HEALTH_CHECK_PORT)
@@ -32,7 +34,7 @@ export async function processJob(job: Job): Promise<Job> {
        method: "POST",
        headers: {"Content-Type": "application/json"},
        body: JSON.stringify({
-           model: "ibm/granite3.3-vision:2b-q8_0",
+           model: MODEL_NAME,
            prompt: [
                 "Itemize this receipt into a bulleted list.",
                 "How much was paid for each item?",

@@ -46,7 +46,7 @@ spec:
             - name: REDIS_PORT
               value: "6379"
             - name: IS_LITE
-              value: "true"  # set to "false" to use a larger but more accurate OCR model
+              value: "false"  # set to "false" to use a larger but more accurate OCR model
           readinessProbe:
             httpGet:
               path: /healthz

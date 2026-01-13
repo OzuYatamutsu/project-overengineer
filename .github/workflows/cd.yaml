@@ -86,6 +86,9 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -122,9 +125,6 @@ jobs:
           aws eks update-kubeconfig \
             --name project-overengineer-staging \
             --region us-east-2
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Apply default storage class to AWS
         run: kubectl apply -f k8s-aws-default-sc.yaml

@@ -37,6 +37,7 @@ Using the AWS CLI, authenticate against AWS by running `aws login --region <regi
 
 Then, from within the directory corresponding to the environment to deploy to (e.g. `terraform/staging/`):
 ```bash
+terraform init
 terraform plan
 terraform apply
 ```

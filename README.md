@@ -30,6 +30,25 @@ restarted, but client services will pull the updated password from vault automat
 
 Access the service on `http://localhost:3000` by running `kubectl port-forward service/svc-project-overengineer-fe 3000:3000` after cluster build.
 
+### Via deploying to AWS
+Per-environment Terraform/OpenTofu files are located in the `terraform/` directory.
+
+Using the AWS CLI, authenticate against AWS by running `aws login --region <region-name>`, which should set local credentials within your environment.
+
+Then, from within the directory corresponding to the environment to deploy to (e.g. `terraform/staging/`):
+```bash
+terraform plan
+terraform apply
+```
+(Substitute `terraform` with `tofu` if using OpenTofu.)
+
+An EKS cluster and nodes will be provisioned and deployed within a new VPS. Configure Kubernetes authentication via the AWS CLI:
+```bash
+aws eks update-kubeconfig --name project-overengineer-<staging/production> --region <region-name>
+```
+
+This should configure your local kubeconfig to point to EKS. Run the `deploy-local-kube-cluster.sh` script in the project root to deploy the cluster.
+
 ### Config vars
 Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. The value for `REDIS_PASSWORD` must be explicitly provided on startup.
 

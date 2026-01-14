@@ -125,7 +125,7 @@ module "eks" {
     ng1 = {
       name = "node-group-1"
 
-      instance_types = ["t2.large"]
+      instance_types = ["m7i-flex.large"]
 
       min_size     = 1
       max_size     = 3

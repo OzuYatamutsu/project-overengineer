@@ -40,7 +40,7 @@ resource "aws_iam_role" "github_actions_eks" {
       Effect = "Allow"
       Action = "sts:AssumeRoleWithWebIdentity"
       Principal = {
-        Federated = aws_iam_openid_connect_provider.github.arn
+        Federated = data.aws_iam_openid_connect_provider.github.arn
       }
       Condition = {
         StringEquals = {

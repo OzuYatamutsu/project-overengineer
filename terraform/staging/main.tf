@@ -31,7 +31,7 @@ data "aws_iam_openid_connect_provider" "github" {
 }
 
 # IAM Role for GitHub Actions to access EKS
-data "aws_iam_role" "github_actions_eks" {
+resource "aws_iam_role" "github_actions_eks" {
   name = "github-actions-eks-staging"
 
   assume_role_policy = jsonencode({
@@ -55,16 +55,17 @@ data "aws_iam_role" "github_actions_eks" {
 }
 
 # Allow GitHub Actions to auth against EKS
-data "aws_iam_role_policy_attachment" "eks_access" {
+resource "aws_iam_role_policy_attachment" "eks_access" {
   role       = aws_iam_role.github_actions_eks.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
 # Allow GitHub Actions to generate kubeconfig and access EKS resources
-data "aws_iam_role_policy_attachment" "eks_describe" {
+resource "aws_iam_role_policy_attachment" "eks_describe" {
   role       = aws_iam_role.github_actions_eks.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
+
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"

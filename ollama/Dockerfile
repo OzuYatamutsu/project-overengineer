@@ -11,4 +11,9 @@ RUN useradd -m -u 1002 ollama
 RUN mkdir $OLLAMA_MODELS && chown ollama:ollama $OLLAMA_MODELS
 
 USER ollama
-RUN ollama serve & sleep 5; ollama pull ibm/granite3.3-vision:2b-q8_0; ollama pull moondream:1.8b
+
+# Lower-fidelity model
+# RUN ollama serve & sleep 5; ollama pull moondream:1.8b
+
+# Higher-fidelity model
+RUN ollama serve & sleep 5; ollama pull ibm/granite3.3-vision:2b-q8_0

@@ -3,13 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       should_destroy:
-        description: "Destroy infrastructure after deployment (yes/no)"
+        description: 'Destroy infrastructure after deployment (yes/no)'
         required: true
-        default: "yes"
+        default: 'yes'
         type: choice
         options:
-          - "yes"
-          - "no"
+          - 'yes'
+          - 'no'
 
 permissions:
   id-token: write

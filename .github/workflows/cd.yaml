@@ -110,6 +110,14 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         working-directory: ./terraform/staging
 
+      - name: Terraform destroy DEBUG
+        if: ${{ github.event.inputs.should_destroy == 'yes' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform/staging
+
       - name: Terraform apply
         run: terraform apply -auto-approve
         env:

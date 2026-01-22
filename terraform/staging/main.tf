@@ -95,6 +95,24 @@ module "vpc" {
   }
 }
 
+module "ebs_csi_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.0"
+
+  role_name = "eks-ebs-csi-driver-staging"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    eks = {
+      provider_arn = module.eks.oidc_provider_arn
+      namespace_service_accounts = [
+        "kube-system:ebs-csi-controller-sa"
+      ]
+    }
+  }
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.8.5"
@@ -107,8 +125,11 @@ module "eks" {
 
   cluster_addons = {
     aws-ebs-csi-driver = {
-      resolve_conflicts = "OVERWRITE"
+      resolve_conflicts        = "OVERWRITE"
+      service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
     }
+
+    enable_irsa = true
   }
 
   vpc_id     = module.vpc.vpc_id

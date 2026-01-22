@@ -72,7 +72,7 @@ resource "aws_iam_role_policy_attachment" "eks_describe" {
 # Allow EKS nodes to work with EBS CSI Driver
 resource "aws_iam_role_policy_attachment" "node_ec2" {
   role       = module.eks.eks_managed_node_groups["ng1"].iam_role_name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
 module "vpc" {

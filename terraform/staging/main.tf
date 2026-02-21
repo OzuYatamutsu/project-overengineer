@@ -1,26 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.13.0, < 6.0.0"
-    }
-  }
-
-  backend "s3" {
-    bucket         = "tf-state-project-overengineer"
-    key            = "staging/terraform.tfstate"
-    region         = "us-east-2"
-    dynamodb_table = "terraform-locks"
-    encrypt        = true
-  }
-
-  required_version = ">= 1.0.0"
-}
-
-provider "aws" {
-  region = "us-east-2"
-}
-
 data "aws_availability_zones" "available" {
   filter {
     name   = "opt-in-status"

@@ -85,27 +85,11 @@ module "eks" {
     enabled = true
   }
 
-  addons = {
-    vpc_cni = {
-      most_recent = true
-    }
-  }
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
   tags = {
     Environment = "dev"
     Terraform   = "true"
-  }
-
-  eks_managed_node_groups = {
-    ng1 = {
-      name           = "node-group-1"
-      instance_types = ["m7i-flex.large"]
-      min_size       = 1
-      max_size       = 3
-      desired_size   = 2
-    }
   }
 
   access_entries = {

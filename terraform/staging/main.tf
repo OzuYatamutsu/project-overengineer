@@ -68,6 +68,7 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/cluster/project-overengineer-staging" = "shared"
   }
 }
 

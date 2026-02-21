@@ -73,7 +73,7 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.8.5"
+  version = "20.24.2"
 
   cluster_name    = "project-overengineer-staging"
   cluster_version = "1.34"

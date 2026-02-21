@@ -46,12 +46,6 @@ resource "aws_iam_role_policy_attachment" "eks_describe" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
-# Allow EKS nodes to work with EBS CSI Driver
-resource "aws_iam_role_policy_attachment" "node_ec2" {
-  role       = module.eks.eks_managed_node_groups["ng1"].iam_role_name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
@@ -103,6 +97,12 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 2
+    }
+
+    cluster_addons = {
+      aws_ebs_csi_driver = {
+        most_recent = true
+      }
     }
   }
 

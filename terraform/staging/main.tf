@@ -80,28 +80,25 @@ module "eks" {
 
   endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
+  create_auto_mode_iam_resources           = true
+  compute_config = {
+    enabled = true
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+  tags = {
+    Environment = "dev"
+    Terraform   = "true"
+  }
 
   eks_managed_node_groups = {
     ng1 = {
       name           = "node-group-1"
-      ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m7i-flex.large"]
-
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
-    }
-  }
-
-  enable_irsa = true
-
-  addons = {
-    aws_ebs_csi_driver = {
-      most_recent    = true
-      instance_types = ["t3.micro"]
+      min_size       = 1
+      max_size       = 3
+      desired_size   = 2
     }
   }
 

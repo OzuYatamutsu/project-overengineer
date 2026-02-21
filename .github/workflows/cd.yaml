@@ -135,9 +135,6 @@ jobs:
             --name project-overengineer-staging \
             --region us-east-2
 
-      - name: Create default node pool
-        run: kubectl apply -f k8s-aws-node-pool.yaml
-
       - name: Apply default storage class to AWS
         run: kubectl apply -f k8s-aws-default-sc.yaml
 

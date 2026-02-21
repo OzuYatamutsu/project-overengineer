@@ -73,36 +73,35 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.24.2"
+  version = "21.15.1"
 
-  cluster_name    = "project-overengineer-staging"
-  cluster_version = "1.34"
+  name               = "project-overengineer-staging"
+  kubernetes_version = "1.35"
 
-  cluster_endpoint_public_access           = true
+  endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2023_x86_64_STANDARD"
-  }
-
   eks_managed_node_groups = {
     ng1 = {
-      name = "node-group-1"
-
+      name           = "node-group-1"
+      ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m7i-flex.large"]
 
       min_size     = 1
       max_size     = 3
       desired_size = 2
     }
+  }
 
-    cluster_addons = {
-      aws_ebs_csi_driver = {
-        most_recent = true
-      }
+  enable_irsa = true
+
+  addons = {
+    aws_ebs_csi_driver = {
+      most_recent    = true
+      instance_types = ["t3.micro"]
     }
   }
 

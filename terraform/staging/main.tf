@@ -56,12 +56,7 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "iam:ListOpenIDConnectProviders",
-          "iam:GetRole",
-          "iam:GetPolicy",
-          "logs:DescribeLogGroups",
-          "ec2:DescribeVpcAttribute"
+          "dynamodb:DeleteItem"
         ]
         Resource = "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
       },
@@ -75,6 +70,22 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
         Resource = [
           "arn:aws:s3:::tf-state-project-overengineer",
           "arn:aws:s3:::tf-state-project-overengineer/*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "iam:ListOpenIDConnectProviders",
+          "iam:GetRole",
+          "iam:GetPolicy",
+          "logs:DescribeLogGroups",
+          "ec2:DescribeVpcAttribute"
+        ],
+        Resource = [
+          "arn:aws:iam::***:oidc-provider/*",
+          "arn:aws:logs:${data.aws_region.current.region}:***:*",
+          "arn:aws:iam::***:policy/project-overengineer-staging-cluster-*",
+          "project-overengineer-staging-*"
         ]
       }
     ]

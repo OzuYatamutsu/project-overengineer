@@ -8,6 +8,5 @@ provisioner: ebs.csi.eks.amazonaws.com
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
 parameters:
-  type: gp3-auto
+  type: gp3
   fsType: ext4
-  

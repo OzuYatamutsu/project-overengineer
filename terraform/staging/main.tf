@@ -13,6 +13,9 @@ data "aws_iam_openid_connect_provider" "github" {
 # Region name
 data "aws_region" "current" {}
 
+# AWS Account ID
+data "aws_caller_identity" "current" {}
+
 # IAM Role for GitHub Actions to access EKS
 resource "aws_iam_role" "github_actions_eks" {
   name = "github-actions-eks-staging"

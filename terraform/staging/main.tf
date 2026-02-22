@@ -10,6 +10,9 @@ data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 }
 
+# Region name
+data "aws_region" "current" {}
+
 # IAM Role for GitHub Actions to access EKS
 resource "aws_iam_role" "github_actions_eks" {
   name = "github-actions-eks-staging"

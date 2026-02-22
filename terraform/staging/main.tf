@@ -52,7 +52,7 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem"
         ]
-        Resource = "arn:aws:dynamodb:us-east-2:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
+        Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
       },
       {
         Effect   = "Allow"

@@ -58,7 +58,7 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem"
         ]
-        Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
+        Resource = "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
       },
       {
         Effect   = "Allow"
@@ -86,12 +86,6 @@ resource "aws_iam_role_policy_attachment" "eks_access" {
 resource "aws_iam_role_policy_attachment" "eks_describe" {
   role       = aws_iam_role.github_actions_eks.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-}
-
-# Allow GitHub Actions to run terraform destroy
-resource "aws_iam_role_policy_attachment" "eks_backend_access" {
-  role       = aws_iam_role.github_actions_eks.name
-  policy_arn = aws_iam_role_policy.github_actions_eks_backend.arn
 }
 
 module "vpc" {

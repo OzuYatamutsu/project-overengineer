@@ -79,7 +79,7 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
           "iam:GetRole",
           "iam:GetPolicy",
           "logs:DescribeLogGroups",
-          "ec2:DescribeVpcAttribute"
+          "ec2:Describe*",
         ],
         Resource = "*"
       }

@@ -34,6 +34,42 @@ resource "aws_iam_role" "github_actions_eks" {
   })
 }
 
+# IAM role for GitHub Actions to access state (i.e., to run terraform destroy)
+resource "aws_iam_role_policy" "github_actions_eks_backend" {
+  name = "github-actions-eks-backend"
+
+  role = aws_iam_role.github_actions_eks.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "dynamodb:DescribeTable",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem"
+        ]
+        Resource = "arn:aws:dynamodb:us-east-2:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::tf-state-project-overengineer",
+          "arn:aws:s3:::tf-state-project-overengineer/*"
+        ]
+      }
+    ]
+  })
+}
+
 # Allow GitHub Actions to auth against EKS
 resource "aws_iam_role_policy_attachment" "eks_access" {
   role       = aws_iam_role.github_actions_eks.name
@@ -44,6 +80,12 @@ resource "aws_iam_role_policy_attachment" "eks_access" {
 resource "aws_iam_role_policy_attachment" "eks_describe" {
   role       = aws_iam_role.github_actions_eks.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+}
+
+# Allow GitHub Actions to run terraform destroy
+resource "aws_iam_role_policy_attachment" "eks_backend_access" {
+  role       = aws_iam_role.github_actions_eks.name
+  policy_arn = aws_iam_role_policy.github_actions_eks_backend.arn
 }
 
 module "vpc" {

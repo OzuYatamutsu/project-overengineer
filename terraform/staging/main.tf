@@ -81,12 +81,7 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
           "logs:DescribeLogGroups",
           "ec2:DescribeVpcAttribute"
         ],
-        Resource = [
-          "arn:aws:iam::***:oidc-provider/*",
-          "arn:aws:logs:${data.aws_region.current.region}:***:*",
-          "arn:aws:iam::***:policy/project-overengineer-staging-cluster-*",
-          "project-overengineer-staging-*"
-        ]
+        Resource = "*"
       }
     ]
   })

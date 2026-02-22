@@ -40,7 +40,7 @@ resource "aws_iam_role" "github_actions_eks" {
   })
 }
 
-# IAM role for GitHub Actions to access state (i.e., to run terraform destroy)
+# IAM role for GitHub Actions to manage state (i.e., to run terraform destroy)
 resource "aws_iam_role_policy" "github_actions_eks_backend" {
   name = "github-actions-eks-backend"
 
@@ -56,7 +56,12 @@ resource "aws_iam_role_policy" "github_actions_eks_backend" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem"
+          "dynamodb:DeleteItem",
+          "iam:ListOpenIDConnectProviders",
+          "iam:GetRole",
+          "iam:GetPolicy",
+          "logs:DescribeLogGroups",
+          "ec2:DescribeVpcAttribute"
         ]
         Resource = "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:table/terraform-locks"
       },

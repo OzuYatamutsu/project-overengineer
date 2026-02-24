@@ -43,7 +43,7 @@ terraform apply
 ```
 (Substitute `terraform` with `tofu` if using OpenTofu.)
 
-An EKS cluster and nodes will be provisioned and deployed within a new VPS. Configure Kubernetes authentication via the AWS CLI:
+An EKS cluster and nodes will be provisioned and deployed within a new VPC. Configure Kubernetes authentication via the AWS CLI:
 ```bash
 aws eks update-kubeconfig --name project-overengineer-<staging/production> --region <region-name>
 ```

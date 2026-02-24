@@ -116,7 +116,7 @@ module "eks" {
     }
 
     root_dashboard = {
-      principal_arn = "arn:aws:iam::024071421233:root"
+      principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
       type          = "STANDARD"
 
       policy_associations = {

@@ -207,7 +207,13 @@ jobs:
           kubectl logs --all-containers --selector=app=project-overengineer-fe
           kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
 
-      - name: Set up credentials for terraform destroy
+      - name: Kubernetes cleanup (before terraform destroy)
+        if: ${{ github.event.inputs.should_destroy == 'yes' }}
+        run: |
+          kubectl delete all --all --ignore-not-found=true
+          kubectl delete pvc --all --ignore-not-found=true || true
+
+      - name: Configure AWS credentials (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
         uses: aws-actions/configure-aws-credentials@v2
         with:

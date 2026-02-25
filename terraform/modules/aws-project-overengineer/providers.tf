@@ -6,14 +6,6 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "tf-state-project-overengineer"
-    key            = "${var.environment_name}/terraform.tfstate"
-    region         = "${var.region}"
-    dynamodb_table = "terraform-locks"
-    encrypt        = true
-  }
-
   required_version = ">= 1.0.0"
 }
 

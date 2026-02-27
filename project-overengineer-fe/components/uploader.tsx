@@ -54,7 +54,7 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
 
     try {
       const { jobId, jwt } = await uploadToTransformer(file)
-      log("project-overengineer-fe", `Uploaded new job with ID: ${jobId}`)
+      log("project-overengineer-fe", `endpoint="/upload" jobId="${jobId}"`, `Uploaded new job`)
 
       monitorProgress(jobId, jwt)
       toast.success(`Upload complete.`)

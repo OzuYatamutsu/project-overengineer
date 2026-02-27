@@ -13,7 +13,7 @@ const PER_SECS = 60
 export async function POST(request: Request): Promise<NextResponse> {
   const ip = await getClientIp(request)
   if (!rateLimit("project-overengineer-fe", ip, MAX_REQUESTS, PER_SECS)) {
-    log("project-overengineer-fe", `rejecting request from ${ip}, rate limit exceeded`)
+    log("project-overengineer-fe", `endpoint="/upload" ip="${ip}"`, `rejecting request, rate limit exceeded`)
     return NextResponse.json({
       message: 'Rate limit exceeded',
       jobId: "",

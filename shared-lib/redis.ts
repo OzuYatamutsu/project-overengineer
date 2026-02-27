@@ -12,13 +12,13 @@ export function getRedis(serviceName: string): Redis {
     if (!redis) {
         log(
             serviceName,
-            `Opening new Redis connection (primary=${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, sentinel(s): `
+            `primary="${process.env.REDIS_HOST}:${process.env.REDIS_PORT}" sentinel(s)="`
             + (
                 process.env.SENTINEL_HOST
                 ? process.env.SENTINEL_HOST + ":" + process.env.SENTINEL_PORT 
                 : "no"
-                )
-            + ")"
+            ) + `"`,
+            `opening new Redis connection`
         )
 
         redis = new Redis({

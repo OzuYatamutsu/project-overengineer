@@ -77,6 +77,6 @@ export async function getClientIp(req: Request): Promise<string> {
         return socketIp
     }
 
-  log("project-overengineer-fe", "warning, unable to get client IP, returning unknown")
+  log("project-overengineer-fe", `endpoint="/upload"`, `warning, unable to get client IP, returning unknown`)
   return "unknown"
 }

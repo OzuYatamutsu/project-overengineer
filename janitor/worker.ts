@@ -11,12 +11,12 @@ export const JOB_TTL_SECS = 3600
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
-        log("janitor", `job="${jobKey}"`, `Invalid create timestamp, discarding`)
+        log("janitor", `jobId="${jobKey}"`, `Invalid create timestamp, discarding`)
         return true
     }
 
     if (((new Date().getTime() / 1000) - JOB_TTL_SECS) > createUTime) {
-        log("janitor", `job="${jobKey}"`, `Job is completed or stale, discarding`)
+        log("janitor", `jobId="${jobKey}"`, `Job is completed or stale, discarding`)
         return true
     }
 

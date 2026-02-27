@@ -1,12 +1,13 @@
 import os from "os"
 
-export function log(serviceName: string, message: string): void {
-    console.log(`${_logPrefix(serviceName)} ${message}`)
+export function log(serviceName: string, attributes_raw: string, message: string): void {
+    console.log(`${_logPrefix(serviceName)} ${attributes_raw} msg="${message}"`)
 }
 
 function _logPrefix(serviceName: string): string {
     return (
-        `${new Date().toISOString()} ` +
-        `${serviceName}@${os.hostname()}:`
+        `timestamp="${new Date().toISOString()}" ` +
+        `service="${serviceName}" ` +
+        `host="${os.hostname()}"`
     )
 }

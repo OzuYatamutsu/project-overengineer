@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: loki
-          image: grafana/loki:latest
+          image: grafana/loki:3.6.7
           readinessProbe:
             httpGet:
               path: /ready
@@ -42,11 +42,22 @@ spec:
               memory: "1Gi"
           securityContext:
             readOnlyRootFilesystem: true
+          volumeMounts:
+          - name: loki-data
+            mountPath: /loki
       securityContext:
         runAsUser: 999
         runAsGroup: 999
         fsGroup: 999
         runAsNonRoot: true
+  volumeClaimTemplates:
+  - metadata:
+      name: loki-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
 
 ---
 

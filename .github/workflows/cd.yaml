@@ -63,6 +63,9 @@ jobs:
           echo '[waiting for project-overengineer-fe]'
           kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
 
+      - name: Create monitoring plane namespace
+        run: kubectl apply -f monitoring-plane-namespace.yaml
+
       - name: Dump logs (if apply failed)
         if: failure()
         run: |
@@ -176,6 +179,9 @@ jobs:
           kubectl rollout status statefulset/ocr-worker --timeout=300s
           echo '[waiting for project-overengineer-fe]'
           kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
+
+      - name: Create monitoring plane namespace
+        run: kubectl apply -f monitoring-plane-namespace.yaml
 
       - name: Dump logs (if apply failed)
         if: failure()
@@ -310,6 +316,9 @@ jobs:
           kubectl rollout status statefulset/ocr-worker --timeout=300s
           echo '[waiting for project-overengineer-fe]'
           kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
+
+      - name: Create monitoring plane namespace
+        run: kubectl apply -f monitoring-plane-namespace.yaml
 
       - name: Dump logs (if apply failed)
         if: failure()

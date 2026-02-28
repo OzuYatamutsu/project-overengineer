@@ -66,6 +66,14 @@ jobs:
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
 
+      - name: Deploy loki
+        run: kubectl apply -f loki/service.yaml
+
+      - name: Wait for apply (max 300s/service)
+        run: |
+          echo '[waiting for loki]'
+          kubectl rollout status statefulset/loki --timeout=300s
+
       - name: Dump logs (if apply failed)
         if: failure()
         run: |
@@ -95,6 +103,10 @@ jobs:
           echo '[project-overengineer-fe logs]'
           kubectl logs --all-containers --selector=app=project-overengineer-fe
           kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
+          echo '[loki logs]'
+          kubectl logs --all-containers --selector=app=loki
+          kubectl logs --all-containers --selector=app=loki --previous || true
+
   deploy-staging:
     runs-on: ubuntu-latest
     needs: deploy-test
@@ -183,41 +195,21 @@ jobs:
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
 
-      - name: Dump logs (if apply failed)
-        if: failure()
+      - name: Deploy loki
+        run: kubectl apply -f loki/service.yaml
+
+      - name: Wait for apply (max 300s/service)
         run: |
-          echo 'Dumping logs...'
-          echo '[vault logs]'
-          kubectl logs --all-containers --selector=app=vault
-          kubectl logs --all-containers --selector=app=vault --previous || true
-          kubectl logs vault-0 -c vault-init || true
-          echo '[redis-master logs]'
-          kubectl logs --all-containers --selector=app=redis-master
-          kubectl logs --all-containers --selector=app=redis-master --previous || true
-          echo '[redis-replica logs]'
-          kubectl logs --all-containers --selector=app=redis-replica
-          kubectl logs --all-containers --selector=app=redis-replica --previous || true
-          echo '[redis-sentinel logs]'
-          kubectl logs --all-containers --selector=app=redis-sentinel
-          kubectl logs --all-containers --selector=app=redis-sentinel --previous || true
-          echo '[janitor logs]'
-          kubectl logs --all-containers --selector=app=janitor
-          kubectl logs --all-containers --selector=app=janitor --previous || true
-          echo '[status-api logs]'
-          kubectl logs --all-containers --selector=app=status-api
-          kubectl logs --all-containers --selector=app=status-api --previous || true
-          echo '[ocr-worker, ollama-ocr logs]'
-          kubectl logs --all-containers --selector=app=ocr-worker
-          kubectl logs --all-containers --selector=app=ocr-worker --previous || true
-          echo '[project-overengineer-fe logs]'
-          kubectl logs --all-containers --selector=app=project-overengineer-fe
-          kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
+          echo '[waiting for loki]'
+          kubectl rollout status statefulset/loki --timeout=300s
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
         run: |
           kubectl delete all --all --ignore-not-found=true
           kubectl delete pvc --all --ignore-not-found=true || true
+          kubectl delete all -n monitoring-plane --all --ignore-not-found=true || true
+          kubectl delete pvc -n monitoring-plane --all --ignore-not-found=true || true
 
       - name: Configure AWS credentials (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
@@ -320,41 +312,21 @@ jobs:
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
 
-      - name: Dump logs (if apply failed)
-        if: failure()
+      - name: Deploy loki
+        run: kubectl apply -f loki/service.yaml
+
+      - name: Wait for apply (max 300s/service)
         run: |
-          echo 'Dumping logs...'
-          echo '[vault logs]'
-          kubectl logs --all-containers --selector=app=vault
-          kubectl logs --all-containers --selector=app=vault --previous || true
-          kubectl logs vault-0 -c vault-init || true
-          echo '[redis-master logs]'
-          kubectl logs --all-containers --selector=app=redis-master
-          kubectl logs --all-containers --selector=app=redis-master --previous || true
-          echo '[redis-replica logs]'
-          kubectl logs --all-containers --selector=app=redis-replica
-          kubectl logs --all-containers --selector=app=redis-replica --previous || true
-          echo '[redis-sentinel logs]'
-          kubectl logs --all-containers --selector=app=redis-sentinel
-          kubectl logs --all-containers --selector=app=redis-sentinel --previous || true
-          echo '[janitor logs]'
-          kubectl logs --all-containers --selector=app=janitor
-          kubectl logs --all-containers --selector=app=janitor --previous || true
-          echo '[status-api logs]'
-          kubectl logs --all-containers --selector=app=status-api
-          kubectl logs --all-containers --selector=app=status-api --previous || true
-          echo '[ocr-worker, ollama-ocr logs]'
-          kubectl logs --all-containers --selector=app=ocr-worker
-          kubectl logs --all-containers --selector=app=ocr-worker --previous || true
-          echo '[project-overengineer-fe logs]'
-          kubectl logs --all-containers --selector=app=project-overengineer-fe
-          kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
+          echo '[waiting for loki]'
+          kubectl rollout status statefulset/loki --timeout=300s
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
         run: |
           kubectl delete all --all --ignore-not-found=true
           kubectl delete pvc --all --ignore-not-found=true || true
+          kubectl delete all -n monitoring-plane --all --ignore-not-found=true || true
+          kubectl delete pvc -n monitoring-plane --all --ignore-not-found=true || true
 
       - name: Configure AWS credentials (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}

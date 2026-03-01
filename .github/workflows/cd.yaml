@@ -69,10 +69,15 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy grafana
+        run: kubectl apply -f grafana/service.yaml
+
       - name: Wait for apply (max 300s/service)
         run: |
           echo '[waiting for loki]'
           kubectl rollout status statefulset/loki --timeout=300s
+          echo '[waiting for grafana]'
+          kubectl rollout status statefulset/grafana --timeout=300s
 
       - name: Dump logs (if apply failed)
         if: failure()
@@ -104,8 +109,11 @@ jobs:
           kubectl logs --all-containers --selector=app=project-overengineer-fe
           kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
           echo '[loki logs]'
-          kubectl logs --all-containers --selector=app=loki
-          kubectl logs --all-containers --selector=app=loki --previous || true
+          kubectl logs -n monitoring-plane --all-containers --selector=app=loki
+          kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[grafana logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
+          kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true
 
   deploy-staging:
     runs-on: ubuntu-latest
@@ -198,10 +206,15 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy grafana
+        run: kubectl apply -f grafana/service.yaml
+
       - name: Wait for apply (max 300s/service)
         run: |
           echo '[waiting for loki]'
           kubectl rollout status statefulset/loki --timeout=300s
+          echo '[waiting for grafana]'
+          kubectl rollout status statefulset/grafana --timeout=300s
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
@@ -315,10 +328,15 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy grafana
+        run: kubectl apply -f grafana/service.yaml
+
       - name: Wait for apply (max 300s/service)
         run: |
           echo '[waiting for loki]'
           kubectl rollout status statefulset/loki --timeout=300s
+          echo '[waiting for grafana]'
+          kubectl rollout status statefulset/grafana --timeout=300s
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}

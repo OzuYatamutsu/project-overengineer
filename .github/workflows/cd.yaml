@@ -214,7 +214,7 @@ jobs:
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for grafana]'
-          kubectl rollout status -n monitoring-planestatefulset/grafana --timeout=300s
+          kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
 
       - name: Dump logs (if apply failed)
         if: failure()

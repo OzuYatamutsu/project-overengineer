@@ -33,7 +33,9 @@ resource "aws_iam_role" "github_actions_eks" {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
         }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/main"        }
+        "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/main",
+        "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/feature/distributed-logging"
+        }
       }
     }]
   })
@@ -72,7 +74,7 @@ module "vpc" {
   }
 
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/role/internal-elb"                                    = 1
     "kubernetes.io/cluster/project-overengineer-${var.environment_name}" = "shared"
   }
 }

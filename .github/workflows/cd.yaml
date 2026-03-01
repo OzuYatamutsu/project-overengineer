@@ -75,9 +75,9 @@ jobs:
       - name: Wait for apply (max 300s/service)
         run: |
           echo '[waiting for loki]'
-          kubectl rollout status statefulset/loki --timeout=300s
+          kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for grafana]'
-          kubectl rollout status statefulset/grafana --timeout=300s
+          kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
 
       - name: Dump logs (if apply failed)
         if: failure()
@@ -212,9 +212,9 @@ jobs:
       - name: Wait for apply (max 300s/service)
         run: |
           echo '[waiting for loki]'
-          kubectl rollout status statefulset/loki --timeout=300s
+          kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for grafana]'
-          kubectl rollout status statefulset/grafana --timeout=300s
+          kubectl rollout status -n monitoring-planestatefulset/grafana --timeout=300s
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
@@ -334,9 +334,9 @@ jobs:
       - name: Wait for apply (max 300s/service)
         run: |
           echo '[waiting for loki]'
-          kubectl rollout status statefulset/loki --timeout=300s
+          kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for grafana]'
-          kubectl rollout status statefulset/grafana --timeout=300s
+          kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}

@@ -216,6 +216,42 @@ jobs:
           echo '[waiting for grafana]'
           kubectl rollout status -n monitoring-planestatefulset/grafana --timeout=300s
 
+      - name: Dump logs (if apply failed)
+        if: failure()
+        run: |
+          echo 'Dumping logs...'
+          echo '[vault logs]'
+          kubectl logs --all-containers --selector=app=vault
+          kubectl logs --all-containers --selector=app=vault --previous || true
+          kubectl logs vault-0 -c vault-init || true
+          echo '[redis-master logs]'
+          kubectl logs --all-containers --selector=app=redis-master
+          kubectl logs --all-containers --selector=app=redis-master --previous || true
+          echo '[redis-replica logs]'
+          kubectl logs --all-containers --selector=app=redis-replica
+          kubectl logs --all-containers --selector=app=redis-replica --previous || true
+          echo '[redis-sentinel logs]'
+          kubectl logs --all-containers --selector=app=redis-sentinel
+          kubectl logs --all-containers --selector=app=redis-sentinel --previous || true
+          echo '[janitor logs]'
+          kubectl logs --all-containers --selector=app=janitor
+          kubectl logs --all-containers --selector=app=janitor --previous || true
+          echo '[status-api logs]'
+          kubectl logs --all-containers --selector=app=status-api
+          kubectl logs --all-containers --selector=app=status-api --previous || true
+          echo '[ocr-worker, ollama-ocr logs]'
+          kubectl logs --all-containers --selector=app=ocr-worker
+          kubectl logs --all-containers --selector=app=ocr-worker --previous || true
+          echo '[project-overengineer-fe logs]'
+          kubectl logs --all-containers --selector=app=project-overengineer-fe
+          kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
+          echo '[loki logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=loki
+          kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[grafana logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
+          kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true
+
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
         run: |
@@ -337,6 +373,42 @@ jobs:
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for grafana]'
           kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
+
+      - name: Dump logs (if apply failed)
+        if: failure()
+        run: |
+          echo 'Dumping logs...'
+          echo '[vault logs]'
+          kubectl logs --all-containers --selector=app=vault
+          kubectl logs --all-containers --selector=app=vault --previous || true
+          kubectl logs vault-0 -c vault-init || true
+          echo '[redis-master logs]'
+          kubectl logs --all-containers --selector=app=redis-master
+          kubectl logs --all-containers --selector=app=redis-master --previous || true
+          echo '[redis-replica logs]'
+          kubectl logs --all-containers --selector=app=redis-replica
+          kubectl logs --all-containers --selector=app=redis-replica --previous || true
+          echo '[redis-sentinel logs]'
+          kubectl logs --all-containers --selector=app=redis-sentinel
+          kubectl logs --all-containers --selector=app=redis-sentinel --previous || true
+          echo '[janitor logs]'
+          kubectl logs --all-containers --selector=app=janitor
+          kubectl logs --all-containers --selector=app=janitor --previous || true
+          echo '[status-api logs]'
+          kubectl logs --all-containers --selector=app=status-api
+          kubectl logs --all-containers --selector=app=status-api --previous || true
+          echo '[ocr-worker, ollama-ocr logs]'
+          kubectl logs --all-containers --selector=app=ocr-worker
+          kubectl logs --all-containers --selector=app=ocr-worker --previous || true
+          echo '[project-overengineer-fe logs]'
+          kubectl logs --all-containers --selector=app=project-overengineer-fe
+          kubectl logs --all-containers --selector=app=project-overengineer-fe --previous || true
+          echo '[loki logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=loki
+          kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[grafana logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
+          kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true
 
       - name: Kubernetes cleanup (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}

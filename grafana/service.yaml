@@ -45,8 +45,23 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
-          - name: grafana-data
-            mountPath: /var/lib/grafana/
+            - name: tmp
+              mountPath: /tmp
+            - name: grafana-logs
+              mountPath: /var/log/grafana
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources
+              readOnly: true
+            - name: grafana-data
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: grafana-logs
+          emptyDir: {}
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources
       securityContext:
         runAsUser: 999
         runAsGroup: 999

@@ -68,6 +68,8 @@ kind: Service
 metadata:
   name: grafana
   namespace: monitoring-plane
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 spec:
   selector:
     app: grafana

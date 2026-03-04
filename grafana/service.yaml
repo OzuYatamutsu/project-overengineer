@@ -77,3 +77,20 @@ spec:
     - port: 80
       targetPort: 3000
   type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring-plane
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://svc-loki:3100
+        isDefault: false

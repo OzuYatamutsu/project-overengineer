@@ -70,7 +70,8 @@ module "vpc" {
   enable_dns_hostnames = true
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/role/elb"                                    = 1
+    "kubernetes.io/cluster/project-overengineer-${var.environment_name}" = "shared"
   }
 
   private_subnet_tags = {
@@ -95,7 +96,11 @@ module "eks" {
   }
 
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = concat(
+    module.vpc.private_subnets,
+    module.vpc.public_subnets
+  )
+
   tags = {
     Environment = var.environment_name
     Terraform   = "true"

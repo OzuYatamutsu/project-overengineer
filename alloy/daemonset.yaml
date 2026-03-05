@@ -18,6 +18,7 @@ spec:
           args:
             - run
             - /etc/alloy/config.alloy
+            - --storage.path=/var/lib/alloy/data
           volumeMounts:
             - name: config
               mountPath: /etc/alloy
@@ -26,6 +27,8 @@ spec:
             - name: varlibdocker
               mountPath: /var/lib/docker/containers
               readOnly: true
+            - name: alloy-data
+              mountPath: /var/lib/alloy
           resources:
             requests:
               cpu: "250m"
@@ -50,6 +53,8 @@ spec:
         - name: varlibdocker
           hostPath:
             path: /var/lib/docker/containers
+        - name: alloy-data
+          emptyDir: {}
 
 ---
 

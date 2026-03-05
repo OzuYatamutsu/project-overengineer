@@ -75,7 +75,10 @@ data:
     }
 
     loki.process "logs" {
-      stage.logfmt {}
+      stage.logfmt {
+        mapping = { "timestamp" = "", "msg" = "", "service" = "", "host" = "", "endpoint" = "", "job" = "", "jobId" = "" }
+      }
+
       forward_to = [loki.write.default.receiver]
     }
 

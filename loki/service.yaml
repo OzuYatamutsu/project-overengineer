@@ -4,7 +4,6 @@ metadata:
   name: loki
   namespace: monitoring-plane
 spec:
-  serviceName: loki
   replicas: 1
   selector:
     matchLabels:

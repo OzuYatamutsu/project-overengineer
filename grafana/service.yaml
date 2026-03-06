@@ -89,7 +89,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: grafana
+  name: svc-grafana
   namespace: monitoring-plane
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing

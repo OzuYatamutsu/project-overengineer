@@ -33,7 +33,7 @@ restarted, but client services will pull the updated password from vault automat
 
 Access the service on `http://localhost:3000` by running `kubectl port-forward service/svc-project-overengineer-fe 3000:3000` after cluster build.
 
-Access the monitoring plane via the Grafana instance on `http://localhost:3001` by running `kubectl port-forward service/svc-grafana 3000:3001` after cluster build.
+Access the monitoring plane via the Grafana instance on `http://localhost` by running `kubectl port-forward service/svc-grafana 80:80` after cluster build.
 
 ### Via deploying to AWS
 Per-environment Terraform/OpenTofu files are located in the `terraform/` directory.

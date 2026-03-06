@@ -33,6 +33,8 @@ restarted, but client services will pull the updated password from vault automat
 
 Access the service on `http://localhost:3000` by running `kubectl port-forward service/svc-project-overengineer-fe 3000:3000` after cluster build.
 
+Access the monitoring plane via the Grafana instance on `http://localhost:3001` by running `kubectl port-forward service/svc-grafana 3000:3001` after cluster build.
+
 ### Via deploying to AWS
 Per-environment Terraform/OpenTofu files are located in the `terraform/` directory.
 
@@ -53,8 +55,11 @@ aws eks update-kubeconfig --name project-overengineer-<staging/production> --reg
 
 This should configure your local kubeconfig to point to EKS. Run the `deploy-kube-cluster.sh` script in the project root to deploy the cluster.
 
-The control plane is deployed to the `default` namespace; the monitoring plane is deployed to the
-`monitoring-plane` namespace.
+The control plane is deployed to the `default` namespace; the monitoring plane is deployed to the `monitoring-plane` namespace.
+
+Access the service by its ELB hostname (`kubectl get service/svc-project-overengineer-fe -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`).
+
+Access the monitoring plane via the Grafana instance accessible by its ELB hostname (`kubectl -n monitoring-plane get service/svc-grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`).
 
 ### Config vars
 Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. The value for `REDIS_PASSWORD` must be explicitly provided on startup.

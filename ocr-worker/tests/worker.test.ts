@@ -37,10 +37,10 @@ test('ocr parses expected text from test image', async () => {
     testJob = await processJob(testJob)
 
     // debug
-    log("ocr-worker", `jobId=${testJob.id}`, `OCR result:`)
-    log("ocr-worker", `jobId=${testJob.id}`, `[OCR result]`)
-    log("ocr-worker", `jobId=${testJob.id}`, ``)
-    testJob.result.split("\n").forEach(line => log("ocr-worker", `jobId=${testJob.id}`, line))
+    log("ocr-worker", `jobId="${testJob.id}"`, `OCR result:`)
+    log("ocr-worker", `jobId="${testJob.id}"`, `[OCR result]`)
+    log("ocr-worker", `jobId="${testJob.id}"`, ``)
+    testJob.result.split("\n").forEach(line => log("ocr-worker", `jobId="${testJob.id}"`, line))
 
     // We should expect to find all the expected strings within the result
     for (let i = 0; i < EXPECTED_STRINGS.length; i++) {

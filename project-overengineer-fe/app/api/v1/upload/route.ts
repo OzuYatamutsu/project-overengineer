@@ -13,7 +13,7 @@ const PER_SECS = 60
 export async function POST(request: Request): Promise<NextResponse> {
   const ip = await getClientIp(request)
   if (!rateLimit("project-overengineer-fe", ip, MAX_REQUESTS, PER_SECS)) {
-    log("project-overengineer-fe", `endpoint=/upload ip=${ip}`, `rejecting request, rate limit exceeded`)
+    log("project-overengineer-fe", `endpoint="/upload" ip="${ip}"`, `rejecting request, rate limit exceeded`)
     return NextResponse.json({
       message: 'Rate limit exceeded',
       jobId: "",
@@ -22,11 +22,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     })
   }
 
-  log("project-overengineer-fe", `endpoint=/upload`, `Processing new request...`)
+  log("project-overengineer-fe", `endpoint="/upload"`, `Processing new request...`)
   const contentType = request.headers.get('content-type')
 
   if (!contentType?.startsWith('image/')) {
-    log("project-overengineer-fe", `endpoint=/upload`, `Rejected request (failed validation)`)
+    log("project-overengineer-fe", `endpoint="/upload"`, `Rejected request (failed validation)`)
 
     return NextResponse.json({
       message: 'Unsupported content type',
@@ -40,7 +40,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Validate length and type
   if (!(await validateImage(rawImageData))) {
-    log("project-overengineer-fe", `endpoint=/upload`, `Rejected request (failed validation)`)
+    log("project-overengineer-fe", `endpoint="/upload"`, `Rejected request (failed validation)`)
   
     return NextResponse.json({
       message: "Image failed validation (size or file format)",
@@ -57,14 +57,14 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Create job
   const job = new Job(imageData)
-  log("project-overengineer-fe", `endpoint=/upload jobId=${job.id}`, `Request was upgraded to a job`)
+  log("project-overengineer-fe", `endpoint="/upload" jobId="${job.id}"`, `Request was upgraded to a job`)
 
   // Commit job
   try {
     await saveJob(job)
   } catch (error) {
     console.error(`Error saving job to Redis: ${error}`)
-    log("project-overengineer-fe", `endpoint=/upload jobId=${job.id}`, `Failed to create job. Error: ${error}`)
+    log("project-overengineer-fe", `endpoint="/upload" jobId="${job.id}"`, `Failed to create job. Error: ${error}`)
     return NextResponse.json({
       message: `Failed to create job. Error: ${error}`,
       jobId: job.id

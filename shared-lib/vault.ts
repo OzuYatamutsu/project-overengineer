@@ -31,7 +31,7 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
         }
     }
     if (!vaultClient || shouldReconnect) {
-        log(serviceName, `endpoint=${endpoint}`, `opening new vault connection`)
+        log(serviceName, `endpoint="${endpoint}"`, `opening new vault connection`)
 
         vaultClient = vault({
             apiVersion: "v1",
@@ -44,7 +44,7 @@ export async function getVault(serviceName: string, insecure=false): Promise<vau
         }
         
         catch (err) {
-            log(serviceName, `endpoint=${endpoint}`, `unable to establish vault client connection! err: ${err}`)
+            log(serviceName, `endpoint="${endpoint}"`, `unable to establish vault client connection! err: ${err}`)
         }
 
     }
@@ -81,18 +81,18 @@ export function watchAndUpdateVaultValue(serviceName: string, configName: string
 }
 
 export async function pullAndWatchVaultConfigValues(serviceName: string, insecure=false): Promise<NodeJS.Timeout[]> {
-    log(serviceName, `job=startup`, `pulling fresh config values...`)
+    log(serviceName, `job="startup"`, `pulling fresh config values...`)
     await updateEnvFromVault(serviceName, "REDIS_HOST", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PORT", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PASSWORD", insecure)
-    log(serviceName, `job=startup`, `config values updated.`)
-    log(serviceName, `job=startup`, `starting config update job...`)
+    log(serviceName, `job="startup"`, `config values updated.`)
+    log(serviceName, `job="startup"`, `starting config update job...`)
     const bgJobs = [
         watchAndUpdateVaultValue(serviceName, "REDIS_HOST", 60000, insecure),
         watchAndUpdateVaultValue(serviceName, "REDIS_PORT", 60000, insecure),
         watchAndUpdateVaultValue(serviceName, "REDIS_PASSWORD", 60000, insecure)
     ]
-    log(serviceName, `job=startup`, `started config update job.`)
+    log(serviceName, `job="startup"`, `started config update job.`)
     return bgJobs
 }
 
@@ -124,7 +124,7 @@ export async function generateJwt(serviceName: string, jobId: string, insecure=f
         // Complete the JWT (vault returns base64, but signature is binary)
         jwt += `.${Buffer.from(signature, "base64").toString("base64url")}`
     } catch (error) {
-        log(serviceName, `jobId=${jobId}`, `error signing JWT: ${error}`)
+        log(serviceName, `jobId="${jobId}"`, `error signing JWT: ${error}`)
         throw(error)
     }
 
@@ -155,7 +155,7 @@ export async function verifyJwt(serviceName: string, jwt: string, jobId: string,
             return false
         }
     } catch (error) {
-        log(serviceName, `jobId=${jobId}`, `error verifying JWT: ${error}`)
+        log(serviceName, `jobId="${jobId}"`, `error verifying JWT: ${error}`)
         throw(error)
     }
 

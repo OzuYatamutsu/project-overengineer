@@ -11,12 +11,12 @@ export const JOB_TTL_SECS = 3600
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
-        log("janitor", `jobId=${jobKey}`, `Invalid create timestamp, discarding`)
+        log("janitor", `jobId="${jobKey}"`, `Invalid create timestamp, discarding`)
         return true
     }
 
     if (((new Date().getTime() / 1000) - JOB_TTL_SECS) > createUTime) {
-        log("janitor", `jobId=${jobKey}`, `Job is completed or stale, discarding`)
+        log("janitor", `jobId="${jobKey}"`, `Job is completed or stale, discarding`)
         return true
     }
 
@@ -25,32 +25,32 @@ export function jobIsStale(jobKey: string, createUTime: number): boolean {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("janitor", `endpoint=/healthz`, `starting health check`)
+    log("janitor", `endpoint="/healthz"`, `starting health check`)
 
     try {
         if (await getRedis("janitor").ping() != 'PONG') {
-            log("janitor", `endpoint=/healthz`, `failed, can't ping redis`)
+            log("janitor", `endpoint="/healthz"`, `failed, can't ping redis`)
             return false
         }
     } catch (err) {
-        log("janitor", `endpoint=/healthz`, `failed, can't ping redis: ${err}`)
+        log("janitor", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
         return false
     }
 
     try {
         await getRedis("janitor").keys(`job:*`)
     } catch (err) {
-        log("janitor", `endpoint=/healthz`, `failed, not able to list jobs: ${err}`)
+        log("janitor", `endpoint="/healthz"`, `failed, not able to list jobs: ${err}`)
         return false
     }
 
-    log("janitor", `endpoint=/healthz`, `health check pass`)
+    log("janitor", `endpoint="/healthz"`, `health check pass`)
     return true
 }
 
 // poll redis for new jobs
 setInterval(async () => {
-    log("janitor", `job=cleanup`, `starting job`)
+    log("janitor", `job="cleanup"`, `starting job`)
     const keys = await getRedis("janitor").keys(`job:*`)
 
     for (const key of keys) {
@@ -60,7 +60,7 @@ setInterval(async () => {
         }
     }
 
-    log("janitor", `job=cleanup`, `job finished`)
+    log("janitor", `job="cleanup"`, `job finished`)
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
@@ -82,9 +82,9 @@ if (require.main === module) {
                 res.end("Not Found")
             }
         }).listen(HEALTH_CHECK_PORT, () => {
-            log("janitor", `job=startup endpoint=/healthz`, `listening on port ${HEALTH_CHECK_PORT}`)
+            log("janitor", `job="startup" endpoint="/healthz"`, `listening on port ${HEALTH_CHECK_PORT}`)
         })
     })
 }
 
-log("janitor", `job=startup`, `janitor started.`)
+log("janitor", `job="startup"`, `janitor started.`)

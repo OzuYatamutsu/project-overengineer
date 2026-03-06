@@ -69,6 +69,9 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy alloy
+        run: kubectl apply -f alloy/daemonset.yaml
+
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
 
@@ -76,6 +79,8 @@ jobs:
         run: |
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
+          echo '[waiting for alloy]'
+          kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
           kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
 
@@ -111,6 +116,9 @@ jobs:
           echo '[loki logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[alloy logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
+          kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
           echo '[grafana logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true
@@ -206,6 +214,9 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy alloy
+        run: kubectl apply -f alloy/daemonset.yaml
+
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
 
@@ -213,6 +224,8 @@ jobs:
         run: |
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
+          echo '[waiting for alloy]'
+          kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
           kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
 
@@ -248,6 +261,9 @@ jobs:
           echo '[loki logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[alloy logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
+          kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
           echo '[grafana logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true
@@ -364,6 +380,9 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy alloy
+        run: kubectl apply -f alloy/daemonset.yaml
+
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
 
@@ -371,6 +390,8 @@ jobs:
         run: |
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
+          echo '[waiting for alloy]'
+          kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
           kubectl rollout status -n monitoring-plane statefulset/grafana --timeout=300s
 
@@ -406,6 +427,9 @@ jobs:
           echo '[loki logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[alloy logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
+          kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
           echo '[grafana logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true

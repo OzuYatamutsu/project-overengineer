@@ -17,6 +17,14 @@ spec:
       containers:
         - name: grafana
           image: grafana/grafana:12.4.0
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: admin
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin-password
+                  key: password
           readinessProbe:
             httpGet:
               path: /api/health

@@ -29,7 +29,7 @@ export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
     job.decrypt(await getImageEncryptionKey("ocr-worker"))
 
-    log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
+    log("ocr-worker", `jobId=${job.id}`, `Job sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
        method: "POST",
        headers: {"Content-Type": "application/json"},
@@ -47,7 +47,7 @@ export async function processJob(job: Job): Promise<Job> {
     })
 
     timeDelta = Math.round((Date.now() / 1000) - timeDelta)
-    log("ocr-worker", `jobId="${job.id}" timeElapsed="${timeDelta}"`, `OCR finished`)
+    log("ocr-worker", `jobId=${job.id} timeElapsed="${timeDelta}"`, `OCR finished`)
 
     if (!jobResult.ok) {
        throw new Error(`OCR failed: ${jobResult.statusText}`)
@@ -68,27 +68,27 @@ async function commit(job: Job): Promise<void> {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("ocr-worker", `endpoint="/healthz"`, `starting health check`)
+    log("ocr-worker", `endpoint=/healthz`, `starting health check`)
 
     try {
         if (await getRedis("ocr-worker").ping() != 'PONG') {
-            log("ocr-worker", `endpoint="/healthz"`, `failed, can't ping redis`)
+            log("ocr-worker", `endpoint=/healthz`, `failed, can't ping redis`)
             return false
         }
 
     } catch (err) {
-        log("ocr-worker", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
+        log("ocr-worker", `endpoint=/healthz`, `failed, can't ping redis: ${err}`)
         return false
     }
 
     try {
         await getRedis("ocr-worker").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
     } catch (err) {
-        log("ocr-worker", `endpoint="/healthz"`, `failed, not able to access jobs in redis: ${err}`)
+        log("ocr-worker", `endpoint=/healthz`, `failed, not able to access jobs in redis: ${err}`)
         return false
     }
 
-    log("ocr-worker", `endpoint="/healthz"`, `health check pass`)
+    log("ocr-worker", `endpoint=/healthz`, `health check pass`)
     return true
 }
 
@@ -114,7 +114,7 @@ setInterval(async () => {
 
         let job: Job = await pullJobDetails(key.replace("job:", ""))
         job.status = JobStatus.PROCESSING
-        log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
+        log("ocr-worker", `jobId=${job.id}`, `Job sent to OCR engine, processing...`)
         await commit(job)
 
         const startTime = (Date.now() / 1000)
@@ -132,7 +132,7 @@ setInterval(async () => {
         }
 
         job.status = JobStatus.DONE
-        log("ocr-worker", `jobId="${job.id}"`, `Job completed, committing`)
+        log("ocr-worker", `jobId=${job.id}`, `Job completed, committing`)
         await commit(job)
 
         workerState = WorkerState.IDLE
@@ -158,9 +158,9 @@ if (require.main === module) {
                 res.end("Not Found")
             }
         }).listen(HEALTH_CHECK_PORT, () => {
-            log("ocr-worker", `job="startup" endpoint="/healthz"`, `listening on port ${HEALTH_CHECK_PORT}`)
+            log("ocr-worker", `job=startup endpoint=/healthz`, `listening on port ${HEALTH_CHECK_PORT}`)
         })
     })
 }
 
-log("ocr-worker", `job="startup"`, `OCR worker started.`)
+log("ocr-worker", `job=startup`, `OCR worker started.`)

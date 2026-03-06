@@ -31,27 +31,27 @@ async function getJobState(jobId: string, jwt: string): Promise<JobUpdate> {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("status-api", `endpoint="/healthz"`, "starting health check")
+    log("status-api", `endpoint=/healthz`, "starting health check")
 
     try {
         if (await getRedis("status-api").ping() != 'PONG') {
-            log("status-api", `endpoint="/healthz"`, "failed, can't ping redis")
+            log("status-api", `endpoint=/healthz`, "failed, can't ping redis")
             return false
         }
 
     } catch (err) {
-        log("status-api", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
+        log("status-api", `endpoint=/healthz`, `failed, can't ping redis: ${err}`)
         return false
     }
 
     try {
         await getRedis("status-api").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
     } catch (err) {
-        log("status-api", `endpoint="/healthz"`, `failed, not able to access jobs in redis: ${err}`)
+        log("status-api", `endpoint=/healthz`, `failed, not able to access jobs in redis: ${err}`)
         return false
     }
 
-    log("status-api", `endpoint="/healthz"`, `health check pass`)
+    log("status-api", `endpoint=/healthz`, `health check pass`)
     return true
 }
 
@@ -70,12 +70,12 @@ app.get('/healthz', async (_, res) => {
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
+        log("status-api", `endpoint=/ws request_addr=${req.socket.remoteAddress}`, `rejecting request, rate limit exceeded`)
         ws.send('Rate limit exceeded')
         ws.close()
     }
 
-    log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `New connection`)
+    log("status-api", `endpoint=/ws request_addr=${req.socket.remoteAddress}`, `New connection`)
 
     ws.on('message', (data: RawData) => {
         const message = JSON.parse(data.toString())
@@ -83,11 +83,11 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         const jwt = message.jwt ?? undefined
 
         if (jobId === undefined || jwt === undefined) {
-            log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
+            log("status-api", `endpoint=/ws request_addr=${req.socket.remoteAddress}`, `rejecting malformed api request`)
             ws.close()
         }
 
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
+        log("status-api", `endpoint=/ws request_addr=${req.socket.remoteAddress} jobId=${jobId}`, `monitoring status`)
 
         setInterval(async () => {
             const jobState = await getJobState(jobId, jwt)
@@ -99,21 +99,21 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     })
 
     ws.on('close', () => {
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
+        log("status-api", `endpoint=/ws request_addr=${req.socket.remoteAddress}`, `Stop monitoring status (closed)`)
     })
 })
 
 if (require.main === module) {
     if (_IS_UNIT_TESTING) {
         server.listen(port, async () => {
-            log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
+            log("status-api", `job=startup endpoint=/ws`, `Status WS API listening on port ${port}`)
         })
     }
 
     else {
         pullAndWatchVaultConfigValues("status-api").then(() => {
             server.listen(port, async () => {
-                log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
+                log("status-api", `job=startup endpoint=/ws`, `Status WS API listening on port ${port}`)
             })
         })
     }

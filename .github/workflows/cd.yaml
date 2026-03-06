@@ -24,7 +24,10 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
+      - name: Create monitoring plane namespace
+        run: kubectl apply -f monitoring-plane-namespace.yaml
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
@@ -62,9 +65,6 @@ jobs:
           kubectl rollout status statefulset/ocr-worker --timeout=300s
           echo '[waiting for project-overengineer-fe]'
           kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
-
-      - name: Create monitoring plane namespace
-        run: kubectl apply -f monitoring-plane-namespace.yaml
 
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
@@ -170,6 +170,9 @@ jobs:
       - name: Apply default storage class to AWS
         run: kubectl apply -f k8s-aws-default-sc.yaml
 
+      - name: Create monitoring plane namespace
+        run: kubectl apply -f monitoring-plane-namespace.yaml
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
@@ -207,9 +210,6 @@ jobs:
           kubectl rollout status statefulset/ocr-worker --timeout=300s
           echo '[waiting for project-overengineer-fe]'
           kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
-
-      - name: Create monitoring plane namespace
-        run: kubectl apply -f monitoring-plane-namespace.yaml
 
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
@@ -336,6 +336,9 @@ jobs:
       - name: Apply default storage class to AWS
         run: kubectl apply -f k8s-aws-default-sc.yaml
 
+      - name: Create monitoring plane namespace
+        run: kubectl apply -f monitoring-plane-namespace.yaml
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
@@ -373,9 +376,6 @@ jobs:
           kubectl rollout status statefulset/ocr-worker --timeout=300s
           echo '[waiting for project-overengineer-fe]'
           kubectl rollout status statefulset/project-overengineer-fe --timeout=300s
-
-      - name: Create monitoring plane namespace
-        run: kubectl apply -f monitoring-plane-namespace.yaml
 
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml

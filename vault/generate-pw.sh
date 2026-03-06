@@ -18,6 +18,6 @@ else
   echo "Generating new grafana password..."
   kubectl create secret generic grafana-admin-password \
       --from-literal=password="$(LC_ALL=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32)" \
-      --dry-run=client -o yaml | kubectl apply -f -
+      --dry-run=client -o yaml | kubectl apply -n monitoring-plane -f -
   echo "Grafana password generated and saved."
 fi

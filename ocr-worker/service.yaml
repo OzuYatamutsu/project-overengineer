@@ -67,7 +67,7 @@ spec:
             - containerPort: 3002
           resources:
             requests:
-              cpu: "50m"
+              cpu: "40m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -101,7 +101,7 @@ spec:
             - containerPort: 11434
           resources:
             requests:
-              cpu: "200m"
+              cpu: "150m"
               memory: "512Mi"
             limits:
               cpu: "6000m"

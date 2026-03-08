@@ -34,7 +34,6 @@ resource "aws_iam_role" "github_actions_eks" {
         }
         StringLike = {
         "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/main",
-        "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/bugfix/20260307",
         }
       }
     }]

@@ -18,6 +18,10 @@ spec:
           image: grafana/mimir:2.17.7
           args:
             - "-activity-tracker.filepath="
+            - "-ingester.tsdb.dir=/var/mimir/tsdb"
+            - "-blocks-storage.bucket-store.sync-dir=/var/mimir/tsdb-sync"
+            - "-compactor.data-dir=/var/mimir/data-compactor"
+            - "-ruler.rule-path=/var/mimir/data-ruler"
           readinessProbe:
             httpGet:
               path: /ready
@@ -47,20 +51,15 @@ spec:
             readOnlyRootFilesystem: true
           volumeMounts:
           - name: mimir-data
-            mountPath: /mimir
+            mountPath: /var/mimir
       securityContext:
         runAsUser: 999
         runAsGroup: 999
         fsGroup: 999
         runAsNonRoot: true
-  volumeClaimTemplates:
-  - metadata:
-      name: mimir-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 10Gi
+      volumes:
+        - name: mimir-data
+          emptyDir: {}
 
 ---
 

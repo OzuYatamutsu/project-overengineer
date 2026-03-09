@@ -18,7 +18,7 @@ spec:
           image: grafana/mimir:2.17.7
           args:
             - "-activity-tracker.filepath="
-            - "-ingester.tsdb.dir=/var/mimir/tsdb"
+            - "-blocks-storage.tsdb.dir=/var/mimir/tsdb"
             - "-blocks-storage.bucket-store.sync-dir=/var/mimir/tsdb-sync"
             - "-compactor.data-dir=/var/mimir/data-compactor"
             - "-ruler.rule-path=/var/mimir/data-ruler"

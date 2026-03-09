@@ -69,6 +69,9 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy mimir
+        run: kubectl apply -f mimir/service.yaml
+
       - name: Deploy alloy
         run: kubectl apply -f alloy/daemonset.yaml
 
@@ -79,6 +82,8 @@ jobs:
         run: |
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
+          echo '[waiting for mimir]'
+          kubectl rollout status -n monitoring-plane statefulset/mimir --timeout=300s
           echo '[waiting for alloy]'
           kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
@@ -116,6 +121,9 @@ jobs:
           echo '[loki logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[mimir logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=mimir
+          kubectl logs -n monitoring-plane --all-containers --selector=app=mimir --previous || true
           echo '[alloy logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
@@ -214,6 +222,9 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy mimir
+        run: kubectl apply -f mimir/service.yaml
+
       - name: Deploy alloy
         run: kubectl apply -f alloy/daemonset.yaml
 
@@ -224,6 +235,8 @@ jobs:
         run: |
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
+          echo '[waiting for mimir]'
+          kubectl rollout status -n monitoring-plane statefulset/mimir --timeout=300s
           echo '[waiting for alloy]'
           kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
@@ -261,6 +274,9 @@ jobs:
           echo '[loki logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[mimir logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=mimir
+          kubectl logs -n monitoring-plane --all-containers --selector=app=mimir --previous || true
           echo '[alloy logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
@@ -380,6 +396,9 @@ jobs:
       - name: Deploy loki
         run: kubectl apply -f loki/service.yaml
 
+      - name: Deploy mimir
+        run: kubectl apply -f mimir/service.yaml
+
       - name: Deploy alloy
         run: kubectl apply -f alloy/daemonset.yaml
 
@@ -390,6 +409,8 @@ jobs:
         run: |
           echo '[waiting for loki]'
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
+          echo '[waiting for mimir]'
+          kubectl rollout status -n monitoring-plane statefulset/mimir --timeout=300s
           echo '[waiting for alloy]'
           kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
@@ -427,6 +448,9 @@ jobs:
           echo '[loki logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki
           kubectl logs -n monitoring-plane --all-containers --selector=app=loki --previous || true
+          echo '[mimir logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=mimir
+          kubectl logs -n monitoring-plane --all-containers --selector=app=mimir --previous || true
           echo '[alloy logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true

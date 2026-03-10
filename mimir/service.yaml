@@ -23,6 +23,7 @@ spec:
             - "-compactor.data-dir=/var/mimir/data-compactor"
             - "-ruler.rule-path=/var/mimir/data-ruler"
             - "-blocks-storage.filesystem.dir=/var/mimir/blocks"
+            - "-auth.multitenancy-enabled=false"
           readinessProbe:
             httpGet:
               path: /ready

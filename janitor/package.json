@@ -11,14 +11,18 @@
     "test": "pnpm build && TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.213.0",
+    "@opentelemetry/sdk-metrics": "^2.6.0",
+    "@opentelemetry/sdk-node": "^0.213.0",
     "@project-overengineer/shared-lib": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "eslint": "^10.0.3",
     "globals": "^16.5.0",
     "tsx": "^4.21.0",

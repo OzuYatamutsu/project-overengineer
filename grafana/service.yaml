@@ -118,7 +118,7 @@ data:
         url: http://svc-loki:3100
         isDefault: false
       - name: Mimir
-        type: mimir
+        type: prometheus
         access: proxy
-        url: http://svc-mimir:8081
+        url: http://svc-mimir:8081/prometheus
         isDefault: false

@@ -22,6 +22,7 @@ spec:
             - "-blocks-storage.bucket-store.sync-dir=/var/mimir/tsdb-sync"
             - "-compactor.data-dir=/var/mimir/data-compactor"
             - "-ruler.rule-path=/var/mimir/data-ruler"
+            - "-blocks-storage.filesystem.dir=/var/mimir/blocks"
           readinessProbe:
             httpGet:
               path: /ready

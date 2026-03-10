@@ -34,6 +34,9 @@ jobs:
       - name: Wait for vault apply (max 90s)
         run: kubectl rollout status statefulset/vault --timeout=90s
 
+      - name: Deploy alloy
+        run: kubectl apply -f alloy/daemonset.yaml
+
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml
       
@@ -71,9 +74,6 @@ jobs:
 
       - name: Deploy mimir
         run: kubectl apply -f mimir/service.yaml
-
-      - name: Deploy alloy
-        run: kubectl apply -f alloy/daemonset.yaml
 
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
@@ -186,6 +186,9 @@ jobs:
 
       - name: Wait for vault apply (max 90s)
         run: kubectl rollout status statefulset/vault --timeout=90s
+
+      - name: Deploy alloy
+        run: kubectl apply -f alloy/daemonset.yaml
 
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml
@@ -361,6 +364,9 @@ jobs:
       - name: Wait for vault apply (max 90s)
         run: kubectl rollout status statefulset/vault --timeout=90s
 
+      - name: Deploy alloy
+        run: kubectl apply -f alloy/daemonset.yaml
+
       - name: Deploy redis-master, redis-replica, redis-sentinel
         run: kubectl apply -f redis/service.yaml
       
@@ -398,9 +404,6 @@ jobs:
 
       - name: Deploy mimir
         run: kubectl apply -f mimir/service.yaml
-
-      - name: Deploy alloy
-        run: kubectl apply -f alloy/daemonset.yaml
 
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml

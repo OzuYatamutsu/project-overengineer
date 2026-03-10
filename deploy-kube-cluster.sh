@@ -26,15 +26,16 @@ while ! kubectl get secret vault-token >/dev/null 2>&1; do
         exit 1
     fi
 done
+kubectl apply -f alloy/daemonset.yaml
 kubectl apply -f redis/service.yaml
 kubectl apply -f janitor/service.yaml
 kubectl apply -f status-api/service.yaml
 kubectl apply -f ocr-worker/service.yaml
 kubectl apply -f project-overengineer-fe/service.yaml
 kubectl apply -f loki/service.yaml
-kubectl apply -f alloy/daemonset.yaml
 kubectl apply -f grafana/service.yaml
 
+check_rollout statefulset alloy 600s monitoring-plane
 check_rollout statefulset redis-master 600s
 check_rollout statefulset redis-replica 600s
 check_rollout deployment redis-sentinel 600s
@@ -43,7 +44,6 @@ check_rollout deployment status-api 600s
 check_rollout statefulset ocr-worker 600s
 check_rollout statefulset project-overengineer-fe 600s
 check_rollout statefulset loki 600s monitoring-plane
-check_rollout statefulset alloy 600s monitoring-plane
 check_rollout statefulset grafana 600s monitoring-plane
 
 kubectl get all

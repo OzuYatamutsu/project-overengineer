@@ -117,3 +117,8 @@ data:
         access: proxy
         url: http://svc-loki:3100
         isDefault: false
+      - name: Mimir
+        type: mimir
+        access: proxy
+        url: http://svc-mimir:8081
+        isDefault: false

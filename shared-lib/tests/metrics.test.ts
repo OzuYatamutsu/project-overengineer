@@ -1,4 +1,3 @@
-import { count } from 'node:console'
 import { registerCounter, startMetricsServer } from '../metrics'
 import { test, expect } from '@playwright/test'
 

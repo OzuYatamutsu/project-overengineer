@@ -12,13 +12,14 @@ metricsServer.get("/metrics", async (_: Request, res: Response): Promise<void> =
     res.end(await register.metrics())
 })
 
-export function registerCounter(name: string, help: string, labelNames: string[] = []): void {
+export function registerCounter(name: string, help: string, labelNames: string[] = []): client.Counter {
     const counter = new client.Counter({
         "name": name,
         "help": help,
         "labelNames": labelNames
     })
     register.registerMetric(counter)
+    return counter
 }
 
 export function startMetricsServer(port: number): void {

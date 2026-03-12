@@ -1,4 +1,5 @@
-import { getRedis, log, pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib'
+import { getRedis, log, pullAndWatchVaultConfigValues, Counter, Gauge } from '@project-overengineer/shared-lib'
+import { registerGauge, startMetricsServer } from '@project-overengineer/shared-lib/metrics'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -6,8 +7,11 @@ const HEALTH_CHECK_PORT = (
     ? Number(process.env.HEALTH_CHECK_PORT)
     : 3000
 )
+const METRICS_PORT = HEALTH_CHECK_PORT + 1  // TODO
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600
+
+var janitorJobDurationMsGauge: Gauge
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
@@ -50,6 +54,7 @@ export async function _healthz(): Promise<boolean> {
 
 // poll redis for new jobs
 setInterval(async () => {
+    var startTime = new Date().getTime()
     log("janitor", `job="cleanup"`, `starting job`)
     const keys = await getRedis("janitor").keys(`job:*`)
 
@@ -60,6 +65,8 @@ setInterval(async () => {
         }
     }
 
+    var endTime = new Date().getTime()
+    janitorJobDurationMsGauge.set({ status: "success" }, endTime - startTime)
     log("janitor", `job="cleanup"`, `job finished`)
 }, POLLING_PERIOD_MSECS)
 
@@ -84,6 +91,13 @@ if (require.main === module) {
         }).listen(HEALTH_CHECK_PORT, () => {
             log("janitor", `job="startup" endpoint="/healthz"`, `listening on port ${HEALTH_CHECK_PORT}`)
         })
+
+        // metrics endpoint
+        log("janitor", `job="startup"`, `registering metrics`)
+        janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
+
+        startMetricsServer(METRICS_PORT)
+        log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${METRICS_PORT}`)
     })
 }
 

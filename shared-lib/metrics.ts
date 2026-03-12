@@ -22,6 +22,16 @@ export function registerCounter(name: string, help: string, labelNames: string[]
     return counter
 }
 
+export function registerGauge(name: string, help: string, labelNames: string[] = []): client.Gauge {
+    const gauge = new client.Gauge({
+        "name": name,
+        "help": help,
+        "labelNames": labelNames
+    })
+    register.registerMetric(gauge)
+    return gauge
+}
+
 export function startMetricsServer(port: number): void {
     metricsServer.listen(port, () => {
         console.log(`Metrics server is running on port ${port}`)

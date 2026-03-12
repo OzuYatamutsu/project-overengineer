@@ -7,7 +7,11 @@ const HEALTH_CHECK_PORT = (
     ? Number(process.env.HEALTH_CHECK_PORT)
     : 3000
 )
-const METRICS_PORT = HEALTH_CHECK_PORT + 1  // TODO
+const PROMETHEUS_METRICS_PORT = (
+    process.env.PROMETHEUS_METRICS_PORT
+    ? Number(process.env.HEALTH_CHECK_PORT)
+    : 3001
+)
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600
 
@@ -96,8 +100,8 @@ if (require.main === module) {
         log("janitor", `job="startup"`, `registering metrics`)
         janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
 
-        startMetricsServer(METRICS_PORT)
-        log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${METRICS_PORT}`)
+        startMetricsServer(PROMETHEUS_METRICS_PORT)
+        log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
     })
 }
 

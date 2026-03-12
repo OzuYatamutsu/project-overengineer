@@ -1,7 +1,6 @@
 import client from "prom-client"
 import express from "express"
 import type { Request, Response } from "express"
-
 const metricsServer = express()
 const register = new client.Registry()
 
@@ -37,3 +36,6 @@ export function startMetricsServer(port: number): void {
         console.log(`Metrics server is running on port ${port}`)
     })
 }
+
+export type Gauge = client.Gauge
+export type Counter = client.Counter

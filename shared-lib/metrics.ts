@@ -6,6 +6,11 @@ const register = new client.Registry()
 
 client.collectDefaultMetrics({ register })
 
+metricsServer.get("/metrics", async (_: Request, res: Response): Promise<void> => {
+    res.set("Content-Type", register.contentType)
+    res.end(await register.metrics())
+})
+
 export function registerCounter(name: string, help: string, labelNames: string[] = []): client.Counter {
     const counter = new client.Counter({
         "name": name,
@@ -27,16 +32,8 @@ export function registerGauge(name: string, help: string, labelNames: string[] =
 }
 
 export function startMetricsServer(port: number): void {
-    addMetricsRoute(metricsServer)
     metricsServer.listen(port, () => {
         console.log(`Metrics server is running on port ${port}`)
-    })
-}
-
-export function addMetricsRoute(server: express.Express): void {
-    server.get("/metrics", async (_: Request, res: Response): Promise<void> => {
-        res.set("Content-Type", register.contentType)
-        res.end(await register.metrics())
     })
 }
 

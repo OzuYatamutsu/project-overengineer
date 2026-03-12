@@ -11,11 +11,6 @@ test('can register a gauge', () => {
   expect(gauge).toBeDefined()
   expect(() => gauge.set({"label1": "value1"}, 42)).not.toThrow()
 })
-test('can add metrics route to an express server', () => {
-  const express = require('express')
-  const app = express()
-  expect(() => startMetricsServer(3000)).not.toThrow()
-})
 test('can start the metrics server', () => {
   expect(() => startMetricsServer(3000)).not.toThrow()
 })

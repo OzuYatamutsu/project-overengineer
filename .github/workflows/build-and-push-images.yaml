@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/distributed-metrics
 
 jobs:
   generate-vault-cert:

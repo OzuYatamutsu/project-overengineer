@@ -1,4 +1,5 @@
 export * from "./constants"
+export * from "./metrics"
 export * from "./job-status"
 export * from "./job"
 export * from "./logging"

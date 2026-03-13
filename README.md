@@ -286,6 +286,11 @@ All components in the system expose methods to determine whether they are live a
 
 ### Telemetry
 
+A prometheus endpoint is exposed on port `4000` (by default, configurable via the 
+environment variable `PROMETHEUS_METRICS_PORT`), at the endpoint `/metrics`.
+
+This endpoint is scraped by Alloy and forwarded to Mimir.
+
 All components within the system are expected to emit the following:
 
 #### Client
@@ -393,6 +398,7 @@ graph LR
     end
 
     subgraph Observability Plane
+        Alloy["Alloy"]
         Loki["Loki"]
         Mimir["Mimir"]
         Tempo["Tempo"]
@@ -404,8 +410,10 @@ graph LR
     R1 --- TelemetrySplitter
     S1 --- TelemetrySplitter
     O1 --- TelemetrySplitter
-    TelemetrySplitter -->|Logs| Loki
-    TelemetrySplitter -->|Metrics| Mimir
+    TelemetrySplitter -->|Logs| Alloy
+    TelemetrySplitter -->|Metrics| Alloy
+    Alloy -->|Logs| Loki
+    Alloy -->|Metrics| Mimir
     TelemetrySplitter -->|Traces| Tempo
 
     Loki --> Grafana

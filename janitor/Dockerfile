@@ -29,7 +29,7 @@ RUN pnpm --filter @project-overengineer/janitor build
 EXPOSE 3000
 
 # For /metrics endpoint
-EXPOSE 3001
+EXPOSE 4000
 
 USER nodejs
 CMD ["node", "janitor/dist/worker.js"]

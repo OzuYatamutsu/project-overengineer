@@ -9,8 +9,8 @@ const HEALTH_CHECK_PORT = (
 )
 const PROMETHEUS_METRICS_PORT = (
     process.env.PROMETHEUS_METRICS_PORT
-    ? Number(process.env.HEALTH_CHECK_PORT)
-    : 3001
+    ? Number(process.env.PROMETHEUS_METRICS_PORT)
+    : 4000
 )
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600

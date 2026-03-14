@@ -118,7 +118,7 @@ data:
 
     prometheus.scrape "janitor" {
       targets = [
-        { __address__ = "http://svc-janitor:3001" }
+        { __address__ = "http://svc-janitor:3001" },
       ]
     }
   

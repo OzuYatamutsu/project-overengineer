@@ -124,7 +124,7 @@ data:
   
     prometheus.remote_write "mimir" {
       endpoint {
-        url = "http://svc-mimir:8081/api/v1/push"
+        url = "http://svc-mimir:8081/api/v1/push",
         headers = {
           "X-Scope-OrgID" = "default"
         }

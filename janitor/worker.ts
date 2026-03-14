@@ -1,4 +1,4 @@
-import { getRedis, log, pullAndWatchVaultConfigValues, Counter, Gauge } from '@project-overengineer/shared-lib'
+import { getRedis, log, pullAndWatchVaultConfigValues, Gauge } from '@project-overengineer/shared-lib'
 import { registerGauge, startMetricsServer } from '@project-overengineer/shared-lib/metrics'
 import http from "http"
 

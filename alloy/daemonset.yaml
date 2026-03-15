@@ -120,7 +120,7 @@ data:
       targets = [
         { __address__ = "http://svc-janitor:3001" },
       ]
-      forward_to = [prometheus.remote_write.mimir]
+      forward_to = [prometheus.remote_write.mimir.receiver]
     }
   
     prometheus.remote_write "mimir" {

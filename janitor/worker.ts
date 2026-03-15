@@ -1,5 +1,5 @@
-import { getRedis, log, pullAndWatchVaultConfigValues, Gauge } from '@project-overengineer/shared-lib'
-import { registerGauge, startMetricsServer } from '@project-overengineer/shared-lib/metrics'
+import { getRedis, log, pullAndWatchVaultConfigValues } from '@project-overengineer/shared-lib'
+import { registerGauge, startMetricsServer, Gauge } from '@project-overengineer/shared-lib/metrics'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -9,7 +9,7 @@ const HEALTH_CHECK_PORT = (
 )
 const PROMETHEUS_METRICS_PORT = (
     process.env.PROMETHEUS_METRICS_PORT
-    ? Number(process.env.PROMETHEUS_METRICS_PORT)
+    ? Number(process.env.HEALTH_CHECK_PORT)
     : 4000
 )
 const POLLING_PERIOD_MSECS = 300000

@@ -1,7 +1,7 @@
 import { 
     Job, JobStatus, WorkerState, getRedis, log,
     pullAndWatchVaultConfigValues, getImageEncryptionKey,
-    startMetricsServer, registerGauge
+    startMetricsServer, registerGauge, Gauge
 } from '@project-overengineer/shared-lib'
 import http from "http"
 
@@ -24,6 +24,9 @@ const PROMETHEUS_METRICS_PORT = (
 // Used to update progress bar. Update on each successful job.
 let estimatedTimeSecs: number = 200.0
 let workerState: WorkerState = WorkerState.IDLE
+
+// Telemetry
+var heartbeatGauge: Gauge
 
 async function pullJobDetails(jobId: string): Promise<Job> {
     return Job.fromRedisObject(
@@ -169,6 +172,9 @@ if (require.main === module) {
 
         // metrics endpoint
         log("ocr-worker", `job="startup"`, `registering metrics`)
+        heartbeatGauge = registerGauge("ocr_worker_heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+
+        heartbeatGauge.set(1)
 
         startMetricsServer(PROMETHEUS_METRICS_PORT)
         log("ocr-worker", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)

@@ -1,7 +1,9 @@
 import { 
     Job, JobStatus, WorkerState, getRedis, log,
     pullAndWatchVaultConfigValues, getImageEncryptionKey,
-    startMetricsServer, registerGauge, Gauge
+    startMetricsServer, registerGauge, Gauge,
+    registerCounter,
+    Counter
 } from '@project-overengineer/shared-lib'
 import http from "http"
 
@@ -27,6 +29,7 @@ let workerState: WorkerState = WorkerState.IDLE
 
 // Telemetry
 var heartbeatGauge: Gauge
+var errorCounter: Counter
 
 async function pullJobDetails(jobId: string): Promise<Job> {
     return Job.fromRedisObject(
@@ -87,6 +90,7 @@ export async function _healthz(): Promise<boolean> {
 
     } catch (err) {
         log("ocr-worker", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
+        errorCounter.inc({ method: "healthz" })
         return false
     }
 
@@ -94,6 +98,7 @@ export async function _healthz(): Promise<boolean> {
         await getRedis("ocr-worker").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
     } catch (err) {
         log("ocr-worker", `endpoint="/healthz"`, `failed, not able to access jobs in redis: ${err}`)
+        errorCounter.inc({ method: "healthz" })
         return false
     }
 
@@ -138,6 +143,7 @@ setInterval(async () => {
             job = await processJob(job)
         } catch (error) {
             job.result = error?.toString() ?? "" 
+            errorCounter.inc({ method: "process_job" })
         }
 
         job.status = JobStatus.DONE
@@ -172,7 +178,8 @@ if (require.main === module) {
 
         // metrics endpoint
         log("ocr-worker", `job="startup"`, `registering metrics`)
-        heartbeatGauge = registerGauge("ocr_worker_heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+        heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+        errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 
         heartbeatGauge.set(1)
 

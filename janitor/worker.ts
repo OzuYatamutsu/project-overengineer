@@ -1,5 +1,6 @@
 import { getRedis, log, pullAndWatchVaultConfigValues,
-    registerGauge, startMetricsServer, Gauge } from '@project-overengineer/shared-lib'
+    registerGauge, startMetricsServer, Gauge, Counter, 
+    registerCounter} from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -17,6 +18,7 @@ export const JOB_TTL_SECS = 3600
 
 var janitorJobDurationMsGauge: Gauge
 var heartbeatGauge: Gauge
+var errorCounter: Counter
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
@@ -43,6 +45,7 @@ export async function _healthz(): Promise<boolean> {
         }
     } catch (err) {
         log("janitor", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
+        errorCounter.inc()
         return false
     }
 
@@ -50,6 +53,7 @@ export async function _healthz(): Promise<boolean> {
         await getRedis("janitor").keys(`job:*`)
     } catch (err) {
         log("janitor", `endpoint="/healthz"`, `failed, not able to list jobs: ${err}`)
+        errorCounter.inc()
         return false
     }
 
@@ -101,6 +105,7 @@ if (require.main === module) {
         log("janitor", `job="startup"`, `registering metrics`)
         janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
         heartbeatGauge = registerGauge("janitor_heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+        errorCounter = registerCounter("janitor_errors_total", "Total number of errors in janitor")
 
         heartbeatGauge.set(1)
 

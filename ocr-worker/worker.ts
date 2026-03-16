@@ -1,6 +1,7 @@
 import { 
     Job, JobStatus, WorkerState, getRedis, log,
-    pullAndWatchVaultConfigValues, getImageEncryptionKey
+    pullAndWatchVaultConfigValues, getImageEncryptionKey,
+    startMetricsServer, registerGauge
 } from '@project-overengineer/shared-lib'
 import http from "http"
 
@@ -13,6 +14,11 @@ const HEALTH_CHECK_PORT = (
     process.env.HEALTH_CHECK_PORT
     ? Number(process.env.HEALTH_CHECK_PORT)
     : 3002
+)
+const PROMETHEUS_METRICS_PORT = (
+    process.env.PROMETHEUS_METRICS_PORT
+    ? Number(process.env.PROMETHEUS_METRICS_PORT)
+    : 4000
 )
 
 // Used to update progress bar. Update on each successful job.
@@ -160,6 +166,12 @@ if (require.main === module) {
         }).listen(HEALTH_CHECK_PORT, () => {
             log("ocr-worker", `job="startup" endpoint="/healthz"`, `listening on port ${HEALTH_CHECK_PORT}`)
         })
+
+        // metrics endpoint
+        log("ocr-worker", `job="startup"`, `registering metrics`)
+
+        startMetricsServer(PROMETHEUS_METRICS_PORT)
+        log("ocr-worker", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
     })
 }
 

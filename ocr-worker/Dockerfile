@@ -32,5 +32,11 @@ COPY ocr-worker ./ocr-worker
 RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @project-overengineer/ocr-worker build
 
+# /healthz
+EXPOSE 3002
+
+# /metrics
+EXPOSE 4000
+
 USER nodejs
 CMD ["node", "ocr-worker/dist/worker.js"]

@@ -16,6 +16,7 @@ const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600
 
 var janitorJobDurationMsGauge: Gauge
+var heartbeatGauge: Gauge
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
@@ -99,6 +100,9 @@ if (require.main === module) {
         // metrics endpoint
         log("janitor", `job="startup"`, `registering metrics`)
         janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
+        heartbeatGauge = registerGauge("janitor_heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+
+        heartbeatGauge.set(1)
 
         startMetricsServer(PROMETHEUS_METRICS_PORT)
         log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)

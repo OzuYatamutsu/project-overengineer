@@ -24,6 +24,7 @@ spec:
             - "-ruler.rule-path=/var/mimir/data-ruler"
             - "-blocks-storage.filesystem.dir=/var/mimir/blocks"
             - "-auth.multitenancy-enabled=false"
+            - "-ingester.ring.replication-factor=1"
           readinessProbe:
             httpGet:
               path: /ready

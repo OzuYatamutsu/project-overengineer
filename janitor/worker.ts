@@ -45,7 +45,7 @@ export async function _healthz(): Promise<boolean> {
         }
     } catch (err) {
         log("janitor", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
-        errorCounter.inc()
+        errorCounter.inc({ method: "ping_redis" })
         return false
     }
 
@@ -53,7 +53,7 @@ export async function _healthz(): Promise<boolean> {
         await getRedis("janitor").keys(`job:*`)
     } catch (err) {
         log("janitor", `endpoint="/healthz"`, `failed, not able to list jobs: ${err}`)
-        errorCounter.inc()
+        errorCounter.inc({ method: "list_jobs" })
         return false
     }
 
@@ -104,8 +104,8 @@ if (require.main === module) {
         // metrics endpoint
         log("janitor", `job="startup"`, `registering metrics`)
         janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
-        heartbeatGauge = registerGauge("janitor_heartbeat", "Heartbeat gauge to monitor if the worker is alive")
-        errorCounter = registerCounter("janitor_errors_total", "Total number of errors in janitor")
+        heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+        errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 
         heartbeatGauge.set(1)
 

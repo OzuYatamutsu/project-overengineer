@@ -16,6 +16,9 @@ metricsServer.get("/metrics", async (_: Request, res: Response): Promise<void> =
 })
 
 export function registerCounter(name: string, help: string, labelNames: string[] = []): client.Counter {
+    if (client.register.getSingleMetric(name)) {
+        return client.register.getSingleMetric(name) as client.Counter
+    }
     const counter = new client.Counter({
         "name": name,
         "help": help,
@@ -26,6 +29,9 @@ export function registerCounter(name: string, help: string, labelNames: string[]
 }
 
 export function registerGauge(name: string, help: string, labelNames: string[] = []): client.Gauge {
+    if (client.register.getSingleMetric(name)) {
+        return client.register.getSingleMetric(name) as client.Gauge
+    }
     const gauge = new client.Gauge({
         "name": name,
         "help": help,

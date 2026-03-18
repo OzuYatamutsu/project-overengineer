@@ -1,4 +1,4 @@
-import { registerCounter, registerGauge, startMetricsServer } from '../metrics'
+import { registerCounter, registerGauge, startMetricsServer, startHostTelemetryJob } from '../metrics'
 import { test, expect } from '@playwright/test'
 
 test('can register a counter', () => {
@@ -13,4 +13,7 @@ test('can register a gauge', () => {
 })
 test('can start the metrics server', () => {
   expect(() => startMetricsServer(3000)).not.toThrow()
+})
+test('can start the host telemetry job', () => {
+  expect(() => startHostTelemetryJob()).not.toThrow()
 })

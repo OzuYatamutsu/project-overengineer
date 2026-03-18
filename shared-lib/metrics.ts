@@ -1,8 +1,12 @@
 import client from "prom-client"
 import express from "express"
 import type { Request, Response } from "express"
+import os from "os"
 const metricsServer = express()
 const register = new client.Registry()
+const TELEMETRY_JOB_INTERVAL_MSECS = 20000
+var cpuUsageGauge: Gauge
+var memUsageGauge: Gauge
 
 client.collectDefaultMetrics({ register })
 
@@ -35,6 +39,21 @@ export function startMetricsServer(port: number): void {
     metricsServer.listen(port, () => {
         console.log(`Metrics server is running on port ${port}`)
     })
+}
+
+export function startHostTelemetryJob(): void {
+    if (!cpuUsageGauge) {
+        cpuUsageGauge = registerGauge("cpu_usage_percent", "Host CPU usage in percentage")
+    }
+    if (!memUsageGauge) {
+        memUsageGauge = registerGauge("mem_usage_percent", "Host memory usage in percentage")
+    }
+    setInterval(() => {
+        const cpuUsage = os.loadavg()[0] / os.cpus().length * 100
+        const memUsage = (1 - os.freemem() / os.totalmem()) * 100
+        cpuUsageGauge.set(cpuUsage)
+        memUsageGauge.set(memUsage)
+    }, TELEMETRY_JOB_INTERVAL_MSECS)
 }
 
 export type Gauge = client.Gauge

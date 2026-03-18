@@ -2,8 +2,7 @@ import {
     Job, JobStatus, WorkerState, getRedis, log,
     pullAndWatchVaultConfigValues, getImageEncryptionKey,
     startMetricsServer, registerGauge, Gauge,
-    registerCounter,
-    Counter
+    registerCounter, Counter, startHostTelemetryJob
 } from '@project-overengineer/shared-lib'
 import http from "http"
 
@@ -180,6 +179,9 @@ if (require.main === module) {
         log("ocr-worker", `job="startup"`, `registering metrics`)
         heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
         errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
+
+        log("ocr-worker", `job="startup"`, `starting host telemetry job`)
+        startHostTelemetryJob()
 
         heartbeatGauge.set(1)
 

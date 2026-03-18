@@ -1,6 +1,6 @@
 import { getRedis, log, pullAndWatchVaultConfigValues,
     registerGauge, startMetricsServer, Gauge, Counter, 
-    registerCounter} from '@project-overengineer/shared-lib'
+    registerCounter, startHostTelemetryJob} from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -106,6 +106,9 @@ if (require.main === module) {
         janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
         heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
         errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
+
+        log("janitor", `job="startup"`, `starting host telemetry job`)
+        startHostTelemetryJob()
 
         heartbeatGauge.set(1)
 

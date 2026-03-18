@@ -28,8 +28,8 @@ let estimatedTimeSecs: number = 200.0
 let workerState: WorkerState = WorkerState.IDLE
 
 // Telemetry
-var heartbeatGauge: Gauge
-var errorCounter: Counter
+let heartbeatGauge: Gauge
+let errorCounter: Counter
 
 async function pullJobDetails(jobId: string): Promise<Job> {
     return Job.fromRedisObject(

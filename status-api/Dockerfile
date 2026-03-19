@@ -21,6 +21,7 @@ RUN pnpm --filter @project-overengineer/shared-lib build
 
 FROM deps AS launch
 EXPOSE 3001
+EXPOSE 4000
 ENV STATUS_API_PORT=3001
 # ENV SENTINEL_HOST
 ENV SENTINEL_PORT=26379

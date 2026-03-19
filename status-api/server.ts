@@ -1,10 +1,23 @@
 import express from 'express'
 import { WebSocketServer, WebSocket, RawData } from "ws"
 import http from 'http'
-import { JobStatus, JobUpdate, rateLimit, getRedis, log, pullAndWatchVaultConfigValues, verifyJwt } from '@project-overengineer/shared-lib'
+import { 
+    JobStatus, JobUpdate, rateLimit, getRedis, log,
+    pullAndWatchVaultConfigValues, verifyJwt,
+    Counter, Gauge,
+    registerGauge,
+    startHostTelemetryJob,
+    registerCounter,
+    startMetricsServer
+} from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) || 3001
+const PROMETHEUS_METRICS_PORT = (
+    process.env.PROMETHEUS_METRICS_PORT
+    ? Number(process.env.PROMETHEUS_METRICS_PORT)
+    : 4000
+)
 const POLLING_PERIOD_MSECS = 2000
 const _IS_UNIT_TESTING = !!process.env["_IS_UNIT_TESTING"]
 
@@ -16,6 +29,9 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+
+let heartbeatGauge: Gauge
+let errorCounter: Counter
 
 async function getJobState(jobId: string, jwt: string): Promise<JobUpdate> {
     if (!(await verifyJwt("status-api", jwt, jobId, _IS_UNIT_TESTING))) {
@@ -90,9 +106,15 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
 
         setInterval(async () => {
-            const jobState = await getJobState(jobId, jwt)
-            ws.send(jobState.serialize())
-            if (jobState.status == JobStatus.DONE) {
+            try {
+                const jobState = await getJobState(jobId, jwt)
+                ws.send(jobState.serialize())
+                if (jobState.status == JobStatus.DONE) {
+                    ws.close()
+                }
+            } catch (err) {
+                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
+                errorCounter.inc({ method: "get_job_state" })
                 ws.close()
             }
         }, POLLING_PERIOD_MSECS)
@@ -115,6 +137,19 @@ if (require.main === module) {
             server.listen(port, async () => {
                 log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
             })
+
+        // metrics endpoint
+        log("status-api", `job="startup"`, `registering metrics`)
+        heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+        errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
+
+        log("status-api", `job="startup"`, `starting host telemetry job`)
+        startHostTelemetryJob()
+
+        heartbeatGauge.set(1)
+
+        startMetricsServer(PROMETHEUS_METRICS_PORT)
+        log("status-api", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
         })
     }
 }

@@ -17,6 +17,7 @@ const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600
 
 var janitorJobDurationMsGauge: Gauge
+var isIdleGauge: Gauge
 var heartbeatGauge: Gauge
 var errorCounter: Counter
 
@@ -64,18 +65,25 @@ export async function _healthz(): Promise<boolean> {
 // poll redis for new jobs
 setInterval(async () => {
     var startTime = new Date().getTime()
+    isIdleGauge.set(0)
     log("janitor", `job="cleanup"`, `starting job`)
     const keys = await getRedis("janitor").keys(`job:*`)
 
     for (const key of keys) {
-        const createUtime = Number(await getRedis("janitor").hget(key, "createUtime"))
-        if (jobIsStale(key, createUtime)) {
-            getRedis("janitor").del(key)
+        try {
+            const createUtime = Number(await getRedis("janitor").hget(key, "createUtime"))
+            if (jobIsStale(key, createUtime)) {
+                getRedis("janitor").del(key)
+            }
+        } catch (err) {
+            log("janitor", `jobId="${key}"`, `failed to process job: ${err}`)
+            errorCounter.inc({ method: "process_job" })
         }
     }
 
     var endTime = new Date().getTime()
     janitorJobDurationMsGauge.set({ status: "success" }, endTime - startTime)
+    isIdleGauge.set(1)
     log("janitor", `job="cleanup"`, `job finished`)
 }, POLLING_PERIOD_MSECS)
 
@@ -104,6 +112,7 @@ if (require.main === module) {
         // metrics endpoint
         log("janitor", `job="startup"`, `registering metrics`)
         janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
+        isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
         heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
         errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 
@@ -111,6 +120,7 @@ if (require.main === module) {
         startHostTelemetryJob()
 
         heartbeatGauge.set(1)
+        isIdleGauge.set(1)
 
         startMetricsServer(PROMETHEUS_METRICS_PORT)
         log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)

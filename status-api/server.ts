@@ -137,19 +137,19 @@ if (require.main === module) {
             server.listen(port, async () => {
                 log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
             })
-
-        // metrics endpoint
-        log("status-api", `job="startup"`, `registering metrics`)
-        heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
-        errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
-
-        log("status-api", `job="startup"`, `starting host telemetry job`)
-        startHostTelemetryJob()
-
-        heartbeatGauge.set(1)
-
-        startMetricsServer(PROMETHEUS_METRICS_PORT)
-        log("status-api", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
         })
     }
+
+    // metrics endpoint
+    log("status-api", `job="startup"`, `registering metrics`)
+    heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+    errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
+
+    log("status-api", `job="startup"`, `starting host telemetry job`)
+    startHostTelemetryJob()
+
+    heartbeatGauge.set(1)
+
+    startMetricsServer(PROMETHEUS_METRICS_PORT)
+    log("status-api", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
 }

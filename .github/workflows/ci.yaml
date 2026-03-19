@@ -11,7 +11,7 @@ jobs:
       - name: Install dependencies
         run: go install golang.stackrox.io/kube-linter/cmd/kube-linter@latest
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Lint Kubernetes yaml
         run: kube-linter lint .
 
@@ -21,7 +21,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -40,7 +40,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -59,7 +59,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -78,7 +78,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -97,7 +97,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.50.0-noble
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -130,7 +130,7 @@ jobs:
     needs: lint-fe-and-transformer
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -170,7 +170,7 @@ jobs:
     needs: lint-status-api
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -210,7 +210,7 @@ jobs:
     needs: lint-ocr-core
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -246,7 +246,7 @@ jobs:
     needs: lint-janitor
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -290,7 +290,7 @@ jobs:
     needs: lint-shared-lib
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         run: npm install -g pnpm

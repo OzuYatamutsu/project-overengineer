@@ -23,7 +23,7 @@ jobs:
         uses: helm/kind-action@v1
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
@@ -136,7 +136,7 @@ jobs:
     needs: deploy-test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
@@ -313,7 +313,7 @@ jobs:
     needs: deploy-staging
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2

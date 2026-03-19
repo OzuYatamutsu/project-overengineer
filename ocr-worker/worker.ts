@@ -69,11 +69,15 @@ export async function processJob(job: Job): Promise<Job> {
     log("ocr-worker", `jobId="${job.id}" timeElapsed="${timeDelta}"`, `OCR finished`)
 
     if (!jobResult.ok) {
-        jobDurationGauge.set({ status: "failure" }, timeDelta)
+        if (jobDurationGauge) {
+            jobDurationGauge.set({ status: "failure" }, timeDelta)
+        }
         throw new Error(`OCR failed: ${jobResult.statusText}`)
     }
 
-    jobDurationGauge.set({ status: "success" }, timeDelta)
+    if (jobDurationGauge) {
+        jobDurationGauge.set({ status: "success" }, timeDelta)
+    }
 
     // Update estimated time
     estimatedTimeSecs = (timeDelta + estimatedTimeSecs) / 2

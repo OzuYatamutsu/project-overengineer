@@ -27,6 +27,7 @@ let estimatedTimeSecs: number = 200.0
 let workerState: WorkerState = WorkerState.IDLE
 
 // Telemetry
+let isIdleGauge: Gauge
 let heartbeatGauge: Gauge
 let errorCounter: Counter
 
@@ -177,12 +178,14 @@ if (require.main === module) {
 
         // metrics endpoint
         log("ocr-worker", `job="startup"`, `registering metrics`)
+        isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
         heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
         errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 
         log("ocr-worker", `job="startup"`, `starting host telemetry job`)
         startHostTelemetryJob()
 
+        isIdleGauge.set(1)
         heartbeatGauge.set(1)
 
         startMetricsServer(PROMETHEUS_METRICS_PORT)

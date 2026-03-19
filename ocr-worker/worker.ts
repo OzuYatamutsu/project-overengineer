@@ -27,6 +27,7 @@ let estimatedTimeSecs: number = 200.0
 let workerState: WorkerState = WorkerState.IDLE
 
 // Telemetry
+let jobDurationGauge: Gauge
 let isIdleGauge: Gauge
 let heartbeatGauge: Gauge
 let errorCounter: Counter
@@ -41,6 +42,7 @@ export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
     job.decrypt(await getImageEncryptionKey("ocr-worker"))
 
+    isIdleGauge.set(0)
     log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
        method: "POST",
@@ -58,12 +60,16 @@ export async function processJob(job: Job): Promise<Job> {
        })
     })
 
+    isIdleGauge.set(1)
     timeDelta = Math.round((Date.now() / 1000) - timeDelta)
     log("ocr-worker", `jobId="${job.id}" timeElapsed="${timeDelta}"`, `OCR finished`)
 
     if (!jobResult.ok) {
-       throw new Error(`OCR failed: ${jobResult.statusText}`)
+        jobDurationGauge.set({ status: "failure" }, timeDelta)
+        throw new Error(`OCR failed: ${jobResult.statusText}`)
     }
+
+    jobDurationGauge.set({ status: "success" }, timeDelta)
 
     // Update estimated time
     estimatedTimeSecs = (timeDelta + estimatedTimeSecs) / 2
@@ -178,6 +184,7 @@ if (require.main === module) {
 
         // metrics endpoint
         log("ocr-worker", `job="startup"`, `registering metrics`)
+        jobDurationGauge = registerGauge("job_duration_seconds", "Duration of last OCR job in seconds", ["status"])
         isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
         heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
         errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])

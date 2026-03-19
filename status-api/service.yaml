@@ -65,6 +65,7 @@ spec:
             successThreshold: 1
           ports:
             - containerPort: 3001
+            - containerPort: 4000
           resources:
             requests:
               cpu: "50m"

@@ -2,11 +2,14 @@ import client from "prom-client"
 import express from "express"
 import type { Request, Response } from "express"
 import os from "os"
+import si from "systeminformation"
 const metricsServer = express()
 const register = new client.Registry()
 const TELEMETRY_JOB_INTERVAL_MSECS = 20000
 var cpuUsageGauge: Gauge
 var memUsageGauge: Gauge
+var netRxBytesGauge: Gauge
+var netTxBytesGauge: Gauge
 
 client.collectDefaultMetrics({ register })
 
@@ -54,11 +57,23 @@ export function startHostTelemetryJob(): void {
     if (!memUsageGauge) {
         memUsageGauge = registerGauge("mem_usage_percent", "Host memory usage in percentage")
     }
-    setInterval(() => {
+    if (!netRxBytesGauge) {
+        netRxBytesGauge = registerGauge("net_rx_bytes", "Host network received bytes")
+    }
+    if (!netTxBytesGauge) {
+        netTxBytesGauge = registerGauge("net_tx_bytes", "Host network transmitted bytes")
+    }
+    setInterval(async () => {
         const cpuUsage = os.loadavg()[0] / os.cpus().length * 100
         const memUsage = (1 - os.freemem() / os.totalmem()) * 100
+
+        const netStats = await si.networkStats()
+        const netRxBytes = netStats.reduce((acc, iface) => acc + iface.rx_bytes, 0)
+        const netTxBytes = netStats.reduce((acc, iface) => acc + iface.tx_bytes, 0)
         cpuUsageGauge.set(cpuUsage)
         memUsageGauge.set(memUsage)
+        netRxBytesGauge.set(netRxBytes)
+        netTxBytesGauge.set(netTxBytes)
     }, TELEMETRY_JOB_INTERVAL_MSECS)
 }
 

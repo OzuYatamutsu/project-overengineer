@@ -42,7 +42,9 @@ export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
     job.decrypt(await getImageEncryptionKey("ocr-worker"))
 
-    isIdleGauge.set(0)
+    if (isIdleGauge) {
+        isIdleGauge.set(0)
+    }
     log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
     const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
        method: "POST",
@@ -60,7 +62,9 @@ export async function processJob(job: Job): Promise<Job> {
        })
     })
 
-    isIdleGauge.set(1)
+    if (isIdleGauge) {
+        isIdleGauge.set(1)
+    }
     timeDelta = Math.round((Date.now() / 1000) - timeDelta)
     log("ocr-worker", `jobId="${job.id}" timeElapsed="${timeDelta}"`, `OCR finished`)
 
@@ -96,7 +100,6 @@ export async function _healthz(): Promise<boolean> {
 
     } catch (err) {
         log("ocr-worker", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
-        errorCounter.inc({ method: "healthz" })
         return false
     }
 
@@ -104,7 +107,6 @@ export async function _healthz(): Promise<boolean> {
         await getRedis("ocr-worker").scan('0', 'MATCH', 'job:*', 'COUNT', 1)
     } catch (err) {
         log("ocr-worker", `endpoint="/healthz"`, `failed, not able to access jobs in redis: ${err}`)
-        errorCounter.inc({ method: "healthz" })
         return false
     }
 
@@ -149,7 +151,9 @@ setInterval(async () => {
             job = await processJob(job)
         } catch (error) {
             job.result = error?.toString() ?? "" 
-            errorCounter.inc({ method: "process_job" })
+            if (errorCounter) {
+                errorCounter.inc({ method: "process_job" })
+            }
         }
 
         job.status = JobStatus.DONE

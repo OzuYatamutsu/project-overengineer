@@ -16,10 +16,10 @@ const PROMETHEUS_METRICS_PORT = (
 const POLLING_PERIOD_MSECS = 300000
 export const JOB_TTL_SECS = 3600
 
-var janitorJobDurationMsGauge: Gauge
-var isIdleGauge: Gauge
-var heartbeatGauge: Gauge
-var errorCounter: Counter
+let janitorJobDurationMsGauge: Gauge
+let isIdleGauge: Gauge
+let heartbeatGauge: Gauge
+let errorCounter: Counter
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {

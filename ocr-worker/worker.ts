@@ -181,23 +181,23 @@ if (require.main === module) {
         }).listen(HEALTH_CHECK_PORT, () => {
             log("ocr-worker", `job="startup" endpoint="/healthz"`, `listening on port ${HEALTH_CHECK_PORT}`)
         })
-
-        // metrics endpoint
-        log("ocr-worker", `job="startup"`, `registering metrics`)
-        jobDurationGauge = registerGauge("job_duration_seconds", "Duration of last OCR job in seconds", ["status"])
-        isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
-        heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
-        errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
-
-        log("ocr-worker", `job="startup"`, `starting host telemetry job`)
-        startHostTelemetryJob()
-
-        isIdleGauge.set(1)
-        heartbeatGauge.set(1)
-
-        startMetricsServer(PROMETHEUS_METRICS_PORT)
-        log("ocr-worker", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
     })
+
+    // metrics endpoint
+    log("ocr-worker", `job="startup"`, `registering metrics`)
+    jobDurationGauge = registerGauge("job_duration_seconds", "Duration of last OCR job in seconds", ["status"])
+    isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
+    heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+    errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
+
+    log("ocr-worker", `job="startup"`, `starting host telemetry job`)
+    startHostTelemetryJob()
+
+    isIdleGauge.set(1)
+    heartbeatGauge.set(1)
+
+    startMetricsServer(PROMETHEUS_METRICS_PORT)
+    log("ocr-worker", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
 }
 
 log("ocr-worker", `job="startup"`, `OCR worker started.`)

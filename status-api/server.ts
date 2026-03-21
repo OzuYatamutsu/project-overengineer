@@ -30,6 +30,10 @@ app.use(express.json());
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
+let activeWsConnectionCount: number = 0
+let activeWsConnectionCountGauge: Gauge
+let abortedWsCounter: Counter
+let closedWsCounter: Counter
 let heartbeatGauge: Gauge
 let errorCounter: Counter
 
@@ -89,9 +93,12 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
         ws.send('Rate limit exceeded')
         ws.close()
+        abortedWsCounter.inc()
     }
 
     log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `New connection`)
+    activeWsConnectionCount += 1
+    activeWsConnectionCountGauge.set(activeWsConnectionCount)
 
     ws.on('message', (data: RawData) => {
         const message = JSON.parse(data.toString())
@@ -100,6 +107,9 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
         if (jobId === undefined || jwt === undefined) {
             log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
+            abortedWsCounter.inc()
+            activeWsConnectionCount -= 1
+            activeWsConnectionCountGauge.set(activeWsConnectionCount)
             ws.close()
         }
 
@@ -110,11 +120,18 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
                 const jobState = await getJobState(jobId, jwt)
                 ws.send(jobState.serialize())
                 if (jobState.status == JobStatus.DONE) {
+                    log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
+                    closedWsCounter.inc()
+                    activeWsConnectionCount -= 1
+                    activeWsConnectionCountGauge.set(activeWsConnectionCount)
                     ws.close()
                 }
             } catch (err) {
                 log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
+                abortedWsCounter.inc()
                 errorCounter.inc({ method: "get_job_state" })
+                activeWsConnectionCount -= 1
+                activeWsConnectionCountGauge.set(activeWsConnectionCount)
                 ws.close()
             }
         }, POLLING_PERIOD_MSECS)
@@ -122,6 +139,8 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
     ws.on('close', () => {
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
+        activeWsConnectionCount -= 1
+        activeWsConnectionCountGauge.set(activeWsConnectionCount)
     })
 })
 
@@ -142,6 +161,9 @@ if (require.main === module) {
 
     // metrics endpoint
     log("status-api", `job="startup"`, `registering metrics`)
+    activeWsConnectionCountGauge = registerGauge("active_ws_connections", "Number of active WebSocket connections to the status API")
+    abortedWsCounter = registerCounter("aborted_ws_connections_total", "Total number of aborted WebSocket connections")
+    closedWsCounter = registerCounter("closed_ws_connections_total", "Total number of cleanly closed WebSocket connections")
     heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
     errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 

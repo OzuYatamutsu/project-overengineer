@@ -123,14 +123,14 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
-    prometheus.scrape "ocr-worker" {
+    prometheus.scrape "ocrworker" {
       targets = [
         { __address__ = "svc-ocr-worker:4000" },
       ]
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
-    prometheus.scrape "status-api" {
+    prometheus.scrape "statusapi" {
       targets = [
         { __address__ = "svc-status-api:4000" },
       ]

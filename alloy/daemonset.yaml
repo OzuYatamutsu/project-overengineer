@@ -112,34 +112,37 @@ data:
 
     loki.write "default" {
       endpoint {
-        url = "http://svc-loki:3100/loki/api/v1/push"
+        url = "http://svc-loki.monitoring-plane.svc.cluster.local:3100/loki/api/v1/push"
       }
     }
 
     prometheus.scrape "janitor" {
       targets = [
-        { __address__ = "svc-janitor:4000" },
+        { __address__ = "http://svc-janitor.default.svc.cluster.local:4000" },
       ]
+      scrape_interval = "30s"
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
     prometheus.scrape "ocrworker" {
       targets = [
-        { __address__ = "svc-ocr-worker:4000" },
+        { __address__ = "http://svc-ocr-worker.default.svc.cluster.local:4000" },
       ]
+      scrape_interval = "30s"
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
     prometheus.scrape "statusapi" {
       targets = [
-        { __address__ = "svc-status-api:4000" },
+        { __address__ = "http://svc-status-api.default.svc.cluster.local:4000" },
       ]
+      scrape_interval = "30s"
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
     prometheus.remote_write "mimir" {
       endpoint {
-        url = "http://svc-mimir:8081/api/v1/push"
+        url = "http://svc-mimir.monitoring-plane.svc.cluster.local:8081/api/v1/push"
 
         headers = {
           "X-Scope-OrgID" = "default",

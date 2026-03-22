@@ -122,7 +122,21 @@ data:
       ]
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
-  
+
+    prometheus.scrape "ocr-worker" {
+      targets = [
+        { __address__ = "svc-ocr-worker:4000" },
+      ]
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }
+
+    prometheus.scrape "status-api" {
+      targets = [
+        { __address__ = "svc-status-api:4000" },
+      ]
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }
+
     prometheus.remote_write "mimir" {
       endpoint {
         url = "http://svc-mimir:8081/api/v1/push"

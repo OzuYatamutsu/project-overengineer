@@ -145,4 +145,6 @@ spec:
   ports:
     - port: 3002
       targetPort: 3002
+    - port: 4000
+      targetPort: 4000
   type: ClusterIP

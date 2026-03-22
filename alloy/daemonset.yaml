@@ -118,7 +118,7 @@ data:
 
     prometheus.scrape "janitor" {
       targets = [
-        { __address__ = "http://svc-janitor.default.svc.cluster.local:4000" },
+        { __address__ = "svc-janitor.default.svc.cluster.local:4000/metrics" },
       ]
       scrape_interval = "30s"
       forward_to = [prometheus.remote_write.mimir.receiver]
@@ -126,7 +126,7 @@ data:
 
     prometheus.scrape "ocrworker" {
       targets = [
-        { __address__ = "http://svc-ocr-worker.default.svc.cluster.local:4000" },
+        { __address__ = "svc-ocr-worker.default.svc.cluster.local:4000/metrics" },
       ]
       scrape_interval = "30s"
       forward_to = [prometheus.remote_write.mimir.receiver]
@@ -134,7 +134,7 @@ data:
 
     prometheus.scrape "statusapi" {
       targets = [
-        { __address__ = "http://svc-status-api.default.svc.cluster.local:4000" },
+        { __address__ = "svc-status-api.default.svc.cluster.local:4000/metrics" },
       ]
       scrape_interval = "30s"
       forward_to = [prometheus.remote_write.mimir.receiver]
@@ -142,7 +142,7 @@ data:
 
     prometheus.remote_write "mimir" {
       endpoint {
-        url = "http://svc-mimir.monitoring-plane.svc.cluster.local:8081/api/v1/push"
+        url = "svc-mimir.monitoring-plane.svc.cluster.local:8081/api/v1/push"
 
         headers = {
           "X-Scope-OrgID" = "default",

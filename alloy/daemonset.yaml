@@ -98,7 +98,7 @@ metadata:
 data:
   config.alloy: |
     logging {
-      level = "debug"
+      level = "info"
     }
 
     loki.source.kubernetes "pods" {

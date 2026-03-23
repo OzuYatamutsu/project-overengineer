@@ -89,11 +89,14 @@ app.get('/healthz', async (_, res) => {
 })
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
+    let interval: NodeJS.Timeout | undefined = undefined
+
     if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
         ws.send('Rate limit exceeded')
         ws.close()
         abortedWsCounter.inc()
+        return
     }
 
     log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `New connection`)
@@ -113,7 +116,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
 
-        setInterval(async () => {
+        interval = setInterval(async () => {
             try {
                 const jobState = await getJobState(jobId, jwt)
                 ws.send(jobState.serialize())
@@ -132,6 +135,9 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     })
 
     ws.on('close', () => {
+        if (interval) {
+            clearInterval(interval)
+        }
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
         activeWsConnectionCount -= 1
         activeWsConnectionCountGauge.set(activeWsConnectionCount)

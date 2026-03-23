@@ -89,7 +89,7 @@ app.get('/healthz', async (_, res) => {
 })
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    let interval: NodeJS.Timeout | undefined = undefined
+    let interval: ReturnType<typeof setInterval> | undefined
 
     if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
         log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)

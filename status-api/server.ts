@@ -139,20 +139,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 })
 
 if (require.main === module) {
-    if (_IS_UNIT_TESTING) {
-        server.listen(port, async () => {
-            log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
-        })
-    }
-
-    else {
-        pullAndWatchVaultConfigValues("status-api").then(() => {
-            server.listen(port, async () => {
-                log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
-            })
-        })
-    }
-
     // metrics endpoint
     log("status-api", `job="startup"`, `registering metrics`)
     activeWsConnectionCountGauge = registerGauge("active_ws_connections", "Number of active WebSocket connections to the status API")
@@ -168,4 +154,18 @@ if (require.main === module) {
 
     startMetricsServer(PROMETHEUS_METRICS_PORT)
     log("status-api", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
+
+    if (_IS_UNIT_TESTING) {
+        server.listen(port, async () => {
+            log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
+        })
+    }
+
+    else {
+        pullAndWatchVaultConfigValues("status-api").then(() => {
+            server.listen(port, async () => {
+                log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
+            })
+        })
+    }
 }

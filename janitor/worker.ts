@@ -88,6 +88,22 @@ setInterval(async () => {
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {
+    // metrics endpoint
+    log("janitor", `job="startup"`, `registering metrics`)
+    janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
+    isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
+    heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
+    errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
+
+    log("janitor", `job="startup"`, `starting host telemetry job`)
+    startHostTelemetryJob()
+
+    heartbeatGauge.set(1)
+    isIdleGauge.set(1)
+
+    startMetricsServer(PROMETHEUS_METRICS_PORT)
+    log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
+
     pullAndWatchVaultConfigValues("janitor").then(() => {
         // Health check endpoint
         http.createServer(async (req, res) => {
@@ -108,22 +124,6 @@ if (require.main === module) {
         }).listen(HEALTH_CHECK_PORT, () => {
             log("janitor", `job="startup" endpoint="/healthz"`, `listening on port ${HEALTH_CHECK_PORT}`)
         })
-
-        // metrics endpoint
-        log("janitor", `job="startup"`, `registering metrics`)
-        janitorJobDurationMsGauge = registerGauge("janitor_job_duration_ms", "Duration of janitor job in milliseconds", ["status"])
-        isIdleGauge = registerGauge("is_idle", "Whether this worker is idle (1 for idle, 0 for busy)")
-        heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
-        errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
-
-        log("janitor", `job="startup"`, `starting host telemetry job`)
-        startHostTelemetryJob()
-
-        heartbeatGauge.set(1)
-        isIdleGauge.set(1)
-
-        startMetricsServer(PROMETHEUS_METRICS_PORT)
-        log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
     })
 }
 

@@ -25,7 +25,8 @@ export function registerCounter(name: string, help: string, labelNames: string[]
     const counter = new client.Counter({
         "name": name,
         "help": help,
-        "labelNames": labelNames
+        "labelNames": labelNames,
+        "registers": [register]
     })
     register.registerMetric(counter)
     return counter
@@ -38,7 +39,8 @@ export function registerGauge(name: string, help: string, labelNames: string[] =
     const gauge = new client.Gauge({
         "name": name,
         "help": help,
-        "labelNames": labelNames
+        "labelNames": labelNames,
+        "registers": [register]
     })
     register.registerMetric(gauge)
     return gauge

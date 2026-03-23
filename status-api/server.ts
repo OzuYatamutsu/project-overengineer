@@ -108,8 +108,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         if (jobId === undefined || jwt === undefined) {
             log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
             abortedWsCounter.inc()
-            activeWsConnectionCount -= 1
-            activeWsConnectionCountGauge.set(activeWsConnectionCount)
             ws.close()
         }
 
@@ -122,16 +120,12 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
                 if (jobState.status == JobStatus.DONE) {
                     log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
                     closedWsCounter.inc()
-                    activeWsConnectionCount -= 1
-                    activeWsConnectionCountGauge.set(activeWsConnectionCount)
                     ws.close()
                 }
             } catch (err) {
                 log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
                 abortedWsCounter.inc()
                 errorCounter.inc({ method: "get_job_state" })
-                activeWsConnectionCount -= 1
-                activeWsConnectionCountGauge.set(activeWsConnectionCount)
                 ws.close()
             }
         }, POLLING_PERIOD_MSECS)

@@ -5,7 +5,7 @@ import { Job } from '@project-overengineer/shared-lib/job'
 import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { standardizeImage, validateImage, saveJob, getClientIp } from './handler'
-import { incrementErrorCounter, incrementSuccessfulJobCounter } from '../../metrics/handler'
+import { incrementErrorCounter, incrementSuccessfulJobCounter, observeJobDuration } from '../../metrics/handler'
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
@@ -25,6 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   log("project-overengineer-fe", `endpoint="/upload"`, `Processing new request...`)
   const contentType = request.headers.get('content-type')
+  var startTime = new Date().getTime()
 
   if (!contentType?.startsWith('image/')) {
     log("project-overengineer-fe", `endpoint="/upload"`, `Rejected request (failed validation)`)
@@ -42,7 +43,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   // Validate length and type
   if (!(await validateImage(rawImageData))) {
     log("project-overengineer-fe", `endpoint="/upload"`, `Rejected request (failed validation)`)
-  
+
     return NextResponse.json({
       message: "Image failed validation (size or file format)",
       jobId: ""
@@ -77,6 +78,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   log("project-overengineer-fe", `endpoint="/upload" jobId="${job.id}"`, `Job created successfully`)
   incrementSuccessfulJobCounter()
+  observeJobDuration(new Date().getTime() - startTime)
 
   return NextResponse.json({
     message: "Job created",

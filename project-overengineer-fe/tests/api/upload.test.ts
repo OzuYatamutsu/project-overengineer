@@ -19,7 +19,7 @@ test.describe('Upload API', () => {
     const data = await response.json()
     expect(data).toHaveProperty('jobId')
     expect(typeof data.jobId).toBe('string')
-  })
+})
 
 test('should reject something which is not an image', async ({ baseURL }) => {
     const notAnImage = 'bm90LWFuLWltYWdl'

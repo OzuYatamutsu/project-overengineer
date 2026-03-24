@@ -4,7 +4,7 @@ import type { Request, Response } from "express"
 import os from "os"
 import si from "systeminformation"
 const metricsServer = express()
-const register = new client.Registry()
+export const register = new client.Registry()
 const TELEMETRY_JOB_INTERVAL_MSECS = 20000
 var cpuUsageGauge: Gauge
 var memUsageGauge: Gauge

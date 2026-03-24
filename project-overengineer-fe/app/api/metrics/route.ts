@@ -2,7 +2,7 @@ import { registerMetrics, getRegister } from "./handler"
 
 let _metrics_inited = false
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
     if (!_metrics_inited) {
         registerMetrics()
         _metrics_inited = true

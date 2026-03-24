@@ -7,4 +7,13 @@ test.describe('Metrics API', () => {
 
         expect(response.status()).toBe(200)
     })
+
+    test('should return metrics in Prometheus format', async ({ baseURL }) => {
+        const reqContext = await request.newContext()
+        const response = await reqContext.get(`${baseURL}/api/metrics`)
+
+        expect(response.status()).toBe(200)
+        const body = await response.text()
+        expect(body).toContain('successful_jobs_total')
+    })
 })

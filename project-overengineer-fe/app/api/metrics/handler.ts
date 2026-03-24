@@ -31,7 +31,7 @@ export function incrementSuccessfulJobCounter(): void {
 }
 
 export function observeJobDuration(duration: number): void {
-    jobDurationGauge.set(duration)
+    jobDurationMsGauge.set(duration)
 }
 
 export function getRegister(): typeof register {

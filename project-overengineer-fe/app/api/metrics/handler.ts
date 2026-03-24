@@ -4,6 +4,7 @@ import {
 } from '@project-overengineer/shared-lib'
 
 let successfulJobCounter: Counter
+let jobDurationMsGauge: Gauge
 let heartbeatGauge: Gauge
 let errorCounter: Counter
 
@@ -11,6 +12,7 @@ export function registerMetrics(): void {
     // metrics endpoint
     log("project-overengineer-fe", `job="startup"`, `registering metrics`)
     successfulJobCounter = registerCounter("successful_jobs_total", "Total number of jobs successfully processed")
+    jobDurationMsGauge = registerGauge("job_duration_ms", "Duration of job processing in milliseconds")
     heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
     errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 
@@ -26,6 +28,10 @@ export function incrementErrorCounter(method: string): void {
 
 export function incrementSuccessfulJobCounter(): void {
     successfulJobCounter.inc()
+}
+
+export function observeJobDuration(duration: number): void {
+    jobDurationGauge.set(duration)
 }
 
 export function getRegister(): typeof register {

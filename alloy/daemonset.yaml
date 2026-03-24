@@ -144,6 +144,15 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
+    prometheus.scrape "projectoverengineerfe" {
+      targets = [
+        { __address__ = "svc-project-overengineer-fe.default.svc.cluster.local:3000" },
+      ]
+      metrics_path = "/api/metrics"
+      scrape_interval = "30s"
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }
+
     prometheus.remote_write "mimir" {
       endpoint {
         url = "http://svc-mimir.monitoring-plane.svc.cluster.local:8081/api/v1/push"

@@ -5,6 +5,7 @@ import { Job } from '@project-overengineer/shared-lib/job'
 import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { standardizeImage, validateImage, saveJob, getClientIp } from './handler'
+import { incrementErrorCounter } from '../metrics/handler'
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
@@ -65,6 +66,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     console.error(`Error saving job to Redis: ${error}`)
     log("project-overengineer-fe", `endpoint="/upload" jobId="${job.id}"`, `Failed to create job. Error: ${error}`)
+    incrementErrorCounter("save_job")
     return NextResponse.json({
       message: `Failed to create job. Error: ${error}`,
       jobId: job.id

@@ -5,13 +5,18 @@ import { Job } from '@project-overengineer/shared-lib/job'
 import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { standardizeImage, validateImage, saveJob, getClientIp } from './handler'
-import { incrementErrorCounter, incrementSuccessfulJobCounter, observeJobDuration } from '../../metrics/handler'
+import { 
+  incrementErrorCounter, incrementSuccessfulJobCounter, observeJobDuration,
+  registerMetricsIfRequired
+} from '../../metrics/handler'
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
 const PER_SECS = 60
 
 export async function POST(request: Request): Promise<NextResponse> {
+  await registerMetricsIfRequired()
+
   const ip = await getClientIp(request)
   if (!rateLimit("project-overengineer-fe", ip, MAX_REQUESTS, PER_SECS)) {
     log("project-overengineer-fe", `endpoint="/upload" ip="${ip}"`, `rejecting request, rate limit exceeded`)
@@ -24,6 +29,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   log("project-overengineer-fe", `endpoint="/upload"`, `Processing new request...`)
+  
   const contentType = request.headers.get('content-type')
   var startTime = new Date().getTime()
 

@@ -2,11 +2,22 @@ import {
     registerGauge, registerCounter, startHostTelemetryJob,
     register, log
 } from '@project-overengineer/shared-lib'
+
 import type { Gauge, Counter } from '@project-overengineer/shared-lib'
+
 let successfulJobCounter: Counter
 let jobDurationMsGauge: Gauge
 let heartbeatGauge: Gauge
 let errorCounter: Counter
+
+let _metrics_inited: Promise<void> | null = null
+
+export async function registerMetricsIfRequired(): Promise<void> {
+    if (!_metrics_inited) {
+        _metrics_inited = Promise.resolve(registerMetrics())
+    }
+    await _metrics_inited
+}
 
 export function registerMetrics(): void {
     // metrics endpoint

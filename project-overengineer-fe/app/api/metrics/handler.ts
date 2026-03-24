@@ -18,6 +18,10 @@ export function registerMetrics(): void {
     heartbeatGauge.set(1)
 }
 
+export function incrementErrorCounter(method: string): void {
+    errorCounter.inc({ method })
+}
+
 export function getRegister(): typeof register {
     return register
 }

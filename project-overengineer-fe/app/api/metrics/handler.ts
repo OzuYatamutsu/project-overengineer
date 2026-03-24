@@ -1,8 +1,8 @@
 import {
     registerGauge, registerCounter, startHostTelemetryJob,
-    register, log, Counter, Gauge 
+    register, log
 } from '@project-overengineer/shared-lib'
-
+import type { Gauge, Counter } from '@project-overengineer/shared-lib'
 let successfulJobCounter: Counter
 let jobDurationMsGauge: Gauge
 let heartbeatGauge: Gauge

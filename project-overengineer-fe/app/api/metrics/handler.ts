@@ -3,12 +3,14 @@ import {
     register, log, Counter, Gauge 
 } from '@project-overengineer/shared-lib'
 
+let successfulJobCounter: Counter
 let heartbeatGauge: Gauge
 let errorCounter: Counter
 
 export function registerMetrics(): void {
     // metrics endpoint
     log("project-overengineer-fe", `job="startup"`, `registering metrics`)
+    successfulJobCounter = registerCounter("successful_jobs_total", "Total number of jobs successfully processed")
     heartbeatGauge = registerGauge("heartbeat", "Heartbeat gauge to monitor if the worker is alive")
     errorCounter = registerCounter("errors_total", "Total number of unhandled errors", ["method"])
 
@@ -20,6 +22,10 @@ export function registerMetrics(): void {
 
 export function incrementErrorCounter(method: string): void {
     errorCounter.inc({ method })
+}
+
+export function incrementSuccessfulJobCounter(): void {
+    successfulJobCounter.inc()
 }
 
 export function getRegister(): typeof register {

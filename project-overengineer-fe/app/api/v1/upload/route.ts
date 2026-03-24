@@ -5,7 +5,7 @@ import { Job } from '@project-overengineer/shared-lib/job'
 import { rateLimit } from '@project-overengineer/shared-lib/rate-limit'
 import { log } from '@project-overengineer/shared-lib/logging'
 import { standardizeImage, validateImage, saveJob, getClientIp } from './handler'
-import { incrementErrorCounter } from '../metrics/handler'
+import { incrementErrorCounter, incrementSuccessfulJobCounter } from '../../metrics/handler'
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
@@ -74,6 +74,9 @@ export async function POST(request: Request): Promise<NextResponse> {
       status: 500
     })
   }
+
+  log("project-overengineer-fe", `endpoint="/upload" jobId="${job.id}"`, `Job created successfully`)
+  incrementSuccessfulJobCounter()
 
   return NextResponse.json({
     message: "Job created",

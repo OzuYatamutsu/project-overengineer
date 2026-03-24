@@ -4,12 +4,12 @@ import http from 'http'
 import { 
     JobStatus, JobUpdate, rateLimit, getRedis, log,
     pullAndWatchVaultConfigValues, verifyJwt,
-    Counter, Gauge,
     registerGauge,
     startHostTelemetryJob,
     registerCounter,
     startMetricsServer
 } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter } from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) || 3001

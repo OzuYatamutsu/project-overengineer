@@ -1,9 +1,10 @@
 import { 
     Job, JobStatus, WorkerState, getRedis, log,
     pullAndWatchVaultConfigValues, getImageEncryptionKey,
-    startMetricsServer, registerGauge, Gauge,
-    registerCounter, Counter, startHostTelemetryJob
+    startMetricsServer, registerGauge,
+    registerCounter, startHostTelemetryJob
 } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"

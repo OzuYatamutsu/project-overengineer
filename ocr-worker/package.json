@@ -12,15 +12,15 @@
   },
   "dependencies": {
     "@project-overengineer/shared-lib": "workspace:*",
-    "undici": "^7.24.0"
+    "undici": "^7.24.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
-    "@types/node": "^25.3.5",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
-    "eslint": "^10.0.3",
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "@typescript-eslint/parser": "^8.57.2",
+    "eslint": "^10.1.0",
     "globals": "^17.4.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

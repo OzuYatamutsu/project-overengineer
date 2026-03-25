@@ -14,7 +14,6 @@ data:
         otlp:
           protocols:
             grpc:
-            http:
 
     ingester:
       trace_idle_period: 10s
@@ -50,6 +49,8 @@ spec:
       containers:
         - name: tempo
           image: grafana/tempo:2.10.3
+          args:
+            - "-config.file=/etc/tempo/tempo.yaml"
           readinessProbe:
             httpGet:
               path: /ready
@@ -79,6 +80,9 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
+          - name: tempo-config
+            mountPath: /etc/tempo
+            readOnly: true
           - name: tempo-data
             mountPath: /var/tempo
       securityContext:
@@ -86,6 +90,10 @@ spec:
         runAsGroup: 999
         fsGroup: 999
         runAsNonRoot: true
+    volumes:
+    - name: tempo-config
+      configMap:
+        name: tempo-config
   volumeClaimTemplates:
   - metadata:
       name: tempo-data
@@ -106,6 +114,10 @@ spec:
   selector:
     app: tempo
   ports:
-    - port: 3200
+    - name: http
+      port: 3200
       targetPort: 3200
+    - name: grpc
+      port: 4317
+      targetPort: 4317
   type: ClusterIP

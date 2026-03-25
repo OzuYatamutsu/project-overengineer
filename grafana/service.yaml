@@ -122,3 +122,8 @@ data:
         access: proxy
         url: http://svc-mimir:8081/prometheus
         isDefault: false
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://svc-tempo:3200
+        isDefault: false

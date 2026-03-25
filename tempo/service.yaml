@@ -90,10 +90,10 @@ spec:
         runAsGroup: 999
         fsGroup: 999
         runAsNonRoot: true
-    volumes:
-    - name: tempo-config
-      configMap:
-        name: tempo-config
+      volumes:
+      - name: tempo-config
+        configMap:
+          name: tempo-config
   volumeClaimTemplates:
   - metadata:
       name: tempo-data

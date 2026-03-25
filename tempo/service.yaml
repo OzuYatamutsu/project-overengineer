@@ -68,6 +68,7 @@ spec:
             failureThreshold: 3
           ports:
             - containerPort: 3200
+            - containerPort: 4317
           resources:
             requests:
               cpu: "50m"

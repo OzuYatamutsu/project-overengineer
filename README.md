@@ -371,9 +371,9 @@ Project Overengineer uses the Grafana stack for observability. All components ar
 
 - A telemetry sidecar is attached to each node in the service plane, which runs an instance of [Grafana Alloy](https://grafana.com/docs/alloy/latest/introduction/) (a Grafana-specific distribution of the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)) to ingest logs, metrics, and traces.
 - A standalone instance of Grafana Alloy is deployed to ingest client-side logs, metrics, and traces.
-- Logs are shipped to Grafana Loki via OTLP.
-- Metrics are shipped to Grafana Mimir via OTLP.
-- Traces are shipped to Grafana Tempo via OTLP.
+- Logs are shipped to Grafana Loki.
+- Metrics are shipped to Grafana Mimir.
+- Traces are shipped to Grafana Tempo.
 - A Grafana instance is configured to access these data sources for querying and visualization.
 
 ```mermaid
@@ -407,9 +407,10 @@ graph LR
     O1 --- TelemetrySplitter
     TelemetrySplitter -->|Logs| Alloy
     TelemetrySplitter -->|Metrics| Alloy
+    TelemetrySplitter -->|Traces| Alloy
     Alloy -->|Logs| Loki
     Alloy -->|Metrics| Mimir
-    TelemetrySplitter -->|Traces| Tempo
+    Alloy -->|Traces| Tempo
 
     Loki --> Grafana
     Mimir --> Grafana

@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-config
+  namespace: monitoring-plane
+
+data:
+  tempo.yaml: |
+    server:
+      http_listen_port: 3200
+
+    distributor:
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+            http:
+
+    ingester:
+      trace_idle_period: 10s
+      max_block_duration: 5m
+
+    compactor:
+      compaction:
+        block_retention: 24h
+
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tempo
+  namespace: monitoring-plane
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tempo
+  template:
+    metadata:
+      labels:
+        app: tempo
+    spec:
+      containers:
+        - name: tempo
+          image: grafana/tempo:2.10.3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3200
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 3200
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
+          ports:
+            - containerPort: 3200
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - name: tempo-data
+            mountPath: /var/tempo
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        runAsNonRoot: true
+  volumeClaimTemplates:
+  - metadata:
+      name: tempo-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-tempo
+  namespace: monitoring-plane
+spec:
+  selector:
+    app: tempo
+  ports:
+    - port: 3200
+      targetPort: 3200
+  type: ClusterIP

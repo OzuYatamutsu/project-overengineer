@@ -74,6 +74,9 @@ jobs:
 
       - name: Deploy mimir
         run: kubectl apply -f mimir/service.yaml
+      
+      - name: Deploy tempo
+        run: kubectl apply -f tempo/service.yaml
 
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
@@ -84,6 +87,8 @@ jobs:
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for mimir]'
           kubectl rollout status -n monitoring-plane statefulset/mimir --timeout=300s
+          echo '[waiting for tempo]'
+          kubectl rollout status -n monitoring-plane statefulset/tempo --timeout=300s
           echo '[waiting for alloy]'
           kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
@@ -124,6 +129,9 @@ jobs:
           echo '[mimir logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=mimir
           kubectl logs -n monitoring-plane --all-containers --selector=app=mimir --previous || true
+          echo '[tempo logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=tempo
+          kubectl logs -n monitoring-plane --all-containers --selector=app=tempo --previous || true
           echo '[alloy logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
@@ -228,8 +236,8 @@ jobs:
       - name: Deploy mimir
         run: kubectl apply -f mimir/service.yaml
 
-      - name: Deploy alloy
-        run: kubectl apply -f alloy/daemonset.yaml
+      - name: Deploy tempo
+        run: kubectl apply -f tempo/service.yaml
 
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
@@ -240,6 +248,8 @@ jobs:
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for mimir]'
           kubectl rollout status -n monitoring-plane statefulset/mimir --timeout=300s
+          echo '[waiting for tempo]'
+          kubectl rollout status -n monitoring-plane statefulset/tempo --timeout=300s
           echo '[waiting for alloy]'
           kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
@@ -280,6 +290,9 @@ jobs:
           echo '[mimir logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=mimir
           kubectl logs -n monitoring-plane --all-containers --selector=app=mimir --previous || true
+          echo '[tempo logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=tempo
+          kubectl logs -n monitoring-plane --all-containers --selector=app=tempo --previous || true
           echo '[alloy logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true
@@ -404,6 +417,9 @@ jobs:
 
       - name: Deploy mimir
         run: kubectl apply -f mimir/service.yaml
+      
+      - name: Deploy tempo
+        run: kubectl apply -f tempo/service.yaml
 
       - name: Deploy grafana
         run: kubectl apply -f grafana/service.yaml
@@ -414,6 +430,8 @@ jobs:
           kubectl rollout status -n monitoring-plane statefulset/loki --timeout=300s
           echo '[waiting for mimir]'
           kubectl rollout status -n monitoring-plane statefulset/mimir --timeout=300s
+          echo '[waiting for tempo]'
+          kubectl rollout status -n monitoring-plane statefulset/tempo --timeout=300s
           echo '[waiting for alloy]'
           kubectl rollout status -n monitoring-plane daemonset/alloy --timeout=300s
           echo '[waiting for grafana]'
@@ -454,6 +472,9 @@ jobs:
           echo '[mimir logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=mimir
           kubectl logs -n monitoring-plane --all-containers --selector=app=mimir --previous || true
+          echo '[tempo logs]'
+          kubectl logs -n monitoring-plane --all-containers --selector=app=tempo
+          kubectl logs -n monitoring-plane --all-containers --selector=app=tempo --previous || true
           echo '[alloy logs]'
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy
           kubectl logs -n monitoring-plane --all-containers --selector=app=alloy --previous || true

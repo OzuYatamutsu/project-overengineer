@@ -168,9 +168,7 @@ data:
         endpoint = "0.0.0.0:4317"
       }
 
-      output {
-        traces = [otelcol.exporter.otlp.tempo]
-      }
+      output {}
     }
 
     otelcol.exporter.otlp "tempo" {

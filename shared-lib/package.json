@@ -1,6 +1,6 @@
 {
   "name": "@project-overengineer/shared-lib",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Shared libraries between project-engineer components.",
   "main": "dist/index.js",
   "scripts": {
@@ -9,6 +9,10 @@
     "test": "pnpm build && TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.72.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.214.0",
+    "@opentelemetry/sdk-node": "^0.214.0",
     "crypto-js": "^4.2.0",
     "express": "^5.2.1",
     "ioredis": "^5.10.1",

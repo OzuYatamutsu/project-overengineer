@@ -25,4 +25,4 @@ export async function shutdownTracing(): Promise<void> {
     await sdk.shutdown()
 }
 
-export type Tracer = Tracer
+export type { Tracer } from "@opentelemetry/api"

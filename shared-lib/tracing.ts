@@ -7,12 +7,13 @@ const traceExporter = new OTLPTraceExporter({
     url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4318/v1/traces",
 })
 
-const sdk = new NodeSDK({
-    traceExporter,
-    instrumentations: [getNodeAutoInstrumentations()],
-})
+let sdk: NodeSDK
 
 export async function initTracing(): Promise<void> {
+    sdk = new NodeSDK({
+        traceExporter,
+        instrumentations: [getNodeAutoInstrumentations()],
+    })
     await sdk.start()
 }
 

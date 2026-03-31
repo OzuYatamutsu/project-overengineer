@@ -87,7 +87,7 @@ module "eks" {
   kubernetes_version = "1.35"
 
   endpoint_public_access                   = true
-  enable_cluster_creator_admin_permissions = true
+  enable_cluster_creator_admin_permissions = false
   create_auto_mode_iam_resources           = true
   compute_config = {
     enabled    = true

@@ -179,12 +179,3 @@ data:
         }
       }
     }
-
-    otelcol.service "temposvc" {
-        pipelines {
-          traces {
-            receivers = [otelcol.receiver.otlp.tempogrpc]
-            exporters = [otelcol.exporter.otlp.tempo]
-          }
-        }
-    }

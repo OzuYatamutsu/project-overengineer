@@ -24,3 +24,5 @@ export function getTracer(serviceName: string): Tracer {
 export async function shutdownTracing(): Promise<void> {
     await sdk.shutdown()
 }
+
+export type Tracer = Tracer

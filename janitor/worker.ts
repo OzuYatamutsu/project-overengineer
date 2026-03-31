@@ -1,8 +1,8 @@
 import { getRedis, log, pullAndWatchVaultConfigValues,
     registerGauge, startMetricsServer, registerCounter,
-    startHostTelemetryJob
+    startHostTelemetryJob, initTracing, getTracer
 } from '@project-overengineer/shared-lib'
-import type { Gauge, Counter } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter, Tracer } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -22,6 +22,7 @@ let janitorJobDurationMsGauge: Gauge
 let isIdleGauge: Gauge
 let heartbeatGauge: Gauge
 let errorCounter: Counter
+let tracer: Tracer
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
@@ -105,6 +106,13 @@ if (require.main === module) {
 
     startMetricsServer(PROMETHEUS_METRICS_PORT)
     log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
+
+    initTracing().then(() => {
+        tracer = getTracer("janitor")
+        log("janitor", `job="startup"`, `tracing initialized`)
+    }).catch((err) => {
+        log("janitor", `job="startup"`, `failed to initialize tracing: ${err}`)
+    })
 
     pullAndWatchVaultConfigValues("janitor").then(() => {
         // Health check endpoint

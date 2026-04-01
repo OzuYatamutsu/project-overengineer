@@ -1,6 +1,6 @@
 import {
     registerGauge, registerCounter, startHostTelemetryJob,
-    register, log
+    register, log, initTracing, getTracer
 } from '@project-overengineer/shared-lib'
 
 import type { Gauge, Counter } from '@project-overengineer/shared-lib'
@@ -31,6 +31,12 @@ export function registerMetrics(): void {
     startHostTelemetryJob()
 
     heartbeatGauge.set(1)
+
+    initTracing("project-overengineer-fe").then(() => {
+        log("project-overengineer-fe", `job="startup"`, `tracing initialized`)
+    }).catch((err) => {
+        log("project-overengineer-fe", `job="startup"`, `failed to initialize tracing: ${err}`)
+    })
 }
 
 export function incrementErrorCounter(method: string): void {

@@ -87,59 +87,90 @@ app.get('/healthz', async (_, res) => {
     )
 })
 
-wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    let interval: ReturnType<typeof setInterval> | undefined
+wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
+    await getTracer("status-api").startActiveSpan("on_connection", async (onConnectionSpan) => {
+        let interval: ReturnType<typeof setInterval> | undefined
+        onConnectionSpan.setAttribute("request_addr", req.socket.remoteAddress ?? 'unknown')
+        onConnectionSpan.setAttribute("endpoint", "/ws")
+        onConnectionSpan.addEvent("new_connection")
 
-    if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
-        ws.send('Rate limit exceeded')
-        ws.close()
-        abortedWsCounter.inc()
-        return
-    }
-
-    log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `New connection`)
-    activeWsConnectionCount += 1
-    activeWsConnectionCountGauge.set(activeWsConnectionCount)
-
-    ws.on('message', (data: RawData) => {
-        const message = JSON.parse(data.toString())
-        const jobId = message.job?.jobId ?? undefined
-        const jwt = message.jwt ?? undefined
-
-        if (jobId === undefined || jwt === undefined) {
-            log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
-            abortedWsCounter.inc()
+        if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
+            log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
+            ws.send('Rate limit exceeded')
             ws.close()
+            abortedWsCounter.inc()
+            onConnectionSpan.addEvent("rate_limit_exceeded")
+            onConnectionSpan.end()
+            return
         }
 
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
-
-        interval = setInterval(async () => {
-            try {
-                const jobState = await getJobState(jobId, jwt)
-                ws.send(jobState.serialize())
-                if (jobState.status == JobStatus.DONE) {
-                    log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
-                    closedWsCounter.inc()
-                    ws.close()
-                }
-            } catch (err) {
-                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
-                abortedWsCounter.inc()
-                errorCounter.inc({ method: "get_job_state" })
-                ws.close()
-            }
-        }, POLLING_PERIOD_MSECS)
-    })
-
-    ws.on('close', () => {
-        if (interval) {
-            clearInterval(interval)
-        }
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
-        activeWsConnectionCount -= 1
+        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `New connection`)
+        activeWsConnectionCount += 1
         activeWsConnectionCountGauge.set(activeWsConnectionCount)
+
+        ws.on('message', async (data: RawData) => {
+            await getTracer("status-api").startActiveSpan("on_message", async (onMessageSpan) => {
+                const message = JSON.parse(data.toString())
+                const jobId = message.job?.jobId ?? undefined
+                const jwt = message.jwt ?? undefined
+
+                if (jobId === undefined || jwt === undefined) {
+                    log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
+                    abortedWsCounter.inc()
+                    ws.close()
+                    onMessageSpan.addEvent("malformed_request")
+                    onMessageSpan.end()
+                    return
+                }
+
+                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
+
+                interval = setInterval(async () => {
+                    getTracer("status-api").startActiveSpan("poll_job_status", async (pollJobStatusSpan) => {
+                        let childSpan: Span
+                        pollJobStatusSpan.setAttribute("job_id", jobId)
+                        pollJobStatusSpan.setAttribute("request_addr", req.socket.remoteAddress ?? 'unknown')
+
+                        try {
+                            childSpan = getTracer("janitor").startSpan("get_job_state")
+                            const jobState = await getJobState(jobId, jwt)
+                            childSpan.end()
+
+                            ws.send(jobState.serialize())
+                            if (jobState.status == JobStatus.DONE) {
+                                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
+                                closedWsCounter.inc()
+                                ws.close()
+                            }
+                        } catch (err) {
+                            log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
+                            abortedWsCounter.inc()
+                            errorCounter.inc({ method: "get_job_state" })
+                            ws.close()
+                        }
+
+                        pollJobStatusSpan.end()
+                    })
+                }, POLLING_PERIOD_MSECS)
+
+                onMessageSpan.end()
+            })
+        })
+
+        ws.on('close', async () => {
+            getTracer("status-api").startActiveSpan("on_close", async (onCloseSpan) => {
+                onCloseSpan.addEvent("connection_closed")
+
+                if (interval) {
+                    clearInterval(interval)
+                }
+                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
+                activeWsConnectionCount -= 1
+                activeWsConnectionCountGauge.set(activeWsConnectionCount)
+            })
+
+            onConnectionSpan.end()
+        })
     })
 })
 

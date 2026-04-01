@@ -40,6 +40,14 @@ Per-environment Terraform/OpenTofu files are located in the `terraform/` directo
 
 Using the AWS CLI, authenticate against AWS by running `aws login --region <region-name>`, which should set local credentials within your environment.
 
+Run any account-level setup tasks within `terraform/account.tf` (only to be run once per account):
+```bash
+cd terraform/
+terraform init
+terraform plan
+terraform apply
+```
+
 Then, from within the directory corresponding to the environment to deploy to (e.g. `terraform/environment/staging/`):
 ```bash
 terraform init

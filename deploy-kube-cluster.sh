@@ -15,7 +15,7 @@ check_rollout() {
 }
 kubectl apply -f monitoring-plane-namespace.yaml
 kubectl apply -f vault/service.yaml
-kubectl rollout status statefulset/vault --timeout=90s
+kubectl rollout status statefulset/vault --timeout=180s
 timeout=60
 while ! kubectl get secret vault-token >/dev/null 2>&1; do
     sleep 1

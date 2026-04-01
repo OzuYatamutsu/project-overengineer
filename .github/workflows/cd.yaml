@@ -31,8 +31,8 @@ jobs:
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
-      - name: Wait for vault apply (max 90s)
-        run: kubectl rollout status statefulset/vault --timeout=90s
+      - name: Wait for vault apply (max 180s)
+        run: kubectl rollout status statefulset/vault --timeout=180s
 
       - name: Deploy alloy
         run: kubectl apply -f alloy/daemonset.yaml
@@ -192,8 +192,8 @@ jobs:
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
-      - name: Wait for vault apply (max 90s)
-        run: kubectl rollout status statefulset/vault --timeout=90s
+      - name: Wait for vault apply (max 180s)
+        run: kubectl rollout status statefulset/vault --timeout=180s
 
       - name: Deploy alloy
         run: kubectl apply -f alloy/daemonset.yaml
@@ -374,8 +374,8 @@ jobs:
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
-      - name: Wait for vault apply (max 90s)
-        run: kubectl rollout status statefulset/vault --timeout=90s
+      - name: Wait for vault apply (max 180s)
+        run: kubectl rollout status statefulset/vault --timeout=180s
 
       - name: Deploy alloy
         run: kubectl apply -f alloy/daemonset.yaml

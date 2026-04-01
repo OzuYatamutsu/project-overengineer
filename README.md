@@ -501,7 +501,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 3
 
-**Started 2025-12-31.**
+**Started 2025-12-31, completed 2026-04-01.**
 
 - Infrastructure management via Terraform
 - Instrumentation
@@ -511,7 +511,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 4
 
-**Not yet started.**
+**Started 2026-04-01.**
 
 - Active monitoring and alerting
 - Canary in staging

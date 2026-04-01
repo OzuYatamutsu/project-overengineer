@@ -25,6 +25,7 @@ spec:
             - "-blocks-storage.filesystem.dir=/var/mimir/blocks"
             - "-auth.multitenancy-enabled=false"
             - "-ingester.ring.replication-factor=1"
+            - "-compactor.blocks-retention-period=168h"
           readinessProbe:
             httpGet:
               path: /ready

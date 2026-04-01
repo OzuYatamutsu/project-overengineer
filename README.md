@@ -449,8 +449,7 @@ In lieu of log sampling, decisions on telemetry data resolution are configured w
 | Logs       | 1 week          | full              |
 | Logs       | >1 week         | _discarded_       |
 | Metrics    | 1 week          | full              |
-| Metrics    | >1 week         | 1 hour avg        |
-| Metrics    | >1 month        | _discarded_       |
+| Metrics    | >1 week         | _discarded_       |
 | Traces     | 1 week          | full              |
 | Traces     | >1 week         | _discarded_       |
 

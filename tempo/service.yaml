@@ -22,7 +22,7 @@ data:
 
     compactor:
       compaction:
-        block_retention: 24h
+        block_retention: 168h
 
     storage:
       trace:

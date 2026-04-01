@@ -69,7 +69,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./ollama/Dockerfile
@@ -108,7 +108,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: project-overengineer-fe/Dockerfile
@@ -147,7 +147,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: janitor/Dockerfile
@@ -186,7 +186,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ocr-worker/Dockerfile
@@ -225,7 +225,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./redis/Dockerfile-master
@@ -264,7 +264,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./redis/Dockerfile-replica
@@ -303,7 +303,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./redis/Dockerfile-sentinel
@@ -342,7 +342,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: status-api/Dockerfile
@@ -391,7 +391,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./vault/Dockerfile
@@ -430,7 +430,7 @@ jobs:
           OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./vault/Dockerfile-vault-init

@@ -30,6 +30,8 @@ spec:
               value: svc-redis-sentinel.default.svc.cluster.local
             - name: SENTINEL_PORT
               value: "26379"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://svc-alloy.monitoring-plane.svc.cluster.local:4317"
             - name: VAULT_HOST
               value: svc-vault.default.svc.cluster.local
             - name: VAULT_PORT

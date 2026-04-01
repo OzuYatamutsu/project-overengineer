@@ -2,7 +2,7 @@ import { getRedis, log, pullAndWatchVaultConfigValues,
     registerGauge, startMetricsServer, registerCounter,
     startHostTelemetryJob, initTracing, getTracer
 } from '@project-overengineer/shared-lib'
-import type { Gauge, Counter, Tracer, Span } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter, Span } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (

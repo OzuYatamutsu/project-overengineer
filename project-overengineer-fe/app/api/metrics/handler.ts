@@ -1,6 +1,6 @@
 import {
     registerGauge, registerCounter, startHostTelemetryJob,
-    register, log, initTracing, getTracer
+    register, log, initTracing
 } from '@project-overengineer/shared-lib'
 
 import type { Gauge, Counter } from '@project-overengineer/shared-lib'

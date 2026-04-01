@@ -143,7 +143,7 @@ setInterval(async () => {
 
         // O(n), but cheap because old jobs are cleaned up
         for (const key of keys) {
-            getTracer("ocr-worker").startActiveSpan("process_job", async (processJobSpan) => {
+            await getTracer("ocr-worker").startActiveSpan("process_job", async (processJobSpan) => {
                 const status = await getRedis("ocr-worker").hget(key, "status")
                 if (status !== "WAITING") {
                     processJobSpan.end()

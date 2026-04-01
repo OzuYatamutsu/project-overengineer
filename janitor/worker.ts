@@ -88,7 +88,7 @@ setInterval(async () => {
 
                     if (jobIsStale(key, createUtime)) {
                         childSpan = getTracer("janitor").startSpan("delete_job")
-                        getRedis("janitor").del(key)
+                        await getRedis("janitor").del(key)
                         childSpan.end()
 
                         jobsDeleted++

@@ -2,7 +2,7 @@ import { getRedis, log, pullAndWatchVaultConfigValues,
     registerGauge, startMetricsServer, registerCounter,
     startHostTelemetryJob, initTracing, getTracer
 } from '@project-overengineer/shared-lib'
-import type { Gauge, Counter, Tracer } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter, Tracer, Span } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const HEALTH_CHECK_PORT = (
@@ -67,27 +67,51 @@ export async function _healthz(): Promise<boolean> {
 
 // poll redis for new jobs
 setInterval(async () => {
-    var startTime = new Date().getTime()
-    isIdleGauge.set(0)
-    log("janitor", `job="cleanup"`, `starting job`)
-    const keys = await getRedis("janitor").keys(`job:*`)
+    await getTracer("janitor").startActiveSpan("janitor_job", async (janitorJobSpan) => {
+        var startTime = new Date().getTime()
+        var jobsProcessed = 0
+        var jobsDeleted = 0
+        let childSpan: Span
 
-    for (const key of keys) {
-        try {
-            const createUtime = Number(await getRedis("janitor").hget(key, "createUtime"))
-            if (jobIsStale(key, createUtime)) {
-                getRedis("janitor").del(key)
-            }
-        } catch (err) {
-            log("janitor", `jobId="${key}"`, `failed to process job: ${err}`)
-            errorCounter.inc({ method: "process_job" })
+        isIdleGauge.set(0)
+        log("janitor", `job="cleanup"`, `starting job`)
+
+        childSpan = tracer.startSpan("fetch_jobs")
+        const keys = await getRedis("janitor").keys(`job:*`)
+        childSpan.end()
+
+        for (const key of keys) {
+            await getTracer("janitor").startActiveSpan("process_job", async (processJobSpan) => {
+                try {
+                    childSpan = tracer.startSpan("fetch_job_hget")
+                    const createUtime = Number(await getRedis("janitor").hget(key, "createUtime"))
+                    childSpan.end()
+
+                    if (jobIsStale(key, createUtime)) {
+                        childSpan = tracer.startSpan("delete_job")
+                        getRedis("janitor").del(key)
+                        childSpan.end()
+
+                        jobsDeleted++
+                    }
+                    jobsProcessed++
+                } catch (err) {
+                    log("janitor", `jobId="${key}"`, `failed to process job: ${err}`)
+                    errorCounter.inc({ method: "process_job" })
+                }
+                processJobSpan.end()
+            })
         }
-    }
 
-    var endTime = new Date().getTime()
-    janitorJobDurationMsGauge.set({ status: "success" }, endTime - startTime)
-    isIdleGauge.set(1)
-    log("janitor", `job="cleanup"`, `job finished`)
+        var endTime = new Date().getTime()
+        janitorJobDurationMsGauge.set({ status: "success" }, endTime - startTime)
+        isIdleGauge.set(1)
+
+        log("janitor", `job="cleanup"`, `job finished`)
+        janitorJobSpan.setAttribute("jobs_processed", jobsProcessed)
+        janitorJobSpan.setAttribute("jobs_deleted", jobsDeleted)
+        janitorJobSpan.end()
+    })
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {

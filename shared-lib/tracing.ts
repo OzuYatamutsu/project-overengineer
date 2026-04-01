@@ -2,6 +2,8 @@ import { NodeSDK } from "@opentelemetry/sdk-node"
 import { trace, Tracer } from "@opentelemetry/api"
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
+import { Resource } from "@opentelemetry/resources"
+import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 
 const traceExporter = new OTLPTraceExporter({
     url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317",
@@ -9,10 +11,13 @@ const traceExporter = new OTLPTraceExporter({
 
 let sdk: NodeSDK
 
-export async function initTracing(): Promise<void> {
+export async function initTracing(serviceName: string): Promise<void> {
     sdk = new NodeSDK({
         traceExporter,
         instrumentations: [getNodeAutoInstrumentations()],
+        resource: new Resource({
+            [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+        })
     })
     await sdk.start()
 }

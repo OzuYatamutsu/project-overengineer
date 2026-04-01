@@ -22,7 +22,6 @@ let janitorJobDurationMsGauge: Gauge
 let isIdleGauge: Gauge
 let heartbeatGauge: Gauge
 let errorCounter: Counter
-let tracer: Tracer
 
 export function jobIsStale(jobKey: string, createUTime: number): boolean {    
     if (Number.isNaN(createUTime)) {
@@ -76,19 +75,19 @@ setInterval(async () => {
         isIdleGauge.set(0)
         log("janitor", `job="cleanup"`, `starting job`)
 
-        childSpan = tracer.startSpan("fetch_jobs")
+        childSpan = getTracer("janitor").startSpan("fetch_jobs")
         const keys = await getRedis("janitor").keys(`job:*`)
         childSpan.end()
 
         for (const key of keys) {
             await getTracer("janitor").startActiveSpan("process_job", async (processJobSpan) => {
                 try {
-                    childSpan = tracer.startSpan("fetch_job_hget")
+                    childSpan = getTracer("janitor").startSpan("fetch_job_hget")
                     const createUtime = Number(await getRedis("janitor").hget(key, "createUtime"))
                     childSpan.end()
 
                     if (jobIsStale(key, createUtime)) {
-                        childSpan = tracer.startSpan("delete_job")
+                        childSpan = getTracer("janitor").startSpan("delete_job")
                         getRedis("janitor").del(key)
                         childSpan.end()
 
@@ -131,8 +130,7 @@ if (require.main === module) {
     startMetricsServer(PROMETHEUS_METRICS_PORT)
     log("janitor", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
 
-    initTracing().then(() => {
-        tracer = getTracer("janitor")
+    initTracing("janitor").then(() => {
         log("janitor", `job="startup"`, `tracing initialized`)
     }).catch((err) => {
         log("janitor", `job="startup"`, `failed to initialize tracing: ${err}`)

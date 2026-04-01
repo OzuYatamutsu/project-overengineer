@@ -166,7 +166,7 @@ jobs:
         working-directory: ./terraform/environment/staging  
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-actions-eks-staging
           aws-region: us-east-2
@@ -310,7 +310,7 @@ jobs:
 
       - name: Configure AWS credentials (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -348,7 +348,7 @@ jobs:
         working-directory: ./terraform/environment/production
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-actions-eks-prod
           aws-region: us-east-2
@@ -492,7 +492,7 @@ jobs:
 
       - name: Configure AWS credentials (before terraform destroy)
         if: ${{ github.event.inputs.should_destroy == 'yes' }}
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

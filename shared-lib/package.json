@@ -11,7 +11,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/auto-instrumentations-node": "^0.72.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.214.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.214.0",
     "@opentelemetry/sdk-node": "^0.214.0",
     "crypto-js": "^4.2.0",
     "express": "^5.2.1",

@@ -122,52 +122,80 @@ export async function _healthz(): Promise<boolean> {
 
 // poll redis for new jobs
 setInterval(async () => {
-    if (workerState == WorkerState.PROCESSING) {
-        return
-    }
+    getTracer("ocr-worker").startActiveSpan("ocr_worker_poll", async (ocrWorkerJobSpan) => {
+        let childSpan: Span
 
-    const keys = await getRedis("ocr-worker").keys(`job:*`)
-    if (keys == null) {
-        return
-    }
-
-    // O(n), but cheap because old jobs are cleaned up
-    for (const key of keys) {
-        const status = await getRedis("ocr-worker").hget(key, "status")
-        if (status !== "WAITING") {
-            continue
+        if (workerState == WorkerState.PROCESSING) {
+            ocrWorkerJobSpan.addEvent("worker_busy")
+            ocrWorkerJobSpan.end()
+            return
         }
 
-        workerState = WorkerState.PROCESSING
+        childSpan = getTracer("ocr-worker").startSpan("fetch_jobs")
+        const keys = await getRedis("ocr-worker").keys(`job:*`)
+        childSpan.end()
 
-        let job: Job = await pullJobDetails(key.replace("job:", ""))
-        job.status = JobStatus.PROCESSING
-        log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
-        await commit(job)
-
-        const startTime = (Date.now() / 1000)
-
-        setInterval(async () => {
-            const elapsedTime = (Date.now() / 1000) - startTime
-            job.progress = Math.round((elapsedTime / estimatedTimeSecs) * 100)
-            await commit(job)
-        }, UPDATE_INTERVAL_MSECS)
-
-        try {
-            job = await processJob(job)
-        } catch (error) {
-            job.result = error?.toString() ?? "" 
-            if (errorCounter) {
-                errorCounter.inc({ method: "process_job" })
-            }
+        if (keys == null) {
+            ocrWorkerJobSpan.addEvent("worker_idle")
+            ocrWorkerJobSpan.end()
+            return
         }
 
-        job.status = JobStatus.DONE
-        log("ocr-worker", `jobId="${job.id}"`, `Job completed, committing`)
-        await commit(job)
+        // O(n), but cheap because old jobs are cleaned up
+        for (const key of keys) {
+            getTracer("ocr-worker").startActiveSpan("process_job", async (processJobSpan) => {
+                const status = await getRedis("ocr-worker").hget(key, "status")
+                if (status !== "WAITING") {
+                    processJobSpan.end()
+                    return
+                }
 
-        workerState = WorkerState.IDLE
-    }
+                workerState = WorkerState.PROCESSING
+
+                childSpan = getTracer("ocr-worker").startSpan("pull_job_details")
+                let job: Job = await pullJobDetails(key.replace("job:", ""))
+                childSpan.end()
+
+                childSpan = getTracer("ocr-worker").startSpan("update_job_status")
+                job.status = JobStatus.PROCESSING
+                log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
+                await commit(job)
+                childSpan.end()
+
+                const startTime = (Date.now() / 1000)
+
+                setInterval(async () => {
+                    const elapsedTime = (Date.now() / 1000) - startTime
+                    job.progress = Math.round((elapsedTime / estimatedTimeSecs) * 100)
+                    await commit(job)
+                }, UPDATE_INTERVAL_MSECS)
+
+                try {
+                    childSpan = getTracer("ocr-worker").startSpan("process_job")
+                    job = await processJob(job)
+                    processJobSpan.addEvent("job_succeeded")
+                    childSpan.end()
+                } catch (error) {
+                    job.result = error?.toString() ?? "" 
+                    if (errorCounter) {
+                        errorCounter.inc({ method: "process_job" })
+                    }
+                    processJobSpan.addEvent("job_failed")
+                    childSpan.end()
+                }
+
+                childSpan = getTracer("ocr-worker").startSpan("update_job_status")
+                job.status = JobStatus.DONE
+                log("ocr-worker", `jobId="${job.id}"`, `Job completed, committing`)
+                await commit(job)
+                childSpan.end()
+
+                workerState = WorkerState.IDLE
+                processJobSpan.end()
+            })
+        }
+        ocrWorkerJobSpan.end()
+    })
 }, POLLING_PERIOD_MSECS)
 
 if (require.main === module) {

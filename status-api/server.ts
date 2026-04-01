@@ -4,12 +4,11 @@ import http from 'http'
 import { 
     JobStatus, JobUpdate, rateLimit, getRedis, log,
     pullAndWatchVaultConfigValues, verifyJwt,
-    registerGauge,
-    startHostTelemetryJob,
-    registerCounter,
-    startMetricsServer
+    registerGauge, startHostTelemetryJob,
+    registerCounter, startMetricsServer,
+    initTracing, getTracer
 } from '@project-overengineer/shared-lib'
-import type { Gauge, Counter } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter, Span } from '@project-overengineer/shared-lib'
 
 const app = express();
 export const port = Number(process.env.STATUS_API_PORT) || 3001
@@ -160,6 +159,12 @@ if (require.main === module) {
 
     startMetricsServer(PROMETHEUS_METRICS_PORT)
     log("status-api", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
+
+    initTracing("status-api").then(() => {
+        log("status-api", `job="startup"`, `tracing initialized`)
+    }).catch((err) => {
+        log("status-api", `job="startup"`, `failed to initialize tracing: ${err}`)
+    })
 
     if (_IS_UNIT_TESTING) {
         server.listen(port, async () => {

@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - feature/trace-integration
 
 jobs:
   generate-vault-cert:

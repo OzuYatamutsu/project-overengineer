@@ -2,9 +2,10 @@ import {
     Job, JobStatus, WorkerState, getRedis, log,
     pullAndWatchVaultConfigValues, getImageEncryptionKey,
     startMetricsServer, registerGauge,
-    registerCounter, startHostTelemetryJob
+    registerCounter, startHostTelemetryJob,
+    initTracing, getTracer
 } from '@project-overengineer/shared-lib'
-import type { Gauge, Counter } from '@project-overengineer/shared-lib'
+import type { Gauge, Counter, Span } from '@project-overengineer/shared-lib'
 import http from "http"
 
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
@@ -207,6 +208,12 @@ if (require.main === module) {
 
     startMetricsServer(PROMETHEUS_METRICS_PORT)
     log("ocr-worker", `job="startup" endpoint="/metrics"`, `metrics server is running on port ${PROMETHEUS_METRICS_PORT}`)
+
+    initTracing("ocr-worker").then(() => {
+        log("ocr-worker", `job="startup"`, `tracing initialized`)
+    }).catch((err) => {
+        log("ocr-worker", `job="startup"`, `failed to initialize tracing: ${err}`)
+    })
 }
 
 log("ocr-worker", `job="startup"`, `OCR worker started.`)

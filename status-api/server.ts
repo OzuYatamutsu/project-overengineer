@@ -132,7 +132,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
                         pollJobStatusSpan.setAttribute("request_addr", req.socket.remoteAddress ?? 'unknown')
 
                         try {
-                            childSpan = getTracer("janitor").startSpan("get_job_state")
+                            childSpan = getTracer("status-api").startSpan("get_job_state")
                             const jobState = await getJobState(jobId, jwt)
                             childSpan.end()
 
@@ -167,6 +167,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
                 log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
                 activeWsConnectionCount -= 1
                 activeWsConnectionCountGauge.set(activeWsConnectionCount)
+                onCloseSpan.end()
             })
 
             onConnectionSpan.end()

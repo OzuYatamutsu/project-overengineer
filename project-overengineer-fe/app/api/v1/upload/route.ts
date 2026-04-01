@@ -17,10 +17,10 @@ const MAX_REQUESTS = 60
 const PER_SECS = 60
 
 export async function POST(request: Request): Promise<NextResponse> {
+  await registerMetricsIfRequired()
+
   let uploadRequestSpan = getTracer("project-overengineer-fe").startSpan("handle_upload_request")
   let childSpan: Span
-
-  await registerMetricsIfRequired()
 
   const ip = await getClientIp(request)
   uploadRequestSpan.setAttribute("client_ip", ip ?? "unknown")

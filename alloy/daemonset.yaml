@@ -67,6 +67,8 @@ spec:
               readOnly: true
             - name: alloy-data
               mountPath: /var/lib/alloy
+          ports:
+            - containerPort: 4317
           resources:
             requests:
               cpu: "40m"
@@ -179,3 +181,17 @@ data:
       }
     }
 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-alloy
+  namespace: monitoring-plane
+spec:
+  selector:
+    app: alloy
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317

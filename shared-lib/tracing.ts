@@ -1,10 +1,10 @@
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import { trace, Tracer } from "@opentelemetry/api"
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
 
 const traceExporter = new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4318/v1/traces",
+    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317",
 })
 
 let sdk: NodeSDK

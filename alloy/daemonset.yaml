@@ -176,8 +176,5 @@ data:
     otelcol.exporter.otlp "tempo" {
       client {
         endpoint = "svc-tempo.monitoring-plane.svc.cluster.local:4317"
-        tls {
-          insecure = true
-        }
       }
     }

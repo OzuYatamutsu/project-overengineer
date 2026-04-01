@@ -1,5 +1,5 @@
 import { NodeSDK } from "@opentelemetry/sdk-node"
-import { trace, Tracer } from "@opentelemetry/api"
+import { trace, Tracer, Span } from "@opentelemetry/api"
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node"
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
 
@@ -26,3 +26,4 @@ export async function shutdownTracing(): Promise<void> {
 }
 
 export type { Tracer } from "@opentelemetry/api"
+export type { Span } from "@opentelemetry/api"

@@ -25,7 +25,7 @@ resource "aws_iam_role" "github_actions_eks" {
       Effect = "Allow"
       Action = "sts:AssumeRoleWithWebIdentity"
       Principal = {
-        Federated = aws_iam_openid_connect_provider.github.arn
+        Federated = data.aws_iam_openid_connect_provider.github.arn
       }
       Condition = {
         StringEquals = {
@@ -69,7 +69,7 @@ module "vpc" {
   enable_dns_hostnames = true
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb"                                    = 1
+    "kubernetes.io/role/elb"                                             = 1
     "kubernetes.io/cluster/project-overengineer-${var.environment_name}" = "shared"
   }
 

@@ -163,18 +163,19 @@ data:
       }
     }
 
+    otelcol.exporter.otlp "tempo" {
+      client {
+        endpoint = "svc-tempo.monitoring-plane.svc.cluster.local:4317"
+      }
+    }
+
     otelcol.receiver.otlp "tracegrpc" {
       grpc {
         endpoint = "0.0.0.0:4317"
       }
 
       output {
-        traces = [otelcol.exporter.otlp.tempo]
+        traces = [otelcol.exporter.otlp.tempo.input]
       }
     }
 
-    otelcol.exporter.otlp "tempo" {
-      client {
-        endpoint = "svc-tempo.monitoring-plane.svc.cluster.local:4317"
-      }
-    }

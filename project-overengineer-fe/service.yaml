@@ -43,7 +43,7 @@ spec:
                 secretKeyRef:
                   name: vault-token
                   key: token
-            # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD (not specified here)
+            # REDIS_HOST, REDIS_PORT, REDIS_PASSWORD (not specified here), and STATUS_API_URL
             # are pulled from vault in-cluster at runtime, and refreshed regularly.
             - name: REDIS_HOST
               value: svc-redis-master.default.svc.cluster.local

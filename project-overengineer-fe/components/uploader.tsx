@@ -115,11 +115,13 @@ export default function Uploader({ onResultAction, onResetAction }: UploaderProp
     }
   }
 
-  function monitorProgress(jobId: string, jwt: string): void {
+  async function monitorProgress(jobId: string, jwt: string): Promise<void> {
+    // Retrieve status API url from env
+    const metadataResponse = await fetch('/api/v1/metadata')
+    const { statusApiUrl } = await metadataResponse.json()
+  
     // Open websocket to status API
-    const ws = new WebSocket(
-      process.env.STATUS_API_URL ?? 'ws://localhost:3001'
-    )
+    const ws = new WebSocket(statusApiUrl)
     setWs(ws)
 
     ws.onopen = () => {

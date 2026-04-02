@@ -38,6 +38,7 @@ INITIAL_REDIS_PASSWORD=$(kubectl get secret initial-redis-password -o jsonpath='
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_HOST value="svc-redis-master.default.svc.cluster.local"
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PORT value="6379"
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="$INITIAL_REDIS_PASSWORD"
+vault kv put -address="$VAULT_ADDR" secret/data/STATUS_API_URL value="ws://svc-status-api.default.svc.cluster.local:3001"
 
 echo "Enabling transit/ store..."
 vault secrets enable -address="$VAULT_ADDR" transit

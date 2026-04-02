@@ -30,5 +30,5 @@ if [ "$IS_PRIMARY" = true ] && [ "$PREVIOUSLY_INITED" = false ]; then
   /bin/sh /vault/init-vault-stores.sh
 fi
 if [ "$IS_PRIMARY" = true ]; then
-  IS_PRIMARY=$IS_PRIMARY /bin/sh /vault/renew-keys.sh
+  IS_PRIMARY=$IS_PRIMARY /bin/sh /vault/refresh-values.sh
 fi

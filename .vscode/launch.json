@@ -57,7 +57,8 @@
         "REDIS_PASSWORD": "b4yscx92yksfyv9c",
         "VAULT_HOST": "localhost",
         "VAULT_PORT": "8200",
-        "VAULT_RO_TOKEN": "root"
+        "VAULT_RO_TOKEN": "root",
+        "STATUS_API_URL": "ws://localhost:3001"
       },
       "preLaunchTask": "Start infra dependencies",
       "postDebugTask": "Stop infra dependencies"
@@ -98,6 +99,7 @@
         "VAULT_HOST": "localhost",
         "VAULT_PORT": "8200",
         "VAULT_RO_TOKEN": "root",
+        "STATUS_API_URL": "ws://localhost:3001",
         "_IS_UNIT_TESTING": "true"
       },
       "preLaunchTask": "Start infra dependencies",
@@ -118,6 +120,7 @@
         "VAULT_HOST": "localhost",
         "VAULT_PORT": "8200",
         "VAULT_RO_TOKEN": "root",
+        "STATUS_API_URL": "ws://localhost:3001",
         "_VAULT_INSECURE_MODE": "true",
         "_IS_UNIT_TESTING": "true"
       },

@@ -10,6 +10,7 @@ export default defineConfig({
         REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'b4yscx92yksfyv9c',
         VAULT_HOST: process.env.VAULT_HOST || 'localhost',
         VAULT_PORT: process.env.VAULT_PORT || '8200',
+        STATUS_API_URL: process.env.STATUS_API_URL || 'http://localhost:3000',
         VAULT_RO_TOKEN: process.env.VAULT_RO_TOKEN || 'root'
       },
     }

@@ -75,6 +75,7 @@ test('can connect and pull default config values on start', async () => {
   await writeValue("shared-lib", "REDIS_HOST", process.env["REDIS_HOST"] || "DUMMY_VALUE", true)
   await writeValue("shared-lib", "REDIS_PORT", process.env["REDIS_PORT"] || "DUMMY_VALUE", true)
   await writeValue("shared-lib", "REDIS_PASSWORD", process.env["REDIS_PASSWORD"] || "DUMMY_VALUE", true)
+  await writeValue("shared-lib", "STATUS_API_URL", process.env["STATUS_API_URL"] || "DUMMY_VALUE", true)
 
   const bgJobs = await pullAndWatchVaultConfigValues("shared-lib", true)
   expect(true).toBeTruthy()

@@ -50,7 +50,7 @@ spec:
             - name: REDIS_PORT
               value: "6379"
             - name: STATUS_API_URL
-              value: "http://svc-redis-sentinel.default.svc.cluster.local:3001"
+              value: "ws://svc-status-api.default.svc.cluster.local:3001"
           readinessProbe:
             httpGet:
               path: /

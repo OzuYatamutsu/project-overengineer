@@ -85,12 +85,14 @@ export async function pullAndWatchVaultConfigValues(serviceName: string, insecur
     await updateEnvFromVault(serviceName, "REDIS_HOST", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PORT", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PASSWORD", insecure)
+    await updateEnvFromVault(serviceName, "STATUS_API_URL", insecure)
     log(serviceName, `job="startup"`, `config values updated.`)
     log(serviceName, `job="startup"`, `starting config update job...`)
     const bgJobs = [
         watchAndUpdateVaultValue(serviceName, "REDIS_HOST", 60000, insecure),
         watchAndUpdateVaultValue(serviceName, "REDIS_PORT", 60000, insecure),
-        watchAndUpdateVaultValue(serviceName, "REDIS_PASSWORD", 60000, insecure)
+        watchAndUpdateVaultValue(serviceName, "REDIS_PASSWORD", 60000, insecure),
+        watchAndUpdateVaultValue(serviceName, "STATUS_API_URL", 60000, insecure)
     ]
     log(serviceName, `job="startup"`, `started config update job.`)
     return bgJobs

@@ -95,7 +95,7 @@ spec:
   selector:
     app: status-api
   ports:
-    - name: http
+    - name: ws
       port: 3001
       targetPort: 3001
     - name: metrics

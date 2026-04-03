@@ -151,7 +151,7 @@ metadata:
   name: vault-init-role
 rules:
   - apiGroups: [""]
-    resources: ["pods"]
+    resources: ["pods", "services"]
     verbs: ["get"]
   - apiGroups: ["apps"]
     resources: ["statefulsets"]

@@ -307,12 +307,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
       - name: Install pnpm
         run: npm install -g pnpm
 
       - name: Install dependencies
         working-directory: integration-tests
         run: pnpm install
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name project-overengineer-staging \
+            --region us-east-2
 
       - name: Run Playwright Tests
         working-directory: integration-tests
@@ -543,12 +555,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
       - name: Install pnpm
         run: npm install -g pnpm
 
       - name: Install dependencies
         working-directory: integration-tests
         run: pnpm install
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name project-overengineer-prod \
+            --region us-east-2
 
       - name: Run Playwright Tests
         working-directory: integration-tests

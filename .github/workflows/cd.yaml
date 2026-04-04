@@ -307,8 +307,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run integration tests against staging cluster
-        run: echo "TODO"
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: integration-tests
+        run: pnpm install
+
+      - name: Run Playwright Tests
+        working-directory: integration-tests
+        run: pnpm test
+
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
 
   teardown-staging:
     runs-on: ubuntu-latest

@@ -91,11 +91,11 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
     await getTracer("status-api").startActiveSpan("on_connection", async (onConnectionSpan) => {
         let interval: ReturnType<typeof setInterval> | undefined
         onConnectionSpan.setAttribute("request_addr", req.socket.remoteAddress ?? 'unknown')
-        onConnectionSpan.setAttribute("endpoint", "/ws")
+        onConnectionSpan.setAttribute("endpoint", "/")
         onConnectionSpan.addEvent("new_connection")
 
         if (!rateLimit("status-api", req.socket.remoteAddress ?? 'unknown', MAX_REQUESTS, PER_SECS)) {
-            log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
+            log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}"`, `rejecting request, rate limit exceeded`)
             ws.send('Rate limit exceeded')
             ws.close()
             abortedWsCounter.inc()
@@ -104,7 +104,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
             return
         }
 
-        log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `New connection`)
+        log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}"`, `New connection`)
         activeWsConnectionCount += 1
         activeWsConnectionCountGauge.set(activeWsConnectionCount)
 
@@ -115,7 +115,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
                 const jwt = message.jwt ?? undefined
 
                 if (jobId === undefined || jwt === undefined) {
-                    log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
+                    log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}"`, `rejecting malformed api request`)
                     abortedWsCounter.inc()
                     ws.close()
                     onMessageSpan.addEvent("malformed_request")
@@ -123,7 +123,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
                     return
                 }
 
-                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
+                log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `monitoring status`)
 
                 interval = setInterval(async () => {
                     getTracer("status-api").startActiveSpan("poll_job_status", async (pollJobStatusSpan) => {
@@ -138,12 +138,12 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
 
                             ws.send(jobState.serialize())
                             if (jobState.status == JobStatus.DONE) {
-                                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
+                                log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
                                 closedWsCounter.inc()
                                 ws.close()
                             }
                         } catch (err) {
-                            log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
+                            log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)
                             abortedWsCounter.inc()
                             errorCounter.inc({ method: "get_job_state" })
                             ws.close()
@@ -164,7 +164,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
                 if (interval) {
                     clearInterval(interval)
                 }
-                log("status-api", `endpoint="/ws" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
+                log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}"`, `Stop monitoring status (closed)`)
                 activeWsConnectionCount -= 1
                 activeWsConnectionCountGauge.set(activeWsConnectionCount)
                 onCloseSpan.end()
@@ -200,14 +200,14 @@ if (require.main === module) {
 
     if (_IS_UNIT_TESTING) {
         server.listen(port, async () => {
-            log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
+            log("status-api", `job="startup" endpoint="/"`, `Status WS API listening on port ${port}`)
         })
     }
 
     else {
         pullAndWatchVaultConfigValues("status-api").then(() => {
             server.listen(port, async () => {
-                log("status-api", `job="startup" endpoint="/ws"`, `Status WS API listening on port ${port}`)
+                log("status-api", `job="startup" endpoint="/"`, `Status WS API listening on port ${port}`)
             })
         })
     }

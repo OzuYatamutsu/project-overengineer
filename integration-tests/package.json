@@ -1,0 +1,10 @@
+{
+  "name": "@project-overengineer/integration-tests",
+  "version": "0.1.0",
+  "description": "E2E integration tests for the OCR service",
+  "scripts": {
+    "test": "echo TODO"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

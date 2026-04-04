@@ -536,23 +536,77 @@ jobs:
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana
           kubectl logs -n monitoring-plane --all-containers --selector=app=grafana --previous || true
 
-      - name: Kubernetes cleanup (before terraform destroy)
-        if: ${{ github.event.inputs.should_destroy == 'yes' }}
-        run: |
-          kubectl delete all --all --ignore-not-found=true
-          kubectl delete pvc --all --ignore-not-found=true || true
-          kubectl delete all -n monitoring-plane --all --ignore-not-found=true || true
-          kubectl delete pvc -n monitoring-plane --all --ignore-not-found=true || true
+  verify-prod:
+    runs-on: ubuntu-latest
+    needs: deploy-prod
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-      - name: Configure AWS credentials (before terraform destroy)
-        if: ${{ github.event.inputs.should_destroy == 'yes' }}
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: integration-tests
+        run: pnpm install
+
+      - name: Run Playwright Tests
+        working-directory: integration-tests
+        run: pnpm test
+
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+  teardown-prod:
+    runs-on: ubuntu-latest
+    needs: verify-prod
+    if: ${{ always() && github.event.inputs.should_destroy == 'yes' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.14.3
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Terraform init
+        run: terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        working-directory: ./terraform/environment/production
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name project-overengineer-production \
+            --region us-east-2
+
+      - name: Kubernetes cleanup (before terraform destroy)
+        run: |
+          kubectl delete all --all --ignore-not-found=true
+          kubectl delete pvc --all --ignore-not-found=true || true
+          kubectl delete all -n monitoring-plane --all --ignore-not-found=true || true
+          kubectl delete pvc -n monitoring-plane --all --ignore-not-found=true || true
+
       - name: Terraform destroy
-        if: ${{ github.event.inputs.should_destroy == 'yes' }}
         run: terraform destroy -auto-approve
         working-directory: ./terraform/environment/production

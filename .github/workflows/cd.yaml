@@ -597,7 +597,7 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig \
-            --name project-overengineer-production \
+            --name project-overengineer-prod \
             --region us-east-2
 
       - name: Kubernetes cleanup (before terraform destroy)

@@ -320,6 +320,12 @@ jobs:
         working-directory: integration-tests
         run: pnpm install
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-actions-eks-prod
+          aws-region: us-east-2
+
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig \
@@ -567,6 +573,12 @@ jobs:
       - name: Install dependencies
         working-directory: integration-tests
         run: pnpm install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-actions-eks-prod
+          aws-region: us-east-2
 
       - name: Update kubeconfig
         run: |

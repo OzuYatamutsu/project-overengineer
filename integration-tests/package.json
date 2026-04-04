@@ -5,6 +5,10 @@
   "scripts": {
     "test": "echo TODO"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@playwright/test": "^1.59.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2"
+  }
 }

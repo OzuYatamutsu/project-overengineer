@@ -4,3 +4,4 @@ packages:
   - "status-api"
   - "janitor"
   - "shared-lib"
+  - "integration-tests"

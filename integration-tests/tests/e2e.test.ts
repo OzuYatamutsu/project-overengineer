@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process'
 
 test("full image processing pipeline should work", async () => {
     const kubeState = execSync(
-        'kubectl get svc -n default -l app=project-overengineer-fe'
+        'kubectl get svc svc-project-overengineer-fe'
     ).toString().trim()
 
     console.log("kube state:")

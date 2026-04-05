@@ -1,8 +1,18 @@
 import { test, expect, request } from '@playwright/test'
 import { getFeEndpointFromKubectl } from '../utils/kubectl-calls'
 import { getStatusApiUrlFromMetadataEndpoint } from '../utils/rest-api-calls'
+import { execSync } from 'node:child_process'
 
 test("full image processing pipeline should work", async () => {
+    const kubeState = execSync(
+        'kubectl get svc -n default -l app=project-overengineer-fe'
+    ).toString().trim()
+
+    console.log("kube state:")
+    for (const line of kubeState.split("\n")) {
+        console.log(line)
+    }
+
     console.log("Getting frontend endpoint from kubectl...")
     const feEndpoint = getFeEndpointFromKubectl()
     console.log(`Frontend endpoint: ${feEndpoint}`)

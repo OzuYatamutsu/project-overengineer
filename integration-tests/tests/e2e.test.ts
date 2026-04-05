@@ -26,13 +26,13 @@ test("full image processing pipeline should work", async () => {
     }
 
     console.log("Getting frontend endpoint from kubectl...")
-    const feEndpoint = getFeEndpointFromKubectl()
+    const feEndpoint = `http://${getFeEndpointFromKubectl()}`
     console.log(`Frontend endpoint: ${feEndpoint}`)
 
     // Verify FE is running
     console.log("Checking if frontend is accessible...")
     const reqContext = await request.newContext()
-    const response = await reqContext.get(`http://${feEndpoint}/`)
+    const response = await reqContext.get(`${feEndpoint}/`)
     expect(response.status()).toBe(200)
     console.log("Frontend is accessible")
 

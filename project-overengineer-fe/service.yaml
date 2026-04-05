@@ -96,6 +96,7 @@ spec:
   selector:
     app: project-overengineer-fe
   ports:
-    - port: 3000
+    - name: http
+      port: 80
       targetPort: 3000
   type: LoadBalancer

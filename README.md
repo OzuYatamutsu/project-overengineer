@@ -31,7 +31,7 @@ You can modify the password at runtime by changing the values in vault (under th
 and restarting only the affected infrastructure. (e.g., in the case of Redis, the Redis service needs to be
 restarted, but client services will pull the updated password from vault automatically without a restart).
 
-Access the service on `http://localhost:3000` by running `kubectl port-forward service/svc-project-overengineer-fe 3000:3000` after cluster build.
+Access the service on `http://localhost:80` by running `kubectl port-forward service/svc-project-overengineer-fe 80:80` after cluster build.
 
 Access the monitoring plane via the Grafana instance on `http://localhost` by running `kubectl port-forward service/svc-grafana 80:80` after cluster build.
 

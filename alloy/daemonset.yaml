@@ -148,7 +148,7 @@ data:
 
     prometheus.scrape "projectoverengineerfe" {
       targets = [
-        { __address__ = "svc-project-overengineer-fe.default.svc.cluster.local:3000" },
+        { __address__ = "svc-project-overengineer-fe.default.svc.cluster.local:80" },
       ]
       metrics_path = "/api/metrics"
       scrape_interval = "30s"

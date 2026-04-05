@@ -1,5 +1,6 @@
 import { test, expect, request } from '@playwright/test'
 import { getFeEndpointFromKubectl } from '../utils/kubectl-calls'
+import { getStatusApiUrlFromMetadataEndpoint } from '../utils/rest-api-calls'
 
 test("full image processing pipeline should work", async () => {
     console.log("Getting frontend endpoint from kubectl...")
@@ -14,12 +15,8 @@ test("full image processing pipeline should work", async () => {
     console.log("Frontend is accessible")
 
     // Get status API URL from metadata endpoint
-    console.log("Checking if metadata endpoint is accessible...")
-    reqContext = await request.newContext()
-    response = await reqContext.get(`${feEndpoint}/api/v1/metadata`)
-    expect(response.status()).toBe(200)
-    console.log("Metadata endpoint is accessible")
-    const statusApiUrl = (await response.json()).statusApiUrl
+    console.log("Getting status API URL from metadata endpoint...")
+    const statusApiUrl = await getStatusApiUrlFromMetadataEndpoint(feEndpoint)
     console.log(`Status API endpoint: ${statusApiUrl}`)
 
     // Submit an image for processing

@@ -6,7 +6,7 @@ export function getFeEndpointFromKubectl(): string {
     ).toString().trim()
 
     const port = execSync(
-        'kubectl get svc svc-project-overengineer-fe -o jsonpath="{.spec.ports[?(@.name=="http")].port}"'
+        'kubectl get svc svc-project-overengineer-fe -o jsonpath="{.spec.ports[0].port}"'
     ).toString().trim()
 
     return `${hostname}:${port}`

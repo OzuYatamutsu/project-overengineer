@@ -9,8 +9,8 @@ test("full image processing pipeline should work", async () => {
 
     // Verify FE is running
     console.log("Checking if frontend is accessible...")
-    let reqContext = await request.newContext()
-    let response = await reqContext.get(`${feEndpoint}/`)
+    const reqContext = await request.newContext()
+    const response = await reqContext.get(`http://${feEndpoint}/`)
     expect(response.status()).toBe(200)
     console.log("Frontend is accessible")
 

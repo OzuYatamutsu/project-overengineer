@@ -2,8 +2,20 @@ import { test, expect, request } from '@playwright/test'
 import { getFeEndpointFromKubectl } from '../utils/kubectl-calls'
 import { getStatusApiUrlFromMetadataEndpoint } from '../utils/rest-api-calls'
 import { execSync } from 'node:child_process'
+import { setGlobalDispatcher, Agent } from "undici"
+
+// Initial HTTP request can take a very long time (subsequent requests are faster)
+const INITIAL_REQUEST_TIMEOUT_SECS = 300
+const TEST_TIMEOUT_SECS = INITIAL_REQUEST_TIMEOUT_SECS + 300
+
+setGlobalDispatcher(new Agent({
+  headersTimeout: 1000 * INITIAL_REQUEST_TIMEOUT_SECS,
+  bodyTimeout: 0, // disable body timeout
+}));
 
 test("full image processing pipeline should work", async () => {
+    test.setTimeout(TEST_TIMEOUT_SECS * 1000)
+
     const kubeState = execSync(
         'kubectl get svc svc-project-overengineer-fe'
     ).toString().trim()

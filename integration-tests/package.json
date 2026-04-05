@@ -6,7 +6,8 @@
     "test": "TS_NODE_TRANSPILE_ONLY=1 playwright test -c playwright.config.ts"
   },
   "dependencies": {
-    "@playwright/test": "^1.59.1"
+    "@playwright/test": "^1.59.1",
+    "undici": "^7.24.6"
   },
   "devDependencies": {
     "@types/node": "^25.5.2"

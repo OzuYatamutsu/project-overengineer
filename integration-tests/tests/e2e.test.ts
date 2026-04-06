@@ -1,7 +1,12 @@
 import { test, expect, request } from '@playwright/test'
 import { getFeEndpointFromKubectl, getStatusApiEndpointFromKubectl } from '../utils/kubectl-calls'
+import { postImageAgainstUploadEndpoint } from '../utils/rest-api-calls'
 import { execSync } from 'node:child_process'
 import { setGlobalDispatcher, Agent } from "undici"
+import { promises as fs } from "fs"
+
+
+const TEST_IMAGE_RELATIVE_PATH = "../dummy_receipt.jpg"
 
 // Initial HTTP request can take a very long time (subsequent requests are faster)
 const INITIAL_REQUEST_TIMEOUT_SECS = 300
@@ -41,7 +46,8 @@ test("full image processing pipeline should work", async () => {
 
     // Submit an image for processing
     console.log("Submitting test image for processing...")
-    console.log("TODO: implement image upload test")
+    const jobId = await postImageAgainstUploadEndpoint(feEndpoint, await fs.readFile(TEST_IMAGE_RELATIVE_PATH))
+    console.log(`Image submitted, job ID: ${jobId}`)
 
     // Open websocket connection to status API and wait for job completion
     console.log("Opening websocket connection to status API and monitoring job processing...")

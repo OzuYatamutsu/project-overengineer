@@ -29,7 +29,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         })
     }
 
-    const jwt = createJwt(jobId)
+    const jwt = await createJwt(jobId)
     return NextResponse.json({
         message: 'Test JWT generated',
         jobId: jobId,

@@ -1,6 +1,5 @@
 import { test, expect, request } from '@playwright/test'
-import { getFeEndpointFromKubectl } from '../utils/kubectl-calls'
-import { getStatusApiUrlFromMetadataEndpoint } from '../utils/rest-api-calls'
+import { getFeEndpointFromKubectl, getStatusApiEndpointFromKubectl } from '../utils/kubectl-calls'
 import { execSync } from 'node:child_process'
 import { setGlobalDispatcher, Agent } from "undici"
 
@@ -29,17 +28,16 @@ test("full image processing pipeline should work", async () => {
     const feEndpoint = `http://${getFeEndpointFromKubectl()}`
     console.log(`Frontend endpoint: ${feEndpoint}`)
 
+    console.log("Getting status API URL from kubectl...")
+    const statusApiUrl = `ws://${getStatusApiEndpointFromKubectl()}`
+    console.log(`Status API endpoint: ${statusApiUrl}`)
+
     // Verify FE is running
     console.log("Checking if frontend is accessible...")
     const reqContext = await request.newContext()
     const response = await reqContext.get(`${feEndpoint}/`)
     expect(response.status()).toBe(200)
     console.log("Frontend is accessible")
-
-    // Get status API URL from metadata endpoint
-    console.log("Getting status API URL from metadata endpoint...")
-    const statusApiUrl = await getStatusApiUrlFromMetadataEndpoint(feEndpoint)
-    console.log(`Status API endpoint: ${statusApiUrl}`)
 
     // Submit an image for processing
     console.log("Submitting test image for processing...")

@@ -31,6 +31,7 @@ export async function postImageAgainstUploadEndpoint(feEndpointBase: string, ima
         throw new Error(`Upload response does not contain jobId: ${JSON.stringify(response)}`)
     }
 
+    console.log(`Image uploaded successfully, full response: ${JSON.stringify(response)}; returning jobId`)
     return response.jobId
 }
 

@@ -1,6 +1,6 @@
 import { test, expect, request } from '@playwright/test'
 import { getFeEndpointFromKubectl, getStatusApiEndpointFromKubectl } from '../utils/kubectl-calls'
-import { postImageAgainstUploadEndpoint } from '../utils/rest-api-calls'
+import { getJwtForTestImage, postImageAgainstUploadEndpoint } from '../utils/rest-api-calls'
 import { execSync } from 'node:child_process'
 import { setGlobalDispatcher, Agent } from "undici"
 import { promises as fs } from "fs"
@@ -48,6 +48,11 @@ test("full image processing pipeline should work", async () => {
     console.log("Submitting test image for processing...")
     const jobId = await postImageAgainstUploadEndpoint(feEndpoint, await fs.readFile(TEST_IMAGE_RELATIVE_PATH))
     console.log(`Image submitted, job ID: ${jobId}`)
+
+    // Get JWT
+    console.log("Getting JWT for test image...")
+    const jwt = await getJwtForTestImage(feEndpoint, jobId, await fs.readFile(TEST_IMAGE_RELATIVE_PATH))
+    console.log(`JWT for test image: ${jwt}`)
 
     // Open websocket connection to status API and wait for job completion
     console.log("Opening websocket connection to status API and monitoring job processing...")

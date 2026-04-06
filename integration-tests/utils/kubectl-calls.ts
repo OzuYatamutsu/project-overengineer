@@ -11,3 +11,15 @@ export function getFeEndpointFromKubectl(): string {
 
     return `${hostname}:${port}`
 }
+
+export function getStatusApiEndpointFromKubectl(): string {
+    const hostname = execSync(
+        'kubectl get svc svc-status-api -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"'
+    ).toString().trim()
+
+    const port = execSync(
+        'kubectl get svc svc-status-api -o jsonpath="{.spec.ports[0].port}"'
+    ).toString().trim()
+
+    return `${hostname}:${port}`
+}

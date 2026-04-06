@@ -11,6 +11,7 @@ import {
   incrementErrorCounter, incrementSuccessfulJobCounter, observeJobDuration,
   registerMetricsIfRequired
 } from '../../metrics/handler'
+import { createHash } from 'crypto'
 
 // Max 1 request per sec
 const MAX_REQUESTS = 60
@@ -60,6 +61,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const rawImageData = await request.arrayBuffer()
+  
+  // TODO debug
+  const hash = createHash('sha256').update(Buffer.from(rawImageData)).digest('hex')
+  log("project-overengineer-fe", `endpoint="/upload"`, `DEBUG: Received image with hash: ${hash}`)
+  // TODO debug
 
   // Validate length and type
   if (!(await validateImage(rawImageData))) {

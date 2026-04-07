@@ -27,6 +27,9 @@ export async function monitorJobStatus(statusApiUrl: string, jobId: string, jwt:
 
         ws.on('close', () => {
             console.log(`WebSocket connection to status API closed`)
+            if (!result) {
+                reject(new Error(`WebSocket connection closed before job ${jobId} completed`))
+            }
         })
 
         ws.on('error', (err: Error) => {

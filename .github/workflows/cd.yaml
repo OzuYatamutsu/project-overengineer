@@ -336,6 +336,15 @@ jobs:
         working-directory: integration-tests
         run: pnpm test
 
+      - name: Dump logs (if test failed)
+        if: failure()
+        working-directory: integration-tests
+        run: |
+          kubectl logs service/svc-ocr-worker -c ocr-worker
+          kubectl logs service/svc-ocr-worker -c ocr-worker --previous || true
+          kubectl logs service/svc-ocr-worker -c ollama-ocr
+          kubectl logs service/svc-ocr-worker -c ollama-ocr --previous || true
+
       - name: Upload test report
         if: failure()
         uses: actions/upload-artifact@v7

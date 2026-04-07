@@ -4,6 +4,7 @@ import { getJwtForTestImage, postImageAgainstUploadEndpoint } from '../utils/res
 import { execSync } from 'node:child_process'
 import { setGlobalDispatcher, Agent } from "undici"
 import { promises as fs } from "fs"
+import { monitorJobStatus } from '../utils/ws-calls'
 
 
 const TEST_IMAGE_RELATIVE_PATH = "../dummy_receipt.jpg"
@@ -56,11 +57,13 @@ test("full image processing pipeline should work", async () => {
 
     // Open websocket connection to status API and wait for job completion
     console.log("Opening websocket connection to status API and monitoring job processing...")
-    console.log("TODO: implement image processing test")
+    const result = await monitorJobStatus(statusApiUrl, jobId, jwt)
+    console.log(`Job completed, result:`)
+    for (const line of result.split("\n")) {
+        console.log(line)
+    }
 
     // Verify the processed image can be retrieved and is correct
     console.log("Verifying job result")
     console.log("TODO: implement processed image verification")
-
-    expect(true).toBeTruthy()  // TODO: implement actual tests
 })

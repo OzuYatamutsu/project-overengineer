@@ -7,9 +7,11 @@
   },
   "dependencies": {
     "@playwright/test": "^1.59.1",
-    "undici": "^7.24.6"
+    "undici": "^7.24.6",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.2"
+    "@types/node": "^25.5.2",
+    "@types/ws": "^8.18.1"
   }
 }

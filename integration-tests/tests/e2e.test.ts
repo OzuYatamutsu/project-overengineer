@@ -19,7 +19,9 @@ const EXPECTED_STRINGS = [
 
 // Initial HTTP request can take a very long time (subsequent requests are faster)
 const INITIAL_REQUEST_TIMEOUT_SECS = 300
-const TEST_TIMEOUT_SECS = INITIAL_REQUEST_TIMEOUT_SECS + 300
+
+// The test timeout itself is very long due to OCR.
+const TEST_TIMEOUT_SECS = INITIAL_REQUEST_TIMEOUT_SECS + 1200
 
 setGlobalDispatcher(new Agent({
   headersTimeout: 1000 * INITIAL_REQUEST_TIMEOUT_SECS,

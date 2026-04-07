@@ -8,6 +8,14 @@ import { monitorJobStatus } from '../utils/ws-calls'
 
 
 const TEST_IMAGE_RELATIVE_PATH = "../dummy_receipt.jpg"
+const EXPECTED_STRINGS = [
+    "Oracabessa", "20.50",
+    "Kissy Suzuki", "20.50",
+    "Martinez Dukes Style", "20.50",
+    "50ml Hibiki 17yr", "26.00",
+    "Service Charge", "10.94",
+    "98.44"
+]
 
 // Initial HTTP request can take a very long time (subsequent requests are faster)
 const INITIAL_REQUEST_TIMEOUT_SECS = 300
@@ -65,5 +73,8 @@ test("full image processing pipeline should work", async () => {
 
     // Verify the processed image can be retrieved and is correct
     console.log("Verifying job result")
-    console.log("TODO: implement processed image verification")
+    for (const expected of EXPECTED_STRINGS) {
+        expect(result).toContain(expected)
+    }
+    console.log("Job result verified successfully")
 })

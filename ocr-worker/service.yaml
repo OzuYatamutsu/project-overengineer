@@ -114,6 +114,8 @@ spec:
             name: ollama-ocr-shm
           - mountPath: /.ollama
             name: ollama-ocr-data
+          - mountPath: /tmp
+            name: ollama-ocr-tmp
           securityContext:
             readOnlyRootFilesystem: true
       volumes:
@@ -121,6 +123,8 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 1Gi
+        - name: ollama-ocr-tmp
+          emptyDir: {}
       securityContext:
         runAsUser: 1002  # ollama user
         runAsGroup: 1002  # ollama group

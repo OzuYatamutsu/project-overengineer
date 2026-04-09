@@ -60,7 +60,6 @@ export async function _healthz(): Promise<boolean> {
         return false
     }
 
-    log("janitor", `endpoint="/healthz"`, `health check pass`)
     return true
 }
 

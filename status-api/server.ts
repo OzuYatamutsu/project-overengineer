@@ -70,7 +70,6 @@ export async function _healthz(): Promise<boolean> {
         return false
     }
 
-    log("status-api", `endpoint="/healthz"`, `health check pass`)
     return true
 }
 

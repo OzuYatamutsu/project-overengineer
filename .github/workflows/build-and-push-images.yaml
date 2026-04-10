@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - feature/model-lite
 
 jobs:
   generate-vault-cert:

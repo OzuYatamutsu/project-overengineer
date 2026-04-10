@@ -105,8 +105,8 @@ spec:
               cpu: "150m"
               memory: "512Mi"
             limits:
-              cpu: "6000m"
-              memory: "8Gi"
+              cpu: "4000m"
+              memory: "6Gi"
           volumeMounts:
           - mountPath: /dev/shm
             name: ollama-ocr-shm

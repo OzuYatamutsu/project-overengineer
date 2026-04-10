@@ -5,3 +5,5 @@ packages:
   - "janitor"
   - "shared-lib"
   - "integration-tests"
+overrides:
+  axios@<1.15.0: '>=1.15.0'

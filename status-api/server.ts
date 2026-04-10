@@ -50,7 +50,6 @@ async function getJobState(jobId: string, jwt: string): Promise<JobUpdate> {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("status-api", `endpoint="/healthz"`, "starting health check")
 
     try {
         if (await getRedis("status-api").ping() != 'PONG') {

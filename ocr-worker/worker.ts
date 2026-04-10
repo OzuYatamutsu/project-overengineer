@@ -95,7 +95,6 @@ async function commit(job: Job): Promise<void> {
 
 export async function _healthz(): Promise<boolean> {
     // Health check: ping redis and check if we can list jobs
-    log("ocr-worker", `endpoint="/healthz"`, `starting health check`)
 
     try {
         if (await getRedis("ocr-worker").ping() != 'PONG') {

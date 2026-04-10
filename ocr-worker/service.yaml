@@ -23,7 +23,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: ocr-worker
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v2
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v3
           imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST
@@ -78,7 +78,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
         - name: ollama-ocr    # sidecar
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v2
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v3
           env:
           - name: OLLAMA_KEEP_ALIVE
             value: "2m"

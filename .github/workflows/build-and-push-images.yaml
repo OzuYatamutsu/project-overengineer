@@ -75,7 +75,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v2
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v3
 
   project-overengineer-fe:
     runs-on: ubuntu-latest
@@ -192,7 +192,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v2
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v3
 
   redis-master:
     runs-on: ubuntu-latest

@@ -227,13 +227,14 @@ jobs:
         working-directory: ocr-worker
         run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 _IS_UNIT_TESTING=true pnpm test
 
-      - name: Install docker
+      - name: Get OCR logs
         if: failure()
         run: |
           apt-get update
           apt-get install -y docker.io
-          docker ps -a
           docker logs $(docker ps -q --filter "ancestor=jinhaiket/project-overengineer-ollama:amd64")
+          echo "Model details:"
+          curl http://ollama-ocr:11434/api/tags | jq
 
       - name: Upload test report
         if: failure()

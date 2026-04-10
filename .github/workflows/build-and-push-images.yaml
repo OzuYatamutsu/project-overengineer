@@ -74,6 +74,7 @@ jobs:
           context: .
           file: ./ollama/Dockerfile
           push: true
+          platforms: linux/amd64
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v3

@@ -11,8 +11,7 @@ import http from "http"
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
 const POLLING_PERIOD_MSECS = 1000
 const UPDATE_INTERVAL_MSECS = 5000
-const IS_LITE = process.env.IS_LITE === "true"
-const MODEL_NAME = IS_LITE ? "moondream:1.8b": "ministral-3:3b"
+const MODEL_NAME = "ministral-3:3b"
 const HEALTH_CHECK_PORT = (
     process.env.HEALTH_CHECK_PORT
     ? Number(process.env.HEALTH_CHECK_PORT)

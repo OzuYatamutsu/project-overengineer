@@ -232,7 +232,8 @@ jobs:
         run: |
           apt-get update
           apt-get install -y docker.io
-          docker logs unit-test-ocr-core_ollama-ocr_1
+          docker ps -a
+          docker logs $(docker ps -q --filter "ancestor=jinhaiket/project-overengineer-ollama:amd64")
 
       - name: Upload test report
         if: failure()

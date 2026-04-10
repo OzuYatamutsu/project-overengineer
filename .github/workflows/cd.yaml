@@ -345,6 +345,7 @@ jobs:
           kubectl logs service/svc-ocr-worker -c ollama-ocr
           kubectl logs service/svc-ocr-worker -c ollama-ocr --previous || true
           kubectl logs -l app=status-api --all-containers=true --prefix
+          kubectl logs -l app=status-api --all-containers=true --prefix --previous || true
 
       - name: Upload test report
         if: failure()

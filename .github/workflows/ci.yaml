@@ -227,9 +227,12 @@ jobs:
         working-directory: ocr-worker
         run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 _IS_UNIT_TESTING=true pnpm test
 
-      - name: Print ocr logs
-        if: always()
-        run: docker logs unit-test-ocr-core_ollama-ocr_1
+      - name: Install docker
+        if: failure()
+        run: |
+          apt-get update
+          apt-get install -y docker.io
+          docker logs unit-test-ocr-core_ollama-ocr_1
 
       - name: Upload test report
         if: failure()

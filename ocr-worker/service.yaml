@@ -47,8 +47,6 @@ spec:
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
-            - name: IS_LITE
-              value: "false"  # set to "false" to use a larger but more accurate OCR model
           readinessProbe:
             httpGet:
               path: /healthz

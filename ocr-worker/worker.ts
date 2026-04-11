@@ -177,8 +177,9 @@ setInterval(async () => {
                     job = await processJob(job)
                     processJobSpan.addEvent("job_succeeded")
                     childSpan.end()
-                } catch (error) {
-                    job.result = error?.toString() ?? "" 
+                } catch (error: any) {
+                    log("ocr-worker", `jobId="${job.id}"`, `failed to process job: ${error}; ${error?.stack ?? ""} ${error?.cause ?? ""}`)
+                    job.result = error?.toString() ?? ""
                     if (errorCounter) {
                         errorCounter.inc({ method: "process_job" })
                     }

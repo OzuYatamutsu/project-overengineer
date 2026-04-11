@@ -102,6 +102,11 @@ export async function _healthz(): Promise<boolean> {
             return false
         }
 
+        if (await fetch(`${OCR_ENDPOINT}/`).then(res => res.ok).catch(() => false) == false) {
+            log("ocr-worker", `endpoint="/healthz"`, `failed, can't reach OCR endpoint at ${OCR_ENDPOINT}`)
+            return false
+        }
+
     } catch (err) {
         log("ocr-worker", `endpoint="/healthz"`, `failed, can't ping redis: ${err}`)
         return false

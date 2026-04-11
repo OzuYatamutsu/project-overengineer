@@ -7,3 +7,4 @@ packages:
   - "integration-tests"
 overrides:
   axios@<1.15.0: '>=1.15.0'
+  next@>=16.0.0-beta.0 <16.2.3: '>=16.2.3'

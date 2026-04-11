@@ -340,10 +340,12 @@ jobs:
         if: failure()
         working-directory: integration-tests
         run: |
+          echo "[ocr logs]"
           kubectl logs service/svc-ocr-worker -c ocr-worker
           kubectl logs service/svc-ocr-worker -c ocr-worker --previous || true
           kubectl logs service/svc-ocr-worker -c ollama-ocr
           kubectl logs service/svc-ocr-worker -c ollama-ocr --previous || true
+          echo "[status-api logs]"
           kubectl logs -l app=status-api --all-containers=true --prefix
           kubectl logs -l app=status-api --all-containers=true --prefix --previous || true
 

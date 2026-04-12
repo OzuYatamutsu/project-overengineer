@@ -77,7 +77,13 @@ export async function updateEnvFromVault(serviceName: string, configName: string
 }
 
 export function watchAndUpdateVaultValue(serviceName: string, configName: string, refreshPeriodMs=60000, insecure=false): NodeJS.Timeout {
-    return setInterval(async () => await updateEnvFromVault(serviceName, configName, insecure), refreshPeriodMs)
+    return setInterval(async () => {
+        try {
+            await updateEnvFromVault(serviceName, configName, insecure)
+        } catch (error) {
+            log(serviceName, `configName="${configName}"`, `error updating config value from vault: ${error}; reusing stale value`)
+        }
+    }, refreshPeriodMs)
 }
 
 export async function pullAndWatchVaultConfigValues(serviceName: string, insecure=false): Promise<NodeJS.Timeout[]> {

@@ -51,7 +51,11 @@ export async function saveJob(job: Job): Promise<void> {
     await _init_vault_if_required()
 
     job.status = JobStatus.WAITING
+
+    log("project-overengineer-fe", `jobId="${job.id}"`, `Retrieving encryption key...`)
     job.encrypt(await getImageEncryptionKey("project-overengineer-fe"))
+
+    log("project-overengineer-fe", `jobId="${job.id}"`, `Saving job to Redis...`)
     await getRedis("project-overengineer-fe").hset(`job:${job.id}`, job.serialize())
 }
 

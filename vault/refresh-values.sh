@@ -10,7 +10,7 @@ echo "Waiting for svc-status-api to be available..."
 start=$(date +%s)
 timeout_sec=$REFRESH_INTERVAL_SECONDS
 
-until kubectl get endpoints svc-status-api -o jsonpath='{.subsets}' 2>/dev/null | grep -q .; do
+until kubectl get svc svc-status-api -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' >/dev/null 2>&1; do
   now=$(date +%s)
   if [ $((now - start)) -ge "$timeout_sec" ]; then
     echo "Timed out waiting for svc-status-api endpoints"

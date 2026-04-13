@@ -43,12 +43,17 @@ spec:
                 secretKeyRef:
                   name: vault-token
                   key: token
-            # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD (not specified here)
-            # are pulled from vault in-cluster at runtime, and refreshed regularly.
+            # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD are pulled from
+            # vault in-cluster at runtime, and refreshed regularly.
             - name: REDIS_HOST
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: initial-redis-password
+                  key: password
           readinessProbe:
             httpGet:
               path: /healthz

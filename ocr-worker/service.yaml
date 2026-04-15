@@ -84,14 +84,14 @@ spec:
             value: "1"
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/ps
               port: 11434
             initialDelaySeconds: 10
             timeoutSeconds: 5
             periodSeconds: 3
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/ps
               port: 11434
             initialDelaySeconds: 30
             timeoutSeconds: 5

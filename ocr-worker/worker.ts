@@ -53,9 +53,10 @@ export async function processJob(job: Job): Promise<Job> {
        body: JSON.stringify({
            model: MODEL_NAME,
            prompt: [
-                "Itemize this receipt into a bulleted list.",
-                "How much was paid for each item?",
-                "What is the total amount shown on the receipt?",
+                "Itemize this receipt into a bulleted list. ",
+                "How much was paid for each item? ",
+                "How much was paid in service charges, taxes, and tips (if applicable)? ",
+                "What is the total amount shown on the receipt? ",
                 "Do not respond with any text not on the receipt."
            ].join(" "),
            images: [job.imageDataBase64],

@@ -110,7 +110,7 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 30
             failureThreshold: 5
-            successThreshold: 1llama3.2
+            successThreshold: 1
           ports:
             - containerPort: 11434
           resources:

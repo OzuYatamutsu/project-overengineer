@@ -79,9 +79,22 @@ spec:
           image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v3
           env:
           - name: OLLAMA_KEEP_ALIVE
-            value: "2m"
+            value: "-1"
           - name: OLLAMA_MAX_LOADED_MODELS
             value: "1"
+          - name: OLLAMA_REQUEST_TIMEOUT
+            value: "900s"
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - sleep 3
+                    curl -s http://localhost:11434/api/generate \
+                      -d "{\"model\":\"$MODEL_NAME\",\"prompt\":\"\",\"keep_alive\":-1}" \
+                      > /dev/null
+
           readinessProbe:
             httpGet:
               path: /api/ps
@@ -97,7 +110,7 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 30
             failureThreshold: 5
-            successThreshold: 1
+            successThreshold: 1llama3.2
           ports:
             - containerPort: 11434
           resources:

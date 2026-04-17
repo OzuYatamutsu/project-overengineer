@@ -77,7 +77,7 @@ jobs:
           platforms: linux/amd64
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v3
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ollama-ocr:v4
 
   project-overengineer-fe:
     runs-on: ubuntu-latest

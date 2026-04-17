@@ -3,9 +3,6 @@ ENV OLLAMA_MODELS=/home/ollama/.ollama
 ENV NODE_OPTIONS=--use-openssl-ca
 ENV MODEL_NAME="ministral-3:3b"
 
-# Install curl for initial model load
-RUN apt update && apt install -y curl
-
 # Install local vault certificates
 COPY vault/vault-ca.crt /usr/local/share/ca-certificates/vault-ca.crt
 RUN update-ca-certificates --fresh --verbose

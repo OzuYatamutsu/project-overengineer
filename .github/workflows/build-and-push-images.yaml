@@ -194,7 +194,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:latest
-            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v3
+            ghcr.io/${{ env.OWNER_LC }}/project-overengineer/ocr-worker:v4
 
   redis-master:
     runs-on: ubuntu-latest

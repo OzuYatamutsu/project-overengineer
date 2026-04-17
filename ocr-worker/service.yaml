@@ -23,7 +23,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: ocr-worker
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v3
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v4
           imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST

@@ -104,7 +104,7 @@ spec:
             - containerPort: 11434
           resources:
             requests:
-              cpu: "2000m"
+              cpu: "1000m"
               memory: "3Gi"
             limits:
               cpu: "6000m"

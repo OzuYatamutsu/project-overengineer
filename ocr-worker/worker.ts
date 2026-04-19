@@ -5,6 +5,7 @@ import {
     registerCounter, startHostTelemetryJob,
     initTracing, getTracer
 } from '@project-overengineer/shared-lib'
+import { setGlobalDispatcher, Agent } from "undici"
 import type { Gauge, Counter, Span } from '@project-overengineer/shared-lib'
 import http from "http"
 
@@ -22,6 +23,13 @@ const PROMETHEUS_METRICS_PORT = (
     ? Number(process.env.PROMETHEUS_METRICS_PORT)
     : 4000
 )
+
+// Initial HTTP request can take a very long time (subsequent requests are faster)
+const REQUEST_TIMEOUT_SECS = 600
+setGlobalDispatcher(new Agent({
+  headersTimeout: 1000 * REQUEST_TIMEOUT_SECS,
+  bodyTimeout: 0, // disable body timeout
+}));
 
 // Used to update progress bar. Update on each successful job.
 let estimatedTimeSecs: number = 200.0

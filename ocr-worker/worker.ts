@@ -25,7 +25,7 @@ const PROMETHEUS_METRICS_PORT = (
 )
 
 // Initial HTTP request can take a very long time (subsequent requests are faster)
-const REQUEST_TIMEOUT_SECS = 1200
+const REQUEST_TIMEOUT_SECS = 2400
 setGlobalDispatcher(new Agent({
   headersTimeout: 1000 * REQUEST_TIMEOUT_SECS,
   bodyTimeout: 0, // disable body timeout

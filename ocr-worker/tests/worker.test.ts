@@ -34,13 +34,12 @@ test('ocr parses expected text from test image (remote mode)', async () => {
         return
     }
 
-    process.env.REMOTE_MODE = 'true'
     test.setTimeout(TEST_TIMEOUT_SECS * 1000)
 
     let testJob = new Job(
         await fs.readFile(path.join(__dirname, "test-image.base64"), "utf-8"))
     testJob.status = JobStatus.PROCESSING
-    testJob = await processJob(testJob)
+    testJob = await processJob(testJob, true)
 
     // debug
     log("ocr-worker", `jobId="${testJob.id}"`, `OCR result:`)
@@ -56,13 +55,12 @@ test('ocr parses expected text from test image (remote mode)', async () => {
     expect(testJob.status === JobStatus.DONE)
 })
 test('ocr parses expected text from test image (local mode)', async () => {
-    process.env.REMOTE_MODE = 'false'
     test.setTimeout(TEST_TIMEOUT_SECS * 1000)
 
     let testJob = new Job(
         await fs.readFile(path.join(__dirname, "test-image.base64"), "utf-8"))
     testJob.status = JobStatus.PROCESSING
-    testJob = await processJob(testJob)
+    testJob = await processJob(testJob, false)
 
     // debug
     log("ocr-worker", `jobId="${testJob.id}"`, `OCR result:`)

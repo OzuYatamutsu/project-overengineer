@@ -72,35 +72,6 @@ export async function processJob(job: Job, remoteMode: null | boolean = null): P
 
     if (shouldUseRemote) {
         log("ocr-worker", `jobId="${job.id}"`, `Job sent to remote OCR engine, processing...`)
-
-
-        log("ocr-worker", `jobId="${job.id}"`, `DEBUG: ${REMOTE_MODE_API_URL} ${REMOTE_MODE_API_KEY} ${job.imageDataBase64}`)
-        log("ocr-worker", `jobId="${job.id}"`, `DEBUG: without image`)
-        jobResult = await fetch(REMOTE_MODE_API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-Moondream-Auth": REMOTE_MODE_API_KEY
-            },
-            body: JSON.stringify({
-                question: PROMPT
-            })
-        })
-        log("ocr-worker", `jobId="${job.id}"`, `DEBUG: ${jobResult.status} ${await jobResult.text()}`)
-        log("ocr-worker", `jobId="${job.id}"`, `DEBUG: with image`)
-        jobResult = await fetch(REMOTE_MODE_API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-Moondream-Auth": REMOTE_MODE_API_KEY
-            },
-            body: JSON.stringify({
-                image_url: job.imageDataBase64,
-                question: PROMPT
-            })
-        })
-        log("ocr-worker", `jobId="${job.id}"`, `DEBUG: ${jobResult.status} ${await jobResult.text()}`)
-        log("ocr-worker", `jobId="${job.id}"`, `DEBUG: end debug`)
         jobResult = await fetch(REMOTE_MODE_API_URL, {
             method: "POST",
             headers: {

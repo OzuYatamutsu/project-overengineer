@@ -57,6 +57,8 @@ spec:
                 secretKeyRef:
                   name: initial-moondream-api-key
                   key: api-key
+            - name: REMOTE_MODE
+              value: "true"
           readinessProbe:
             httpGet:
               path: /healthz

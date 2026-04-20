@@ -24,12 +24,25 @@ const PROMETHEUS_METRICS_PORT = (
     : 4000
 )
 
+// If true, sends request to a remote OCR API.
+const REMOTE_MODE = process.env.REMOTE_MODE === "true"
+const REMOTE_MODE_API_KEY = process.env.MOONDREAM_API_KEY || ""
+const REMOTE_MODE_API_URL = "https://api.moondream.ai/v1/query"
+
 // Initial HTTP request can take a very long time (subsequent requests are faster)
-const REQUEST_TIMEOUT_SECS = 2400
+const REQUEST_TIMEOUT_SECS = 600
 setGlobalDispatcher(new Agent({
   headersTimeout: 1000 * REQUEST_TIMEOUT_SECS,
   bodyTimeout: 0, // disable body timeout
 }));
+
+const PROMPT = (
+    "Itemize this receipt into a bulleted list. " +
+    "How much was paid for each item? " +
+    "How much was paid in service charges, taxes, and tips (if applicable)? " +
+    "What is the total amount shown on the receipt? " +
+    "Do not respond with any text not on the receipt."
+)
 
 // Used to update progress bar. Update on each successful job.
 let estimatedTimeSecs: number = 200.0
@@ -49,28 +62,34 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 
 export async function processJob(job: Job): Promise<Job> {
     let timeDelta = Date.now() / 1000
+    let jobResult: Response
     job.decrypt(await getImageEncryptionKey("ocr-worker"))
 
     if (isIdleGauge) {
         isIdleGauge.set(0)
     }
     log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
-    const jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
-       method: "POST",
-       headers: {"Content-Type": "application/json"},
-       body: JSON.stringify({
-           model: MODEL_NAME,
-           prompt: [
-                "Itemize this receipt into a bulleted list. ",
-                "How much was paid for each item? ",
-                "How much was paid in service charges, taxes, and tips (if applicable)? ",
-                "What is the total amount shown on the receipt? ",
-                "Do not respond with any text not on the receipt."
-           ].join(" "),
-           images: [job.imageDataBase64],
-           stream: false
-       })
-    })
+    if (REMOTE_MODE) {
+        jobResult = await fetch(REMOTE_MODE_API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Moondream-Auth": REMOTE_MODE_API_KEY
+            },
+            body: JSON.stringify({"test": "data"})  // TODO; https://docs.moondream.ai/quickstart
+        })
+    } else {
+        jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                model: MODEL_NAME,
+                prompt: PROMPT,
+                images: [job.imageDataBase64],
+                stream: false
+            })
+        })
+    }
 
     if (isIdleGauge) {
         isIdleGauge.set(1)

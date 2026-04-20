@@ -23,7 +23,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       containers:
         - name: ocr-worker
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v4
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ocr-worker:v5
           imagePullPolicy: Always
           env:
             - name: SENTINEL_HOST
@@ -41,12 +41,22 @@ spec:
                 secretKeyRef:
                   name: vault-token
                   key: token
-            # REDIS_HOST, REDIS_PORT, and REDIS_PASSWORD (not specified here)
+            # REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, and MOONDREAM_API_KEY
             # are pulled from vault in-cluster at runtime, and refreshed regularly.
             - name: REDIS_HOST
               value: svc-redis-master.default.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: initial-redis-password
+                  key: password
+            - name: MOONDREAM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: initial-moondream-api-key
+                  key: api-key
           readinessProbe:
             httpGet:
               path: /healthz
@@ -76,7 +86,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
         - name: ollama-ocr    # sidecar
-          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v4
+          image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v5
           env:
           - name: OLLAMA_KEEP_ALIVE
             value: "-1"

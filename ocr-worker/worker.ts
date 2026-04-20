@@ -12,7 +12,7 @@ import http from "http"
 const OCR_ENDPOINT = process.env.OCR_ENDPOINT ?? "http://localhost:11434"
 const POLLING_PERIOD_MSECS = 1000
 const UPDATE_INTERVAL_MSECS = 5000
-const MODEL_NAME = "moondream:1.8b"
+const MODEL_NAME = "glm-ocr:q8_0"
 const HEALTH_CHECK_PORT = (
     process.env.HEALTH_CHECK_PORT
     ? Number(process.env.HEALTH_CHECK_PORT)

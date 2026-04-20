@@ -204,7 +204,7 @@ jobs:
         ports:
           - 6379:6379
       ollama-ocr:
-        image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v5
+        image: ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v4
         ports:
           - 11434:11434
     needs: lint-ocr-core
@@ -232,7 +232,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y docker.io jq
-          docker logs $(docker ps -q --filter "ancestor=ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v5")
+          docker logs $(docker ps -q --filter "ancestor=ghcr.io/ozuyatamutsu/project-overengineer/ollama-ocr:v4")
           echo "Model details:"
           curl http://ollama-ocr:11434/api/tags | jq
 

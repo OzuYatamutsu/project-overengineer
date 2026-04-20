@@ -63,13 +63,14 @@ async function pullJobDetails(jobId: string): Promise<Job> {
 export async function processJob(job: Job, remoteMode=null): Promise<Job> {
     let timeDelta = Date.now() / 1000
     let jobResult: Response
+    let shouldUseRemote = remoteMode === true || (remoteMode === null && REMOTE_MODE)
     job.decrypt(await getImageEncryptionKey("ocr-worker"))
 
     if (isIdleGauge) {
         isIdleGauge.set(0)
     }
 
-    if (remoteMode === true || (remoteMode === null && REMOTE_MODE)) {
+    if (shouldUseRemote) {
         log("ocr-worker", `jobId="${job.id}"`, `Job sent to remote OCR engine, processing...`)
         jobResult = await fetch(REMOTE_MODE_API_URL, {
             method: "POST",
@@ -82,7 +83,7 @@ export async function processJob(job: Job, remoteMode=null): Promise<Job> {
                 question: PROMPT
             })
         })
-    } else if (remoteMode === false || (remoteMode === null && !REMOTE_MODE)) {
+    } else {
         log("ocr-worker", `jobId="${job.id}"`, `Job sent to local OCR engine, processing...`)
         jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
             method: "POST",

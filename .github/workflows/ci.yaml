@@ -225,7 +225,7 @@ jobs:
 
       - name: Run Playwright Tests
         working-directory: ocr-worker
-        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 REMOTE_MODE=true MOONDREAM_API_KEY=${{ secrets.MOONDREAM_API_KEY }} pnpm test
+        run: REDIS_HOST=redis REDIS_PORT=6379 REDIS_PASSWORD=b4yscx92yksfyv9c OCR_ENDPOINT=http://ollama-ocr:11434 REMOTE_MODE=true MOONDREAM_API_KEY=${{ secrets.MOONDREAM_API_KEY }} _IS_UNIT_TESTING=true pnpm test
 
       - name: Get OCR logs
         if: failure()

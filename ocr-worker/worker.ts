@@ -68,17 +68,22 @@ export async function processJob(job: Job): Promise<Job> {
     if (isIdleGauge) {
         isIdleGauge.set(0)
     }
-    log("ocr-worker", `jobId="${job.id}"`, `Job sent to OCR engine, processing...`)
+
     if (REMOTE_MODE) {
+        log("ocr-worker", `jobId="${job.id}"`, `Job sent to remote OCR engine, processing...`)
         jobResult = await fetch(REMOTE_MODE_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-Moondream-Auth": REMOTE_MODE_API_KEY
             },
-            body: JSON.stringify({"test": "data"})  // TODO; https://docs.moondream.ai/quickstart
+            body: JSON.stringify({
+                image_url: job.imageDataBase64,
+                question: PROMPT
+            })
         })
     } else {
+        log("ocr-worker", `jobId="${job.id}"`, `Job sent to local OCR engine, processing...`)
         jobResult = await fetch(`${OCR_ENDPOINT}/api/generate`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -112,7 +117,7 @@ export async function processJob(job: Job): Promise<Job> {
     estimatedTimeSecs = (timeDelta + estimatedTimeSecs) / 2
 
     const data = await jobResult.json()
-    job.result = data.response?.trim() ?? "No text was found in the image!"
+    job.result = data.response?.trim() ?? data.answer?.trim() ?? "No text was found in the image!"
     job.encrypt(await getImageEncryptionKey("ocr-worker"))
     return job
 }

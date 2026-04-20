@@ -14,6 +14,18 @@ check_rollout() {
     fi
 }
 kubectl apply -f monitoring-plane-namespace.yaml
+if kubectl get secret initial-moondream-api-key >/dev/null 2>&1; then
+  echo "Found existing Moondream API key, skipping."
+else
+  echo "Inserting Moondream API key (or blank if $MOONDREAM_API_KEY not set)..."
+  kubectl create secret generic initial-moondream-api-key \
+      --from-literal=api-key="${MOONDREAM_API_KEY:-}" \
+      --dry-run=client -o yaml | kubectl apply -f -
+  if [ -z "$MOONDREAM_API_KEY" ]; then
+    echo "warning: MOONDREAM_API_KEY wasn't set; inserting blank value."
+  else
+    echo "Moondream API key inserted."
+fi
 kubectl apply -f vault/service.yaml
 kubectl rollout status statefulset/vault --timeout=180s
 timeout=60

@@ -1,6 +1,7 @@
 import vault from "node-vault"
 import { enforceConfig } from "./verify"
 import { log } from "./logging"
+import { watch } from "fs"
 
 export const CONFIG_PREFIX = "secret/data"
 export const JWT_KEY_NAME = "transit/sign/jwt-signer"
@@ -92,13 +93,15 @@ export async function pullAndWatchVaultConfigValues(serviceName: string, insecur
     await updateEnvFromVault(serviceName, "REDIS_PORT", insecure)
     await updateEnvFromVault(serviceName, "REDIS_PASSWORD", insecure)
     await updateEnvFromVault(serviceName, "STATUS_API_URL", insecure)
+    await updateEnvFromVault(serviceName, "MOONDREAM_API_KEY", insecure)
     log(serviceName, `job="startup"`, `config values updated.`)
     log(serviceName, `job="startup"`, `starting config update job...`)
     const bgJobs = [
         watchAndUpdateVaultValue(serviceName, "REDIS_HOST", 60000, insecure),
         watchAndUpdateVaultValue(serviceName, "REDIS_PORT", 60000, insecure),
         watchAndUpdateVaultValue(serviceName, "REDIS_PASSWORD", 60000, insecure),
-        watchAndUpdateVaultValue(serviceName, "STATUS_API_URL", 60000, insecure)
+        watchAndUpdateVaultValue(serviceName, "STATUS_API_URL", 60000, insecure),
+        watchAndUpdateVaultValue(serviceName, "MOONDREAM_API_KEY", 60000, insecure)
     ]
     log(serviceName, `job="startup"`, `started config update job.`)
     return bgJobs

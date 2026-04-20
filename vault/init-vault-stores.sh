@@ -35,10 +35,14 @@ done
 echo "Inserting Redis config..."
 INITIAL_REDIS_PASSWORD=$(kubectl get secret initial-redis-password -o jsonpath='{.data.password}' | base64 -d)
 
+echo "Inserting Moondream API config..."
+INITIAL_MOONDREAM_API_KEY=$(kubectl get secret initial-moondream-api-key -o jsonpath='{.data.api-key}' | base64 -d)
+
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_HOST value="svc-redis-master.default.svc.cluster.local"
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PORT value="6379"
 vault kv put -address="$VAULT_ADDR" secret/data/REDIS_PASSWORD value="$INITIAL_REDIS_PASSWORD"
 vault kv put -address="$VAULT_ADDR" secret/data/STATUS_API_URL value="ws://svc-status-api.default.svc.cluster.local:3001"
+vault kv put -address="$VAULT_ADDR" secret/data/MOONDREAM_API_KEY value="$INITIAL_MOONDREAM_API_KEY"
 
 echo "Enabling transit/ store..."
 vault secrets enable -address="$VAULT_ADDR" transit

@@ -1,7 +1,6 @@
 import vault from "node-vault"
 import { enforceConfig } from "./verify"
 import { log } from "./logging"
-import { watch } from "fs"
 
 export const CONFIG_PREFIX = "secret/data"
 export const JWT_KEY_NAME = "transit/sign/jwt-signer"

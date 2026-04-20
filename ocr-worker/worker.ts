@@ -60,7 +60,7 @@ async function pullJobDetails(jobId: string): Promise<Job> {
     )
 }
 
-export async function processJob(job: Job, remoteMode=null): Promise<Job> {
+export async function processJob(job: Job, remoteMode: null | boolean = null): Promise<Job> {
     let timeDelta = Date.now() / 1000
     let jobResult: Response
     let shouldUseRemote = remoteMode === true || (remoteMode === null && REMOTE_MODE)

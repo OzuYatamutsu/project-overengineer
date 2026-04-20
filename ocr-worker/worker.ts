@@ -79,7 +79,7 @@ export async function processJob(job: Job, remoteMode: null | boolean = null): P
                 "X-Moondream-Auth": REMOTE_MODE_API_KEY
             },
             body: JSON.stringify({
-                image_url: job.imageDataBase64,
+                image_url: `data:image/jpeg;base64,${job.imageDataBase64}`,
                 question: PROMPT
             })
         })

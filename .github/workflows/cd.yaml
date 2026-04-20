@@ -28,6 +28,12 @@ jobs:
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
 
+      - name: Insert remote OCR API key
+        run: |
+          kubectl create secret generic initial-moondream-api-key \
+            --from-literal=api-key="${{ secrets.MOONDREAM_API_KEY }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
 
@@ -188,6 +194,12 @@ jobs:
 
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
+
+      - name: Insert remote OCR API key
+        run: |
+          kubectl create secret generic initial-moondream-api-key \
+            --from-literal=api-key="${{ secrets.MOONDREAM_API_KEY }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml
@@ -455,6 +467,12 @@ jobs:
 
       - name: Create monitoring plane namespace
         run: kubectl apply -f monitoring-plane-namespace.yaml
+
+      - name: Insert remote OCR API key
+        run: |
+          kubectl create secret generic initial-moondream-api-key \
+            --from-literal=api-key="${{ secrets.MOONDREAM_API_KEY }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy vault
         run: kubectl apply -f vault/service.yaml

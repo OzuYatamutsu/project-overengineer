@@ -10,7 +10,9 @@ export default defineConfig({
         REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'b4yscx92yksfyv9c',
         VAULT_HOST: process.env.VAULT_HOST || 'localhost',
         VAULT_PORT: process.env.VAULT_PORT || '8200',
-        VAULT_RO_TOKEN: process.env.VAULT_RO_TOKEN || 'root'
+        VAULT_RO_TOKEN: process.env.VAULT_RO_TOKEN || 'root',
+        REMOTE_MODE: process.env.REMOTE_MODE || 'false',
+        MOONDREAM_API_KEY: process.env.MOONDREAM_API_KEY || ''
       },
     }
   }

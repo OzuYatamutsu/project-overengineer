@@ -28,7 +28,35 @@ setGlobalDispatcher(new Agent({
 test('ocr-worker healthz endpoint should be working', async () => {
   expect(await _healthz()).toBe(true)
 })
-test('ocr parses expected text from test image', async () => {
+test('ocr parses expected text from test image (remote mode)', async () => {
+    if (!process.env.MOONDREAM_API_KEY) {
+        log("ocr-worker", `job="test"`, `MOONDREAM_API_KEY not set, skipping remote OCR test.`)
+        return
+    }
+
+    process.env.REMOTE_MODE = 'true'
+    test.setTimeout(TEST_TIMEOUT_SECS * 1000)
+
+    let testJob = new Job(
+        await fs.readFile(path.join(__dirname, "test-image.base64"), "utf-8"))
+    testJob.status = JobStatus.PROCESSING
+    testJob = await processJob(testJob)
+
+    // debug
+    log("ocr-worker", `jobId="${testJob.id}"`, `OCR result:`)
+    log("ocr-worker", `jobId="${testJob.id}"`, `[OCR result]`)
+    log("ocr-worker", `jobId="${testJob.id}"`, ``)
+    testJob.result.split("\n").forEach(line => log("ocr-worker", `jobId="${testJob.id}"`, line))
+
+    // We should expect to find all the expected strings within the result
+    for (let i = 0; i < EXPECTED_STRINGS.length; i++) {
+        expect(testJob.result).toContain(EXPECTED_STRINGS[i])
+    }
+
+    expect(testJob.status === JobStatus.DONE)
+})
+test('ocr parses expected text from test image (local mode)', async () => {
+    process.env.REMOTE_MODE = 'false'
     test.setTimeout(TEST_TIMEOUT_SECS * 1000)
 
     let testJob = new Job(

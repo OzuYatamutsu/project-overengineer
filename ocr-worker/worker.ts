@@ -41,7 +41,8 @@ const PROMPT = (
     "How much was paid for each item? " +
     "How much was paid in service charges, taxes, and tips (if applicable)? " +
     "What is the total amount shown on the receipt? " +
-    "Do not respond with any text not on the receipt."
+    "Do not respond with any text not on the receipt. " +
+    "Make sure to include all items, even if the text is blurry. "
 )
 
 // Used to update progress bar. Update on each successful job.

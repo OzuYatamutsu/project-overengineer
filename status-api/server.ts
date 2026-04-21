@@ -134,12 +134,14 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
                             const jobState = await getJobState(jobId, jwt)
                             childSpan.end()
 
-                            ws.send(jobState.serialize())
                             if (jobState.status == JobStatus.DONE) {
                                 jobState.progress = 100
+                                ws.send(jobState.serialize())
                                 log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
                                 closedWsCounter.inc()
                                 ws.close()
+                            } else {
+                                ws.send(jobState.serialize())
                             }
                         } catch (err) {
                             log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `error getting job state: ${err}`)

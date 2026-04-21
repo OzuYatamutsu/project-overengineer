@@ -136,6 +136,7 @@ wss.on('connection', async (ws: WebSocket, req: http.IncomingMessage) => {
 
                             ws.send(jobState.serialize())
                             if (jobState.status == JobStatus.DONE) {
+                                jobState.progress = 100
                                 log("status-api", `endpoint="/" request_addr="${req.socket.remoteAddress}" jobId="${jobId}"`, `Job is done, closing connection`)
                                 closedWsCounter.inc()
                                 ws.close()

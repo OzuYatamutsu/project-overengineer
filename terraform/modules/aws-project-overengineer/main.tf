@@ -32,7 +32,7 @@ resource "aws_iam_role" "github_actions_eks" {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
         }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/feature/model-lite"
+          "token.actions.githubusercontent.com:sub" = "repo:OzuYatamutsu/project-overengineer:ref:refs/heads/main"
         }
       }
     }]

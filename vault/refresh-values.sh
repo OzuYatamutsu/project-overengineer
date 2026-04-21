@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-REFRESH_INTERVAL_SECONDS=3600
+REFRESH_INTERVAL_SECONDS=300
 VAULT_ADDR="https://svc-vault.default.svc.cluster.local:8200"
 UNSEAL_KEY=$(kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d | jq -r '.unseal_keys_b64[0]')
 ROOT_TOKEN=$(kubectl get secret vault-init-keys -o jsonpath='{.data.vault-unseal-info\.json}' | base64 -d | jq -r '.root_token')

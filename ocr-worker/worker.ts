@@ -129,7 +129,7 @@ async function commit(job: Job): Promise<void> {
 }
 
 export async function _healthz(): Promise<boolean> {
-    // Health check: ping redis and check if we can list jobs
+    // Health check: ping redis and OCR endpoint and check if we can list jobs
 
     try {
         if (await getRedis("ocr-worker").ping() != 'PONG') {
@@ -137,9 +137,18 @@ export async function _healthz(): Promise<boolean> {
             return false
         }
 
-        if (await fetch(`${OCR_ENDPOINT}/api/ps`).then(res => res.ok).catch(() => false) == false) {
-            log("ocr-worker", `endpoint="/healthz"`, `failed, can't reach OCR endpoint at ${OCR_ENDPOINT}`)
-            return false
+        if (REMOTE_MODE) {
+            // No health check endpoint, so we just check if we can reach the API URL.
+            // Returning 404 is normal.
+            if (await fetch(`${REMOTE_MODE_API_URL}`).then(res => !!res.statusText).catch(() => false) == false) {
+                log("ocr-worker", `endpoint="/healthz"`, `failed, can't reach remote OCR endpoint at ${REMOTE_MODE_API_URL}`)
+                return false
+            }
+        } else {
+            if (await fetch(`${OCR_ENDPOINT}/api/ps`).then(res => res.ok).catch(() => false) == false) {
+                log("ocr-worker", `endpoint="/healthz"`, `failed, can't reach local OCR endpoint at ${OCR_ENDPOINT}`)
+                return false
+            }
         }
 
     } catch (err) {

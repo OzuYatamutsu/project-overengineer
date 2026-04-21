@@ -52,7 +52,7 @@ test('ocr parses expected text from test image (remote mode)', async () => {
         expect(testJob.result).toContain(EXPECTED_STRINGS[i])
     }
 
-    expect(testJob.status === JobStatus.DONE)
+    expect(testJob.status).toBe(JobStatus.DONE)
 })
 test('ocr parses expected text from test image (local mode)', async () => {
     test.setTimeout(TEST_TIMEOUT_SECS * 1000)
@@ -73,5 +73,5 @@ test('ocr parses expected text from test image (local mode)', async () => {
         expect(testJob.result).toContain(EXPECTED_STRINGS[i])
     }
 
-    expect(testJob.status === JobStatus.DONE)
+    expect(testJob.status).toBe(JobStatus.DONE)
 })

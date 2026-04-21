@@ -119,6 +119,7 @@ export async function processJob(job: Job, remoteMode: null | boolean = null): P
     estimatedTimeSecs = (timeDelta + estimatedTimeSecs) / 2
 
     const data = await jobResult.json()
+    job.status = JobStatus.DONE
     job.result = data.response?.trim() ?? data.answer?.trim() ?? "No text was found in the image!"
     job.encrypt(await getImageEncryptionKey("ocr-worker"))
     return job

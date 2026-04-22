@@ -313,7 +313,7 @@ This endpoint is scraped by Alloy and forwarded to Mimir.
 
 All components within the system are expected to emit the following:
 
-#### Client
+#### Client (post-phase 4)
 
 - JavaScript logs
 - JavaScript client error rate
@@ -440,7 +440,7 @@ classDef plainText fill:none,stroke:none;
 classDef split fill:none,stroke:none,width:0,height:0;
 ```
 
-In Phase 4, telemetry will be used to feed alerting and automated deployment decisions (such as canary).
+After phase 4, telemetry will be used to feed alerting and automated deployment decisions (such as canary).
 
 ### Data Retention and Resolution
 
@@ -469,8 +469,6 @@ All components of the service plane are containerized. At build time, containers
 | `redis-master`            | [project-overengineer/redis-master](https://ghcr.io/ozuyatamutsu/project-overengineer/redis-master:latest)                       |
 | `redis-replica`           | [project-overengineer/redis-replica](https://ghcr.io/ozuyatamutsu/project-overengineer/redis-replica:latest)                     |
 | `redis-sentinel`          | [project-overengineer/redis-sentinel](https://ghcr.io/ozuyatamutsu/project-overengineer/redis-sentinel:latest)                   |
-
-A full standardized deployment process will be implemented in Phase 2.
 
 ## Roadmap
 
@@ -515,8 +513,12 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 **Started 2026-04-01.**
 
+- Stability improvements
 - Active monitoring and alerting
 - Canary in staging
+
+### Future work (post-phase 4)
+
 - Incremental production rollout based on telemetry data
 - Automated rollback based on telemetry data
 - Autoremediation based on telemetry data

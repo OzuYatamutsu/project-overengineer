@@ -95,7 +95,7 @@ Configuration is injected at runtime via environment variables, which can be ove
 | `STATUS_API_PORT`    | The port number the Status API should listen on.                                                     | `3001`             |
 | `VAULT_HOST`         | The hostname of the Vault host.       | `vault`            |
 | `VAULT_PORT`         | The port number of the Vault host.    | `8200`             |
-| `REMOTE_MODE`        | If `true`, forwards OCR requests to the Moondream API for processing; `false` uses a local AI model (`ollama-ocr`). | `true` |
+| `REMOTE_MODE`        | If `true`, forwards OCR requests to the Moondream API for processing; `false` uses a local AI model (`ollama-ocr`). | `false` |
 
 ## Base architecture
 
@@ -313,7 +313,7 @@ This endpoint is scraped by Alloy and forwarded to Mimir.
 
 All components within the system are expected to emit the following:
 
-#### Client (post-phase 4)
+#### Client (after phase 4)
 
 - JavaScript logs
 - JavaScript client error rate
@@ -339,7 +339,7 @@ All components within the system are expected to emit the following:
 - Transformer job count
 - Transformer job duration (milliseconds)
 - Transformer job success count
-- Transfomer job error count
+- Transformer job error count
 - CPU%
 - Memory usage
 - Network bytes in
@@ -440,7 +440,7 @@ classDef plainText fill:none,stroke:none;
 classDef split fill:none,stroke:none,width:0,height:0;
 ```
 
-After phase 4, telemetry will be used to feed alerting and automated deployment decisions (such as canary).
+After Phase 4, telemetry will be used to feed alerting and automated deployment decisions (such as canary).
 
 ### Data Retention and Resolution
 
@@ -517,7 +517,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 - Active monitoring and alerting
 - Canary in staging
 
-### Future work (post-phase 4)
+### Future work (after Phase 4)
 
 - Incremental production rollout based on telemetry data
 - Automated rollback based on telemetry data

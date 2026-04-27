@@ -419,6 +419,8 @@ jobs:
 
       - name: Terraform destroy
         run: terraform destroy -auto-approve
+        env:
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/staging
 
   deploy-prod:
@@ -682,4 +684,6 @@ jobs:
 
       - name: Terraform destroy
         run: terraform destroy -auto-approve
+        env:
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/production

@@ -14,3 +14,7 @@ module "aws_project_overengineer" {
   environment_name = "staging"
   region           = "us-east-2"
 }
+
+module "pagerduty_project_overengineer" {
+  source = "../../modules/pagerduty-project-overengineer"
+}

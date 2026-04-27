@@ -162,7 +162,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/staging
 
       - name: Terraform apply
@@ -170,7 +170,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/staging  
 
       - name: Configure AWS credentials
@@ -401,7 +401,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/staging
 
       - name: Update kubeconfig
@@ -438,7 +438,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/production
 
       - name: Terraform apply
@@ -446,7 +446,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/production
 
       - name: Configure AWS credentials
@@ -664,7 +664,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_API_KEY }}
         working-directory: ./terraform/environment/production
 
       - name: Update kubeconfig

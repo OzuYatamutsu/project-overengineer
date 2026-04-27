@@ -9,6 +9,4 @@ terraform {
   required_version = ">= 1.0.0"
 }
 
-provider "pagerduty" {
-  token = var.pagerduty_token
-}
+provider "pagerduty" {}

@@ -80,6 +80,7 @@ Build-time vars must be set for deployment to work.
 | AWS_SECRET_ACCESS_KEY   | Secret   | The access key used to create resources.                                                                     |
 | CI_ENCRYPTION_KEY       | Secret   | The encryption key used to encrypt vault certificates generated at runtime during CI. Can be set to any value as long as it is kept secret. |
 | MOONDREAM_API_KEY       | Secret   | An API key used for remote OCR when `REMOTE_MODE` is set to `true`. Get one for free [here](https://moondream.ai/me/api-keys). |
+| PAGERDUTY_API_KEY       | Secret   | An API key used for terraform to configure PagerDuty resources. An API key can be obtained after signing up for the free plan [here](https://www.pagerduty.com/sign-up/?type=free). |
 
 ### Config vars
 Configuration is injected at runtime via environment variables, which can be overridden when starting each individual component or upon the call to `docker-compose up`. The value for `REDIS_PASSWORD` must be explicitly provided on startup.

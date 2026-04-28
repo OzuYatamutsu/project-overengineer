@@ -7,7 +7,7 @@ resource "pagerduty_escalation_policy" "fe" {
 
     target {
       type = "user_reference"
-      id   = pagerduty_user.seanc_seancotech_com.id
+      id   = pagerduty_user.seanl_seancotech_com.id
     }
   }
 }

@@ -514,11 +514,11 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 **Started 2026-04-01.**
 
 - Stability improvements
-- Active monitoring and alerting
-- Canary in staging
 
-### Future work (after Phase 4)
+### Future/deferred work
 
 - Incremental production rollout based on telemetry data
 - Automated rollback based on telemetry data
 - Autoremediation based on telemetry data
+- Active monitoring and alerting
+- Canary in staging

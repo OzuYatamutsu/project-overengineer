@@ -4,8 +4,8 @@ resource "pagerduty_schedule" "FE" {
 
   layer {
     name                         = "24/7"
-    start                        = "2026-04-29T00:00:00Z00:00:00"
-    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00:00"
+    start                        = "2026-04-29T00:00:00Z00:00"
+    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00"
     rotation_turn_length_seconds = 86400
     users                        = [pagerduty_user.seanl_seancotech_com.id]
   }
@@ -17,8 +17,8 @@ resource "pagerduty_schedule" "OCR" {
 
   layer {
     name                         = "24/7"
-    start                        = "2026-04-29T00:00:00Z00:00:00"
-    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00:00"
+    start                        = "2026-04-29T00:00:00Z00:00"
+    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00"
     rotation_turn_length_seconds = 86400
     users                        = [pagerduty_user.seanl_seancotech_com.id]
   }
@@ -30,8 +30,8 @@ resource "pagerduty_schedule" "Storage" {
 
   layer {
     name                         = "24/7"
-    start                        = "2026-04-29T00:00:00Z00:00:00"
-    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00:00"
+    start                        = "2026-04-29T00:00:00Z00:00"
+    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00"
     rotation_turn_length_seconds = 86400
     users                        = [pagerduty_user.seanl_seancotech_com.id]
   }
@@ -43,8 +43,8 @@ resource "pagerduty_schedule" "Observability" {
 
   layer {
     name                         = "24/7"
-    start                        = "2026-04-29T00:00:00Z00:00:00"
-    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00:00"
+    start                        = "2026-04-29T00:00:00Z00:00"
+    rotation_virtual_start       = "2026-04-29T00:00:00Z00:00"
     rotation_turn_length_seconds = 86400
     users                        = [pagerduty_user.seanl_seancotech_com.id]
   }

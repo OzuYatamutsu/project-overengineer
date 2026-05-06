@@ -511,7 +511,7 @@ Development of Project Overengineer is intended to be iterative, with a proof of
 
 ### Phase 4
 
-**Started 2026-04-01.**
+**Started 2026-04-01, completed 2026-05-05.**
 
 - Stability improvements
 
